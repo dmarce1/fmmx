@@ -300,9 +300,9 @@ void node_server::M2L(const Container& m, integer d) {
 std::vector<node_client> node_server::get_children_at_direction(integer d) const {
 	std::vector<node_client> cids(cbnd_size[d]);
 	auto i = cids.begin();
-	for (integer j = dir_x[d] == +1 ? 1 : 0; j != dir_x[d] == -1 ? 1 : 2; ++j) {
-		for (integer k = dir_y[d] == +1 ? 1 : 0; k != dir_y[d] == -1 ? 1 : 2; ++k) {
-			for (integer l = dir_z[d] == +1 ? 1 : 0; l != dir_z[d] == -1 ? 1 : 2; ++l) {
+	for (integer j = dir_x[d] == +1 ? 1 : 0; j != (dir_x[d] == -1 ? 1 : 2); ++j) {
+		for (integer k = dir_y[d] == +1 ? 1 : 0; k != (dir_y[d] == -1 ? 1 : 2); ++k) {
+			for (integer l = dir_z[d] == +1 ? 1 : 0; l != (dir_z[d] == -1 ? 1 : 2); ++l) {
 				*i = child_id[4 * j + k * 2 + l];
 			}
 		}
@@ -311,16 +311,54 @@ std::vector<node_client> node_server::get_children_at_direction(integer d) const
 }
 
 void node_server::get_tree() {
-	std::array<hpx::future<std::vector<node_client>>, NNEIGHBOR> id_futs;
-	std::array<std::vector<node_client>, NNEIGHBOR> ids0;
+	if (level > 0) {
+		do {
+			wait_for_signal();
+		} while (neighbors_set == false);
+	}
+	std::vector < hpx::future<std::vector<node_client>>>id_futs(NNEIGHBOR);
+	std::vector < std::vector < node_client >> ids0(NNEIGHBOR);
 	std::vector<node_client> ids(NCHILD * NCHILD);
-	std::vector<std::array<node_client>, NNEIGHBOR> cn(NCHILD);
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
-		id_futs[d] = neighbor_id[d].get_children_at_direction(dir_reverse[d]);
+		if (d != center_dir) {
+			id_futs[d] = neighbor_id[d].get_children_at_direction(dir_reverse[d]);
+		}
 	}
+	id_futs[center_dir] = hpx::make_ready_future(get_children_at_direction(center_dir));
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
-		ids0[d] = id_futs[d].get();
+		auto v = id_futs[d].get();
+		if (v.size() > 0) {
+			auto i = v.begin();
+			for (integer j = dir_x[d] == +1 ? 2 : 1; j != (dir_x[d] == -1 ? 2 : 3); ++j) {
+				const integer j0 = j + dir_x[d];
+				for (integer k = dir_y[d] == +1 ? 2 : 1; k != (dir_y[d] == -1 ? 2 : 3); ++k) {
+					const integer k0 = k + dir_y[d];
+					for (integer l = dir_z[d] == +1 ? 2 : 1; l != (dir_z[d] == -1 ? 2 : 3); ++l) {
+						const integer l0 = l + dir_z[d];
+						ids[16 * j0 + 4 * k0 + l0] = std::move(*i);
+						++i;
+					}
+				}
+			}
+		}
 	}
+	std::vector<node_client> cneighbors;
+	for (integer c = 0; c != NCHILD; ++c) {
+		cneighbors.resize(NNEIGHBOR);
+		for (integer d = 0; d != NNEIGHBOR; ++d) {
+			const integer j = dir_x[d] + ((c >> 2) & 1) + 1;
+			const integer k = dir_y[d] + ((c >> 1) & 1) + 1;
+			const integer l = dir_z[d] + (c & 1) + 1;
+			cneighbors[d] = ids[16 * j + 4 * k + l];
+		}
+		child_id[c].set_neighbors(std::move(cneighbors));
+	}
+}
+
+void node_server::set_neighbors(std::vector<node_client> ns) {
+	std::move(ns.begin(), ns.end(), neighbor_id.begin());
+	neighbors_set = true;
+	input_condition.notify_one();
 }
 
 void node_server::execute() {
@@ -423,6 +461,7 @@ node_server::node_server(component_type* ptr, node_client pid, integer lev, std:
 }
 
 void node_server::initialize(node_client pid, integer lev, std::array<integer, NDIM> loc) {
+	neighbors_set = false;
 	location = loc;
 	level = lev;
 	parent_id = node_client(pid);
@@ -439,6 +478,4 @@ void node_server::initialize(node_client pid, integer lev, std::array<integer, N
 node_server::~node_server() {
 	my_thread.join();
 }
-
-HPX_REGISTER_MINIMAL_COMPONENT_FACTORY(hpx::components::managed_component<node_server>, node_server);
 

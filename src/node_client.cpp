@@ -12,8 +12,19 @@ node_client::operator hpx::id_type() const {
 	return id;
 }
 
+node_client::node_client() {
+	id = hpx::naming::invalid_id;
+}
+
 node_client::node_client(const hpx::id_type& i) {
 	id = i;
+}
+
+void node_client::set_neighbors(std::vector<node_client> ns) {
+	if (id != hpx::naming::invalid_id) {
+		hpx::apply<typename node_server::set_neighbors_action>(id, std::move(ns));
+	}
+
 }
 
 hpx::future<std::vector<node_client>> node_client::get_children_at_direction(integer d) {

@@ -17,13 +17,14 @@ private:
 	hpx::id_type id;
 public:
 	operator hpx::id_type() const;
-	node_client() = default;
+	node_client();
 	node_client(const hpx::id_type&);
 	node_client& operator=(const hpx::id_type&);
 	hpx::future<std::vector<node_client>> get_children_at_direction(integer f);
 	void set_boundary(hpx::future<std::vector<real>>& f, integer d);
 	void set_multipoles(hpx::future<std::array<real, PP * N3 / NCHILD>>& f, integer ci);
 	void set_expansions(hpx::future<std::array<real, PP * N3 / NCHILD>>&);
+	void set_neighbors(std::vector<node_client>);
 	template<class Arc>
 	void serialize(Arc&, const unsigned);
 };

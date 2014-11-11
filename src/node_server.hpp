@@ -22,6 +22,7 @@ private:
 	std::array<node_client, NCHILD> child_id;
 	std::array<node_client, NNEIGHBOR> neighbor_id;
 	std::atomic<integer> parent_status;
+	std::atomic<bool> neighbors_set;
 	std::array<std::atomic<integer>, NCHILD> child_status;
 	std::array<std::atomic<integer>, NNEIGHBOR> neighbor_status;
 	std::array<hpx::future<std::vector<real>>, NNEIGHBOR> neighbor_futures;
@@ -43,6 +44,7 @@ public:
 	hpx::future<std::array<real, PP * N3 / NCHILD>> get_multipoles() const;
 	hpx::future<std::array<real, PP * N3 / NCHILD>> get_expansions(integer ci) const;
 	hpx::future<std::vector<real>> get_boundary(integer d) const;
+	void set_neighbors(std::vector<node_client>);
 	void set_boundary(hpx::future<std::vector<real>> f, integer d);
 	void set_multipoles(hpx::future<std::array<real, PP * N3 / NCHILD>> f, integer ci);
 	void set_expansions(hpx::future<std::array<real, PP * N3 / NCHILD>>);
@@ -58,13 +60,12 @@ public:
 	void execute();
 	void refine();
 	//
-	HPX_DEFINE_COMPONENT_ACTION(node_server, set_boundary, set_boundary_action);
+	HPX_DEFINE_COMPONENT_ACTION(node_server, set_boundary, set_boundary_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, set_multipoles, set_multipole_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, set_expansions, set_expansions_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, get_children_at_direction, get_children_at_direction_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, set_neighbors, set_neighbors_action);
 	//
-	HPX_DEFINE_COMPONENT_ACTION(node_server, set_multipoles, set_multipole_action);
-	//
-	HPX_DEFINE_COMPONENT_ACTION(node_server, set_expansions, set_expansions_action);
-	//
-	HPX_DEFINE_COMPONENT_ACTION(node_server, get_children_at_direction, get_children_at_direction_action);
 };
 
 #endif
