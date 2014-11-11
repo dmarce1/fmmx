@@ -21,7 +21,6 @@ constexpr integer PP = P * P;
 constexpr integer NDIM = 3;
 constexpr integer NCHILD = 8;
 constexpr integer NNEIGHBOR = 27;
-constexpr integer NFACE = 6;
 constexpr integer MAXLEVEL = 2;
 
 #endif /* DEF_HPP_ */

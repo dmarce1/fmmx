@@ -34,9 +34,11 @@ private:
 	integer level;
 	hpx::thread my_thread;
 	bool is_leaf;
+	std::uint64_t key;
 	void initialize(node_client, integer, std::array<integer, NDIM>);
 	node_client& my_id;
 public:
+	node_server();
 	node_server(component_type*);
 	node_server(component_type*, node_client, integer, std::array<integer, NDIM>);
 	~node_server();
@@ -44,7 +46,6 @@ public:
 	hpx::future<std::array<real, PP * N3 / NCHILD>> get_multipoles() const;
 	hpx::future<std::array<real, PP * N3 / NCHILD>> get_expansions(integer ci) const;
 	hpx::future<std::vector<real>> get_boundary(integer d) const;
-	void set_neighbors(std::vector<node_client>);
 	void set_boundary(hpx::future<std::vector<real>> f, integer d);
 	void set_multipoles(hpx::future<std::array<real, PP * N3 / NCHILD>> f, integer ci);
 	void set_expansions(hpx::future<std::array<real, PP * N3 / NCHILD>>);
@@ -64,7 +65,6 @@ public:
 	HPX_DEFINE_COMPONENT_ACTION(node_server, set_multipoles, set_multipole_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, set_expansions, set_expansions_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, get_children_at_direction, get_children_at_direction_action); //
-	HPX_DEFINE_COMPONENT_ACTION(node_server, set_neighbors, set_neighbors_action);
 	//
 };
 

@@ -24,7 +24,6 @@ public:
 	void set_boundary(hpx::future<std::vector<real>>& f, integer d);
 	void set_multipoles(hpx::future<std::array<real, PP * N3 / NCHILD>>& f, integer ci);
 	void set_expansions(hpx::future<std::array<real, PP * N3 / NCHILD>>&);
-	void set_neighbors(std::vector<node_client>);
 	template<class Arc>
 	void serialize(Arc&, const unsigned);
 };

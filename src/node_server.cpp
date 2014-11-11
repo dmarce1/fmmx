@@ -9,6 +9,7 @@
 #include "node_server.hpp"
 
 #include <hpx/lcos/wait_all.hpp>
+#include <mutex>
 
 constexpr integer WAITING = 0;
 constexpr integer READY = 1;
@@ -75,8 +76,11 @@ constexpr std::array<integer, NCHILD> oct_yub = { octub0, octub0, octub1, octub1
 
 constexpr std::array<integer, NCHILD> oct_zub = { octub0, octub1, octub0, octub1, octub0, octub1, octub0, octub1 };
 
-constexpr std::array<integer, NNEIGHBOR> dir_reverse = { 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11,
-		10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+constexpr std::array<integer, NNEIGHBOR> dir_reverse = { 26, 25, 24, 23, 22, 21, 20, 19, 18,
+
+17, 16, 15, 14, 13, 12, 11, 10, 9,
+
+8, 7, 6, 5, 4, 3, 2, 1, 0 };
 
 constexpr std::array<integer, NNEIGHBOR> dir_x = { -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
 		1, 1, 1, 1, 1, 1, 1 };
@@ -93,6 +97,43 @@ integer ind3d(integer j, integer k, integer l) {
 
 integer ind4d(integer p, integer j, integer k, integer l) {
 	return l + NX * (k + NX * (j + NX * p));
+}
+
+std::size_t location_to_key(integer level, std::array<integer, NDIM> loc) {
+	std::size_t key = 1;
+	while (level > 0) {
+		for (integer d = 0; d != NDIM; ++d) {
+			key <<= 1;
+			key |= (loc[d] & 1);
+			loc[d] >>= 1;
+		}
+		level--;
+	}
+	return key;
+}
+
+bool location_is_phys_bnd(integer level, const std::array<integer, NDIM>& loc) {
+	for (integer d = 0; d != NNEIGHBOR; ++d) {
+		if (dir_x[d] == +1 && loc[2] == (1 << level) - 1) {
+			return true;
+		}
+		if (dir_x[d] == -1 && loc[2] == 0) {
+			return true;
+		}
+		if (dir_y[d] == +1 && loc[1] == (1 << level) - 1) {
+			return true;
+		}
+		if (dir_y[d] == -1 && loc[1] == 0) {
+			return true;
+		}
+		if (dir_z[d] == +1 && loc[0] == (1 << level) - 1) {
+			return true;
+		}
+		if (dir_z[d] == -1 && loc[0] == 0) {
+			return true;
+		}
+	}
+	return false;
 }
 
 void node_server::reset_children() {
@@ -113,12 +154,7 @@ void node_server::reset_parent() {
 
 void node_server::reset_neighbors() {
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
-		neighbor_status[d] =
-				(((dir_x[d] == -1) && location[2] == 0) || ((dir_x[d] == 1) && location[2] == ((1 << level) - 1))
-						|| ((dir_y[d] == -1) && location[1] == 0)
-						|| ((dir_y[d] == 1) && location[1] == ((1 << level) - 1))
-						|| ((dir_z[d] == -1) && location[0] == 0)
-						|| ((dir_z[d] == 1) && location[0] == ((1 << level) - 1))) ? COMPLETE : WAITING;
+		neighbor_status[d] = location_is_phys_bnd(level, location) ? COMPLETE : WAITING;
 	}
 }
 
@@ -216,8 +252,10 @@ void node_server::set_expansions(hpx::future<std::array<real, PP * N3 / NCHILD>>
 }
 
 void node_server::wait_for_signal() {
-	boost::unique_lock<decltype(input_lock)> lock(input_lock);
-	input_condition.wait(lock);
+	hpx::this_thread::yield();
+
+//	std::unique_lock<decltype(input_lock)> lock(input_lock);
+//	input_condition.wait(lock);
 }
 
 void node_server::M2M(std::shared_ptr<std::array<real, PP * N3 / NCHILD>> mptr, integer c) {
@@ -311,65 +349,39 @@ std::vector<node_client> node_server::get_children_at_direction(integer d) const
 }
 
 void node_server::get_tree() {
-	if (level > 0) {
-		do {
-			wait_for_signal();
-		} while (neighbors_set == false);
-	}
-	std::vector < hpx::future<std::vector<node_client>>>id_futs(NNEIGHBOR);
-	std::vector < std::vector < node_client >> ids0(NNEIGHBOR);
-	std::vector<node_client> ids(NCHILD * NCHILD);
+	std::vector < hpx::future < hpx::id_type >> id_futs(NNEIGHBOR);
+	std::vector < std::size_t > ids(NNEIGHBOR);
+	auto i = ids.begin();
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
-		if (d != center_dir) {
-			id_futs[d] = neighbor_id[d].get_children_at_direction(dir_reverse[d]);
+		if (!location_is_phys_bnd(level, location)) {
+			auto this_loc = location;
+			this_loc[2] += dir_x[d];
+			this_loc[1] += dir_y[d];
+			this_loc[0] += dir_z[d];
+			*i = location_to_key(level, std::move(this_loc));
+			++i;
 		}
 	}
-	id_futs[center_dir] = hpx::make_ready_future(get_children_at_direction(center_dir));
+	auto f = hpx::find_ids_from_basename("fmmx_node", std::vector < std::size_t > (ids.begin(), i));
+	hpx::wait_all(std::move(f));
+	auto j = f.begin();
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
-		auto v = id_futs[d].get();
-		if (v.size() > 0) {
-			auto i = v.begin();
-			for (integer j = dir_x[d] == +1 ? 2 : 1; j != (dir_x[d] == -1 ? 2 : 3); ++j) {
-				const integer j0 = j + dir_x[d];
-				for (integer k = dir_y[d] == +1 ? 2 : 1; k != (dir_y[d] == -1 ? 2 : 3); ++k) {
-					const integer k0 = k + dir_y[d];
-					for (integer l = dir_z[d] == +1 ? 2 : 1; l != (dir_z[d] == -1 ? 2 : 3); ++l) {
-						const integer l0 = l + dir_z[d];
-						ids[16 * j0 + 4 * k0 + l0] = std::move(*i);
-						++i;
-					}
-				}
-			}
+		if (!location_is_phys_bnd(level, location)) {
+			neighbor_id[d] = j->get();
+			++j;
 		}
 	}
-	std::vector<node_client> cneighbors;
-	for (integer c = 0; c != NCHILD; ++c) {
-		cneighbors.resize(NNEIGHBOR);
-		for (integer d = 0; d != NNEIGHBOR; ++d) {
-			const integer j = dir_x[d] + ((c >> 2) & 1) + 1;
-			const integer k = dir_y[d] + ((c >> 1) & 1) + 1;
-			const integer l = dir_z[d] + (c & 1) + 1;
-			cneighbors[d] = ids[16 * j + 4 * k + l];
-		}
-		child_id[c].set_neighbors(std::move(cneighbors));
-	}
-}
-
-void node_server::set_neighbors(std::vector<node_client> ns) {
-	std::move(ns.begin(), ns.end(), neighbor_id.begin());
-	neighbors_set = true;
-	input_condition.notify_one();
 }
 
 void node_server::execute() {
-	printf("Executing thread at grid %i - %i %i %i\n", level, location[2], location[1], location[0]);
 	if (level < MAXLEVEL) {
 		refine();
 	}
-
 	get_tree();
 
+	printf("Executing thread at grid %i - %i %i %i\n", level, location[2], location[1], location[0]);
 	while (1) {
+		hpx::this_thread::sleep_for(boost::posix_time::milliseconds(1));
 		if (false) {
 			bool done;
 			auto mul_fut = get_multipoles();
@@ -443,8 +455,12 @@ void node_server::execute() {
 				}
 			}
 		}
-		hpx::this_thread::yield();
 	}
+}
+
+node_server::node_server() :
+		my_id(neighbor_id[center_dir]) {
+	assert(false);
 }
 
 node_server::node_server(component_type* ptr) :
@@ -470,6 +486,12 @@ void node_server::initialize(node_client pid, integer lev, std::array<integer, N
 	reset_children();
 	reset_parent();
 	reset_neighbors();
+	key = location_to_key(level, std::move(loc));
+	auto f = hpx::register_id_with_basename("fmmx_node", my_id, key);
+	if (!f.get()) {
+		printf("Failed to register id_with_basename\n");
+		abort();
+	}
 	my_thread = hpx::thread([=]() {
 		execute();
 	});
