@@ -16,8 +16,8 @@ public:
 	using component_type = hpx::components::managed_component<node_server>;
 	using base_type = hpx::components::managed_component_base<node_server, hpx::components::detail::this_type, hpx::traits::construct_with_back_ptr>;
 private:
-	std::array<real, PP * N3> M;
-	std::array<real, PP * N3> L;
+	std::vector<real> M;
+	std::vector<real> L;
 	node_client parent_id;
 	std::array<node_client, NCHILD> child_id;
 	std::array<node_client, NNEIGHBOR> neighbor_id;
@@ -26,11 +26,12 @@ private:
 	std::array<std::atomic<integer>, NCHILD> child_status;
 	std::array<std::atomic<integer>, NNEIGHBOR> neighbor_status;
 	std::array<hpx::future<std::vector<real>>, NNEIGHBOR> neighbor_futures;
-	std::array<hpx::future<std::array<real, PP * N3 / NCHILD>>, NCHILD> child_futures;
-	hpx::future<std::array<real, PP * N3 / NCHILD>> parent_future;
+	std::array<hpx::future<std::vector<real>>, NCHILD> child_futures;
+	hpx::future<std::vector<real>> parent_future;
 	hpx::lcos::local::condition_variable input_condition;
 	hpx::lcos::local::spinlock input_lock;
 	std::array<integer, NDIM> location;
+	real dx;
 	integer level;
 	hpx::thread my_thread;
 	bool is_leaf;
@@ -43,18 +44,18 @@ public:
 	node_server(component_type*, node_client, integer, std::array<integer, NDIM>);
 	~node_server();
 	void get_tree();
-	hpx::future<std::array<real, PP * N3 / NCHILD>> get_multipoles() const;
-	hpx::future<std::array<real, PP * N3 / NCHILD>> get_expansions(integer ci) const;
+	hpx::future<std::vector<real>> get_multipoles() const;
+	hpx::future<std::vector<real>> get_expansions(integer ci) const;
 	hpx::future<std::vector<real>> get_boundary(integer d) const;
 	void set_boundary(hpx::future<std::vector<real>> f, integer d);
-	void set_multipoles(hpx::future<std::array<real, PP * N3 / NCHILD>> f, integer ci);
-	void set_expansions(hpx::future<std::array<real, PP * N3 / NCHILD>>);
+	void set_multipoles(hpx::future<std::vector<real>> f, integer ci);
+	void set_expansions(hpx::future<std::vector<real>>);
 	std::vector<node_client> get_children_at_direction(integer) const;
 	void wait_for_signal();
-	void M2M(std::shared_ptr<std::array<real, PP * N3 / NCHILD>>, integer);
+	void M2M(const std::vector<real>&, integer);
 	template<class Container>
 	void M2L(const Container&, integer);
-	void L2L(std::shared_ptr<std::array<real, PP * N3 / NCHILD>>);
+	void L2L(const std::vector<real>&);
 	void reset_children();
 	void reset_parent();
 	void reset_neighbors();

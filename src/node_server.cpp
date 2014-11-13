@@ -10,6 +10,9 @@
 
 #include <hpx/lcos/wait_all.hpp>
 #include <mutex>
+#include "exafmm.hpp"
+
+exafmm_kernel exafmm;
 
 constexpr integer WAITING = 0;
 constexpr integer READY = 1;
@@ -17,7 +20,7 @@ constexpr integer COMPLETE = 2;
 constexpr integer lb0 = 0;
 constexpr integer lb1 = 0;
 constexpr integer lb2 = NX - BW;
-constexpr integer ub0 = BW;
+constexpr integer ub0 = BW - 1;
 constexpr integer ub1 = NX - 1;
 constexpr integer ub2 = NX - 1;
 constexpr integer center_dir = 13;
@@ -60,8 +63,8 @@ constexpr std::array<integer, NNEIGHBOR> bnd_size = { BW * BW * BW, BW * BW * NX
 		* BW, BW * NX * BW, BW * NX * NX, BW * NX * BW, BW * BW * BW, BW * BW * NX, BW * BW * BW };
 
 constexpr integer octlb0 = 0;
-constexpr integer octlb1 = NX / 2 - 1;
-constexpr integer octub0 = NX / 2;
+constexpr integer octlb1 = NX / 2;
+constexpr integer octub0 = NX / 2 - 1;
 constexpr integer octub1 = NX - 1;
 
 constexpr std::array<integer, NCHILD> oct_xlb = { octlb0, octlb0, octlb0, octlb0, octlb1, octlb1, octlb1, octlb1 };
@@ -76,11 +79,8 @@ constexpr std::array<integer, NCHILD> oct_yub = { octub0, octub0, octub1, octub1
 
 constexpr std::array<integer, NCHILD> oct_zub = { octub0, octub1, octub0, octub1, octub0, octub1, octub0, octub1 };
 
-constexpr std::array<integer, NNEIGHBOR> dir_reverse = { 26, 25, 24, 23, 22, 21, 20, 19, 18,
-
-17, 16, 15, 14, 13, 12, 11, 10, 9,
-
-8, 7, 6, 5, 4, 3, 2, 1, 0 };
+constexpr std::array<integer, NNEIGHBOR> dir_reverse = { 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11,
+		10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
 
 constexpr std::array<integer, NNEIGHBOR> dir_x = { -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
 		1, 1, 1, 1, 1, 1, 1 };
@@ -95,8 +95,8 @@ integer ind3d(integer j, integer k, integer l) {
 	return l + NX * (k + NX * j);
 }
 
-integer ind4d(integer p, integer j, integer k, integer l) {
-	return l + NX * (k + NX * (j + NX * p));
+integer ind4d(integer p, integer j, integer k, integer l, integer stride = NX) {
+	return l + stride * (k + stride * (j + stride * p));
 }
 
 std::size_t location_to_key(integer level, std::array<integer, NDIM> loc) {
@@ -158,48 +158,57 @@ void node_server::reset_neighbors() {
 	}
 }
 
-hpx::future<std::array<real, PP * N3 / NCHILD>> node_server::get_expansions(integer c) const {
+hpx::future<std::vector<real>> node_server::get_expansions(integer c) const {
 	return hpx::async([=]() {
-		auto lptr = std::make_shared<std::array<real, PP * N3 / NCHILD>>();
+		std::vector<real> lc(PP * N3 / NCHILD);
 		for (integer p = 0; p != PP; ++p) {
 			for (integer j = oct_xlb[c]; j <= oct_xub[c]; ++j) {
 				for (integer k = oct_ylb[c]; k <= oct_yub[c]; ++k) {
 					for (integer l = oct_zlb[c]; l <= oct_zub[c]; ++l) {
-						(*lptr)[ind4d(p, j - oct_xlb[c], k - oct_ylb[c], l - oct_zlb[c])] =
+						lc[ind4d(p, j - oct_xlb[c], k - oct_ylb[c], l - oct_zlb[c], NX / 2)] =
 						L[ind4d(p,j,k,l)];
 					}
 				}
 			}
 		}
-		return std::move(*lptr);
+		return std::move(lc);
 	});
 }
 
-hpx::future<std::array<real, PP * N3 / NCHILD>> node_server::get_multipoles() const {
+hpx::future<std::vector<real>> node_server::get_multipoles() const {
 	return hpx::async(hpx::launch::deferred, [=]() {
-		auto mptr = std::make_shared<std::array<real, PP * N3 / NCHILD>>();
-		real mc;
-		for (integer p = 0; p != PP; ++p) {
-			for (integer j = 0; j != NX; j += 2) {
-				for (integer k = 0; k != NX; k += 2) {
-					for (integer l = 0; l!= NX; l += 2) {
-						mc = M[ind4d(p, j, k, l)] + M[ind4d(p, j, k, l + 1)]
-						+ M[ind4d(p, j, k + 1, l)] + M[ind4d(p, j + 1, k, l)]
-						+ M[ind4d(p, j, k + 1, l + 1)]
-						+ M[ind4d(p, j + 1, k, l + 1)]
-						+ M[ind4d(p, j + 1, k + 1, l)]
-						+ M[ind4d(p, j + 1, k + 1, l + 1)];
-						(*mptr)[ind4d(p, j >> 1, k >> 1, l >> 1)] = mc;
+		std::vector<real> m_out(PP * N3 / NCHILD, 0.0);
+		std::vector<real> m_in(PP * N3 / NCHILD);
+		for( integer c = 0; c != NCHILD; ++c) {
+			std::array<real,NDIM> dist;
+
+			for (integer p = 0; p != PP; ++p) {
+				for (integer j = 0; j != NX; j += 2) {
+					for (integer k = 0; k != NX; k += 2) {
+						for (integer l = 0; l!= NX; l += 2) {
+							auto tmp = M[ind4d(p,j+(c&1),k+((c>>1)&1),l+((c>>2)&1))];
+							auto i = ind4d(p, j>>1, k>>1, l>>1, NX / 2);
+							m_in[i] = tmp;
+						}
 					}
 				}
 			}
+			for( integer d = 0; d != NDIM; ++d ) {
+				if( (c >> d) & 1) {
+					dist[d] = -0.5*dx;
+				} else {
+					dist[d] = +0.5*dx;
+				}
+			}
+			constexpr auto sz = N3 / NCHILD;
+			exafmm.M2M(m_in, m_out, dist, sz);
 		}
-		return std::move(*mptr);
+		return std::move(m_out);
 	});
 }
 
 void node_server::refine() {
-	std::vector < hpx::future < hpx::id_type >> cids(NCHILD);
+	std::vector<hpx::future<hpx::id_type>> cids(NCHILD);
 	for (integer ci = 0; ci != NCHILD; ++ci) {
 		std::array<integer, NDIM> cloc(location);
 		for (integer d = 0; d != NDIM; ++d) {
@@ -209,7 +218,7 @@ void node_server::refine() {
 		cids[ci] = hpx::new_ < node_server > (hpx::find_here(), my_id, level + 1, std::move(cloc));
 	}
 	is_leaf = false;
-	hpx::wait_all (cids);
+	hpx::wait_all(cids);
 	for (integer ci = 0; ci != NCHILD; ++ci) {
 		child_id[ci] = cids[ci].get();
 	}
@@ -219,12 +228,14 @@ hpx::future<std::vector<real>> node_server::get_boundary(integer d) const {
 	return hpx::async(hpx::launch::deferred, [=]() {
 		std::vector<real> bnd(PP * bnd_size[d]);
 		auto i = bnd.begin();
-		for (integer p = 0; p != PP; ++p) {
-			for (integer j = xlb[d]; j <= xub[d]; ++j) {
-				for (integer k = ylb[d]; k <= yub[d]; ++k) {
-					for (integer l = zlb[d]; l <= zub[d]; ++l) {
+		int cnt = 0;
+		for (integer j = xlb[d]; j <= xub[d]; ++j) {
+			for (integer k = ylb[d]; k <= yub[d]; ++k) {
+				for (integer l = zlb[d]; l <= zub[d]; ++l) {
+					for (integer p = 0; p != PP; ++p) {
 						*i = M[ind4d(p, j, k, l)];
 						++i;
+						++cnt;
 					}
 				}
 			}
@@ -239,97 +250,130 @@ void node_server::set_boundary(hpx::future<std::vector<real>> f, integer d) {
 	input_condition.notify_one();
 }
 
-void node_server::set_multipoles(hpx::future<std::array<real, PP * N3 / NCHILD>> f, integer ci) {
+void node_server::set_multipoles(hpx::future<std::vector<real>> f, integer ci) {
 	child_futures[ci] = std::move(f);
 	child_status[ci] = READY;
 	input_condition.notify_one();
 }
 
-void node_server::set_expansions(hpx::future<std::array<real, PP * N3 / NCHILD>> f) {
+void node_server::set_expansions(hpx::future<std::vector<real>> f) {
 	parent_future = std::move(f);
 	parent_status = READY;
 	input_condition.notify_one();
 }
 
 void node_server::wait_for_signal() {
-	hpx::this_thread::yield();
-
+	hpx::this_thread::sleep_for(boost::posix_time::milliseconds(1));
 //	std::unique_lock<decltype(input_lock)> lock(input_lock);
 //	input_condition.wait(lock);
 }
 
-void node_server::M2M(std::shared_ptr<std::array<real, PP * N3 / NCHILD>> mptr, integer c) {
-	auto i = mptr->begin();
+void node_server::M2M(const std::vector<real>& mptr, integer c) {
+	auto i = mptr.begin();
+	int cnt = 0;
 	for (integer p = 0; p != PP; ++p) {
 		for (integer j = oct_xlb[c]; j <= oct_xub[c]; ++j) {
 			for (integer k = oct_ylb[c]; k <= oct_yub[c]; ++k) {
 				for (integer l = oct_zlb[c]; l <= oct_zub[c]; ++l) {
-					M[ind4d(p, j, k, k)] = *i;
+					M[ind4d(p, j, k, l)] = *i;
 					L[ind4d(p, j, k, l)] = 0.0;
 					++i;
+					++cnt;
 				}
 			}
 		}
 	}
 }
 
-void node_server::L2L(std::shared_ptr<std::array<real, PP * N3 / NCHILD>> l_coarse) {
-	auto i = l_coarse->begin();
-	for (integer p = 0; p != PP; ++p) {
-		for (integer j = 0; j != NX; j += 2) {
-			for (integer k = 0; k != NX; k += 2) {
-				for (integer l = 0; l != NX; l += 2) {
-					auto tmp = *i;
-					L[ind4d(p, j, k, l)] += tmp;
-					L[ind4d(p, j + 1, k, l)] += tmp;
-					L[ind4d(p, j, k + 1, l)] += tmp;
-					L[ind4d(p, j, k, l + 1)] += tmp;
-					L[ind4d(p, j + 1, k + 1, l)] += tmp;
-					L[ind4d(p, j + 1, k, l + 1)] += tmp;
-					L[ind4d(p, j, k + 1, l + 1)] += tmp;
-					L[ind4d(p, j + 1, k + 1, l + 1)] += tmp;
+void node_server::L2L(const std::vector<real>& l_in) {
+	std::vector<real> l_out(PP * N3 / NCHILD);
+	for (integer c = 0; c != NCHILD; ++c) {
+		std::array<real, NDIM> dist;
+		for (integer d = 0; d != NDIM; ++d) {
+			if ((c >> d) & 1) {
+				dist[d] = -0.5 * dx;
+			} else {
+				dist[d] = +0.5 * dx;
+			}
+		}
+		constexpr auto sz = N3 / NCHILD;
+		exafmm.L2L(l_out, l_in, dist, sz);
+		for (integer p = 0; p != PP; ++p) {
+			for (integer j = 0; j != NX; j += 2) {
+				for (integer k = 0; k != NX; k += 2) {
+					for (integer l = 0; l != NX; l += 2) {
+						L[ind4d(p, j + (c & 1), k + ((c >> 1) & 1), l + ((c >> 2) & 1))] = l_in[ind4d(p, j >> 1, k >> 1,
+								l >> 1, NX / 2)];
+					}
 				}
 			}
 		}
+
 	}
 }
 
 template<class Container>
 void node_server::M2L(const Container& m, integer d) {
+	std::vector<integer> list(level == 0 ? N3 : 216);
+	std::vector<real> l_out;
+	std::vector<real> m_in(PP);
+	std::array<std::vector<real>, NDIM> dist;
+	for (integer i = 0; i != NDIM; ++i) {
+		dist[i].resize(level == 0 ? N3 : 216);
+	}
 	const real delta = 1.0 / real(std::pow(integer(2), level));
-	auto i = m.begin();
 	for (integer j1 = xlb[d] + x_off[d]; j1 <= xub[d] + x_off[d]; ++j1) {
-		const integer jlb = std::max(((j1 >> 1) - 1) << 1, integer(0));
-		const integer jub = std::min(((j1 >> 1) + 1) << 1, NX - 1);
+		const integer jlb = (level != 0) ? std::max(((j1 >> 1) - 1) << 1, integer(0)) : 0;
+		const integer jub = (level != 0) ? std::min(((j1 >> 1) + 1) << 1, NX - 1) : NX - 1;
 		for (integer k1 = ylb[d] + y_off[d]; k1 <= yub[d] + y_off[d]; ++k1) {
-			const integer klb = std::max(((k1 >> 1) - 1) << 1, integer(0));
-			const integer kub = std::min(((k1 >> 1) + 1) << 1, NX - 1);
+			const integer klb = (level != 0) ? std::max(((k1 >> 1) - 1) << 1, integer(0)): 0;
+			const integer kub = (level != 0) ? std::min(((k1 >> 1) + 1) << 1, NX - 1) : NX - 1;
 			for (integer l1 = zlb[d] + z_off[d]; l1 <= zub[d] + z_off[d]; ++l1) {
-				const integer llb = std::max(((l1 >> 1) - 1) << 1, integer(0));
-				const integer lub = std::min(((l1 >> 1) + 1) << 1, NX - 1);
-				for (integer p = 0; p != PP; ++p) {
-					for (integer j0 = jlb; j0 <= jub; ++j0) {
-						if (!is_leaf && std::abs(j0 - j1) < 2) {
+				const integer llb = (level != 0) ? std::max(((l1 >> 1) - 1) << 1, integer(0)) : 0;
+				const integer lub = (level != 0) ? std::min(((l1 >> 1) + 1) << 1, NX - 1) : NX - 1;
+				integer cnt = 0;
+				auto i_list = list.begin();
+				auto i_xdist = dist[0].begin();
+				auto i_ydist = dist[1].begin();
+				auto i_zdist = dist[2].begin();
+
+				for (integer j0 = jlb; j0 <= jub; ++j0) {
+					if (!is_leaf && std::abs(j0 - j1) < 2) {
+						continue;
+					}
+					for (integer k0 = klb; k0 <= kub; ++k0) {
+						if (!is_leaf && std::abs(k0 - k1) < 2) {
 							continue;
 						}
-						for (integer k0 = klb; k0 <= kub; ++k0) {
-							if (!is_leaf && std::abs(k0 - k1) < 2) {
+						for (integer l0 = llb; l0 <= lub; ++l0) {
+							if (!is_leaf && std::abs(l0 - l1) < 2) {
 								continue;
 							}
-							for (integer l0 = llb; l0 <= lub; ++l0) {
-								if (!is_leaf && std::abs(l0 - l1) < 2) {
-									continue;
-								}
-								integer r2 = std::pow(j1 - j0, integer(2)) + std::pow(k1 - k0, integer(2))
-										+ std::pow(l1 - l0, integer(2));
-								if (r2 != 0) {
-									const real rinv = 1.0 / (std::sqrt(real(r2)) * delta);
-									L[ind4d(p, j0, k0, l0)] += *i * rinv;
-								}
+							integer r2 = std::abs(j1 - j0) + std::abs(k1 - k0) + std::abs(l1 - l0);
+							if (r2 != 0) {
+								*i_list++ = ind3d(j0, k0, l0);
+								*i_xdist++ = real(j1 - j0) * dx;
+								*i_ydist++ = real(k1 - k0) * dx;
+								*i_zdist++ = real(l1 - l0) * dx;
+								++cnt;
 							}
 						}
 					}
 				}
+				auto i_m = m.begin();
+				for (integer p = 0; p != PP; ++p) {
+					m_in[p] = *i_m;
+					++i_m;
+				}
+				l_out.resize(PP * cnt);
+				exafmm.M2L(l_out, m_in, dist, cnt);
+				++i_m;
+				for (integer p = 0; p != PP; ++p) {
+					for (integer i = 0; i != cnt; ++i) {
+						L[p * N3 + list[i]] += l_out[i];
+					}
+				}
+
 			}
 		}
 	}
@@ -349,8 +393,8 @@ std::vector<node_client> node_server::get_children_at_direction(integer d) const
 }
 
 void node_server::get_tree() {
-	std::vector < hpx::future < hpx::id_type >> id_futs(NNEIGHBOR);
-	std::vector < std::size_t > ids(NNEIGHBOR);
+	std::vector<hpx::future<hpx::id_type>> id_futs(NNEIGHBOR);
+	std::vector<std::size_t> ids(NNEIGHBOR);
 	auto i = ids.begin();
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
 		if (!location_is_phys_bnd(level, location)) {
@@ -362,7 +406,7 @@ void node_server::get_tree() {
 			++i;
 		}
 	}
-	auto f = hpx::find_ids_from_basename("fmmx_node", std::vector < std::size_t > (ids.begin(), i));
+	auto f = hpx::find_ids_from_basename("fmmx_node", std::vector<std::size_t>(ids.begin(), i));
 	hpx::wait_all(std::move(f));
 	auto j = f.begin();
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
@@ -374,88 +418,90 @@ void node_server::get_tree() {
 }
 
 void node_server::execute() {
+	printf("Begin at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
 	if (level < MAXLEVEL) {
 		refine();
 	}
 	get_tree();
 
-	printf("Executing thread at grid %i - %i %i %i\n", level, location[2], location[1], location[0]);
-	while (1) {
-		hpx::this_thread::sleep_for(boost::posix_time::milliseconds(1));
-		if (false) {
-			bool done;
-			auto mul_fut = get_multipoles();
-			integer j = 0;
-			for (integer i = 0; i != NDIM; ++i) {
-				j |= location[i] << i;
-			}
-			parent_id.set_multipoles(mul_fut, j);
-			do {
-				wait_for_signal();
-				done = true;
-				for (integer c = 0; c != NCHILD; ++c) {
-					switch (child_status[c]) {
-					case WAITING:
-						done = false;
-						break;
-					case READY:
-						M2M(std::make_shared<std::array<real, PP * N3 / NCHILD>>(child_futures[c].get()), c);
-						child_status[c] = COMPLETE;
-						break;
-					default:
-						break;
-					}
-				}
-			} while (!done);
-			for (integer d = 0; d != NNEIGHBOR; ++d) {
-				if (d == center_dir) {
-					continue;
-				}
-				auto bnd_fut = get_boundary(d);
-				neighbor_id[d].set_boundary(bnd_fut, dir_reverse[d]);
-			}
-			M2L(M, center_dir);
-			neighbor_status[center_dir] = COMPLETE;
-			do {
-				wait_for_signal();
-				done = true;
-				for (integer d = 0; d != NNEIGHBOR; ++d) {
-					switch (neighbor_status[d]) {
-					case WAITING:
-						done = false;
-						break;
-					case READY:
-						M2L(neighbor_futures[d].get(), d);
-						neighbor_status[d] = COMPLETE;
-						break;
-					default:
-						break;
-					}
-				}
-			} while (!done);
-			do {
-				wait_for_signal();
-				done = true;
-				switch (parent_status) {
+	printf("Ascend at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
+	hpx::this_thread::sleep_for(boost::posix_time::milliseconds(1));
+	bool done;
+	if (!is_leaf) {
+		do {
+			wait_for_signal();
+			done = true;
+			for (integer c = 0; c != NCHILD; ++c) {
+				switch (child_status[c]) {
 				case WAITING:
 					done = false;
 					break;
 				case READY:
-					L2L(std::make_shared<std::array<real, PP * N3 / NCHILD>>(parent_future.get()));
-					parent_status = COMPLETE;
+					M2M(child_futures[c].get(), c);
+					child_status[c] = COMPLETE;
 					break;
 				default:
 					break;
 				}
-			} while (!done);
-			if (!is_leaf) {
-				for (integer ci = 0; ci != NCHILD; ++ci) {
-					auto f = get_expansions(ci);
-					child_id[ci].set_expansions(f);
-				}
+			}
+		} while (!done);
+	}
+	auto mul_fut = get_multipoles();
+	integer j = 0;
+	for (integer i = 0; i != NDIM; ++i) {
+		j |= (location[i] & 1) << i;
+	}
+	parent_id.set_multipoles(mul_fut, j);
+	printf("Exchange at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
+	for (integer d = 0; d != NNEIGHBOR; ++d) {
+		if (d == center_dir) {
+			continue;
+		}
+		auto bnd_fut = get_boundary(d);
+		neighbor_id[d].set_boundary(bnd_fut, dir_reverse[d]);
+	}
+	M2L(M, center_dir);
+	neighbor_status[center_dir] = COMPLETE;
+	do {
+		wait_for_signal();
+		done = true;
+		for (integer d = 0; d != NNEIGHBOR; ++d) {
+			switch (neighbor_status[d]) {
+			case WAITING:
+				done = false;
+				break;
+			case READY:
+				M2L(neighbor_futures[d].get(), d);
+				neighbor_status[d] = COMPLETE;
+				break;
+			default:
+				break;
 			}
 		}
+	} while (!done);
+	printf("Descend at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
+	do {
+		wait_for_signal();
+		done = true;
+		switch (parent_status) {
+		case WAITING:
+			done = false;
+			break;
+		case READY:
+			L2L(parent_future.get());
+			parent_status = COMPLETE;
+			break;
+		default:
+			break;
+		}
+	} while (!done);
+	if (!is_leaf) {
+		for (integer ci = 0; ci != NCHILD; ++ci) {
+			auto f = get_expansions(ci);
+			child_id[ci].set_expansions(f);
+		}
 	}
+	printf("End at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
 }
 
 node_server::node_server() :
@@ -477,6 +523,8 @@ node_server::node_server(component_type* ptr, node_client pid, integer lev, std:
 }
 
 void node_server::initialize(node_client pid, integer lev, std::array<integer, NDIM> loc) {
+	M.resize(PP * N3);
+	L.resize(PP * N3);
 	neighbors_set = false;
 	location = loc;
 	level = lev;
@@ -492,6 +540,7 @@ void node_server::initialize(node_client pid, integer lev, std::array<integer, N
 		printf("Failed to register id_with_basename\n");
 		abort();
 	}
+	dx = 1.0 / real(std::pow(2, level) * NX);
 	my_thread = hpx::thread([=]() {
 		execute();
 	});

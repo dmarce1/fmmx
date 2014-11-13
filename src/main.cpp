@@ -14,6 +14,9 @@ HPX_REGISTER_MINIMAL_COMPONENT_FACTORY(hpx::components::managed_component<node_s
 
 int hpx_main() {
 	auto root = hpx::new_ < node_server > (hpx::find_here());
+	while(1) {
+		hpx::this_thread::sleep_for(boost::posix_time::milliseconds(1000));
+	}
 	hpx::finalize();
 	return 0;
 }

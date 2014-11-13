@@ -34,13 +34,13 @@ node_client& node_client::operator=(const hpx::id_type& i) {
 	return *this;
 }
 
-void node_client::set_multipoles(hpx::future<std::array<real, PP * N3 / NCHILD>>& f, integer ci) {
+void node_client::set_multipoles(hpx::future<std::vector<real>>& f, integer ci) {
 	if (id != hpx::naming::invalid_id) {
 		hpx::apply<typename node_server::set_multipole_action>(id, std::move(f), ci);
 	}
 }
 
-void node_client::set_expansions(hpx::future<std::array<real, PP * N3 / NCHILD>>& f) {
+void node_client::set_expansions(hpx::future<std::vector<real>>& f) {
 	if (id != hpx::invalid_id) {
 		hpx::apply<typename node_server::set_expansions_action>(id, std::move(f));
 	}

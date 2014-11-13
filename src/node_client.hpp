@@ -22,8 +22,8 @@ public:
 	node_client& operator=(const hpx::id_type&);
 	hpx::future<std::vector<node_client>> get_children_at_direction(integer f);
 	void set_boundary(hpx::future<std::vector<real>>& f, integer d);
-	void set_multipoles(hpx::future<std::array<real, PP * N3 / NCHILD>>& f, integer ci);
-	void set_expansions(hpx::future<std::array<real, PP * N3 / NCHILD>>&);
+	void set_multipoles(hpx::future<std::vector<real>>& f, integer ci);
+	void set_expansions(hpx::future<std::vector<real>>&);
 	template<class Arc>
 	void serialize(Arc&, const unsigned);
 };
