@@ -7,6 +7,7 @@
 
 #define EXAFMM_CPP
 #include "exafmm.hpp"
+
 #include <array>
 
 #define ODDEVEN(n) real((((n) & 1) == 1) ? -1 : 1)
