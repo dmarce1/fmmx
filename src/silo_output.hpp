@@ -14,6 +14,8 @@
 
 #include "defs.hpp"
 
+class node_client;
+
 #include <hpx/lcos/local/mutex.hpp>
 #include <vector>
 #include <hpx/runtime/actions/component_action.hpp>
@@ -105,15 +107,12 @@ private:
 	int current_index;
 	vertex_dir_type nodedir;
 	silo_zone_dir_type zonedir;
-	std::vector<bool> received;
 	mutable hpx::lcos::local::mutex mutex0;
 public:
-	silo_output();
-	virtual ~silo_output();
-	void do_output();
-	void reset();
-	void send_zones_to_silo(int proc_num_from, std::vector<zone> zones); //
-	HPX_DEFINE_COMPONENT_ACTION_TPL( silo_output,send_zones_to_silo,action_send_zones_to_silo );
+	silo_output() = default;
+	virtual ~silo_output() = default;
+	void do_output(std::list<std::size_t> leaves);
+	HPX_DEFINE_COMPONENT_ACTION_TPL( silo_output, do_output, do_output_action );
 }
 ;
 

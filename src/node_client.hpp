@@ -24,6 +24,9 @@ public:
 	void set_boundary(hpx::future<std::vector<real>>& f, integer d);
 	void set_multipoles(hpx::future<std::vector<real>>& f, integer ci);
 	void set_expansions(hpx::future<std::vector<real>>&);
+	hpx::future<std::vector<real>> get_data() const;
+	hpx::future<integer> get_node_count() const;
+	hpx::future<std::list<std::size_t>> get_leaf_list() const;
 	template<class Arc>
 	void serialize(Arc&, const unsigned);
 };

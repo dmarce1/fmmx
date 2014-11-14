@@ -20,6 +20,20 @@ node_client::node_client(const hpx::id_type& i) {
 	id = i;
 }
 
+hpx::future<integer> node_client::get_node_count() const {
+	return hpx::async<typename node_server::get_node_count_action>(id);
+
+}
+
+hpx::future<std::list<std::size_t>> node_client::get_leaf_list() const {
+	return hpx::async<typename node_server::get_leaf_list_action>(id);
+}
+
+
+hpx::future<std::vector<real>> node_client::get_data() const {
+	return hpx::async<typename node_server::get_data_action>(id);
+}
+
 hpx::future<std::vector<node_client>> node_client::get_children_at_direction(integer d) {
 	if (id != hpx::naming::invalid_id) {
 		return hpx::async<typename node_server::get_children_at_direction_action>(id, d);

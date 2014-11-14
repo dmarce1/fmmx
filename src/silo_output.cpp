@@ -12,10 +12,12 @@
  *      Author: dmarce1
  */
 
-
 #include "silo_output.hpp"
+#include "node_client.hpp"
+#include "key.hpp"
 #include <thread>
 
+#include <hpx/lcos/when_any.hpp>
 
 template<class R, class ...Args>
 R exec_on_separate_thread(R (*fptr)(Args...), Args ...args) {
@@ -27,20 +29,70 @@ R exec_on_separate_thread(R (*fptr)(Args...), Args ...args) {
 
 }
 
+void silo_output::do_output(std::list<std::size_t> node_list) {
 
-silo_output::silo_output() {
-	//	printf("Silo in\n");
-	received.resize((hpx::find_all_localities()).size());
-	reset();
-	//	printf("Silo out\n");
+	std::vector<hpx::future<hpx::id_type> >
+	find_ids_from_basename(char const * base_name, std::vector<std::size_t> const & ids);
 
-}
-silo_output::~silo_output() {
-}
+	std::vector<std::size_t> id_list(node_list.begin(), node_list.end());
+	auto id_list_ptr = &id_list;
+	std::vector<hpx::future<hpx::id_type> > node_futs = hpx::find_ids_from_basename("fmmx_node", std::move(id_list));
+	std::vector<hpx::future<void>> data_futs(node_futs.size());
 
-void silo_output::do_output() {
-	mutex0.lock();
 #ifndef NO_OUTPUT
+	for (integer i0 = 0; i0 != node_futs.size(); ++i0) {
+		data_futs[i0] = (node_client(node_futs[i0].get()).get_data()).then(
+				hpx::util::unwrapped([=](std::vector<real> data) {
+					auto iter = data.begin();
+					auto key = (*id_list_ptr)[i0];
+					constexpr integer vertex_order[8] = {0, 1, 3, 2, 4, 5, 7, 6};
+					std::array<integer, NDIM> loc;
+					std::array<real, NDIM> corner;
+					integer lev;
+					real span;
+					key_to_location(key, &lev, &loc);
+					for( integer a = 0; a != NDIM; ++a) {
+						corner[a] = real(loc[a]) / real(std::pow(2,lev));
+					}
+					span = 1.0 / real(NX*std::pow(2,lev));
+					for (integer j0 = 0; j0 != NX; ++j0) {
+						for (integer k0 = 0; k0 != NX; ++k0) {
+							for (integer l0 = 0; l0 != NX; ++l0) {
+								silo_zone s;
+								int j;
+								for( integer k = 0; k != NF; ++k) {
+									s.fields[k] = *iter;
+									iter++;
+								}
+								for (int ci0 = 0; ci0 < Nchild; ci0++) {
+									vertex v;
+									int ci = vertex_order[ci0];
+									v[0] = (j0 + (0.5 * real(2 * ((ci >> 0) & 1) - 1)))*span + corner[0];
+									v[1] = (k0 + (0.5 * real(2 * ((ci >> 1) & 1) - 1)))*span + corner[1];
+									v[2] = (l0 + (0.5 * real(2 * ((ci >> 2) & 1) - 1)))*span + corner[2];
+									mutex0.lock();
+									auto iter = nodedir.find(v);
+									if (iter == nodedir.end()) {
+										j = current_index;
+										v.index = j;
+										current_index++;
+										nodedir.insert(std::move(v));
+									} else {
+										j = iter->index;
+									}
+									mutex0.unlock();
+									s.vertices[ci0] = j;
+								}
+								mutex0.lock();
+								zonedir.push_back(std::move(s));
+								mutex0.unlock();
+							}
+						}
+					}
+				}));
+	}
+
+	hpx::wait_all(std::move(data_futs));
 	constexpr int nshapes = 1;
 	const int nnodes = nodedir.size();
 	const int nzones = zonedir.size();
@@ -82,8 +134,8 @@ void silo_output::do_output() {
 
 	olist = exec_on_separate_thread(&DBMakeOptlist, 1);
 	db = exec_on_separate_thread(&DBCreateReal, "X.silo", DB_CLOBBER, DB_LOCAL, "Euler Mesh", DB_PDB);
-	exec_on_separate_thread(&DBPutZonelist2, db, "zones", nzones, int(NDIM), zone_nodes.data(), Nchild * nzones, 0, 0, 0,
-			shapetype, shapesize, shapecnt, nshapes, olist);
+	exec_on_separate_thread(&DBPutZonelist2, db, "zones", nzones, int(NDIM), zone_nodes.data(), Nchild * nzones, 0, 0,
+			0, shapetype, shapesize, shapecnt, nshapes, olist);
 	exec_on_separate_thread(&DBPutUcdmesh, db, "mesh", int(NDIM), const_cast<char**>(coordnames),
 			reinterpret_cast<DB_DTPTR2>(coords), nnodes, nzones, "zones", static_cast<const char*>(nullptr),
 			(int) DB_DOUBLE, olist);
@@ -107,60 +159,4 @@ void silo_output::do_output() {
 
 	exec_on_separate_thread(DBClose, db);
 #endif
-	mutex0.unlock();
-	reset();
-}
-
-void silo_output::reset() {
-	mutex0.lock();
-	current_index = 0;
-	std::fill(received.begin(), received.end(), false);
-	mutex0.unlock();
-}
-
-void silo_output::send_zones_to_silo(int proc_num_from, std::vector<zone> zones) {
-	const int vertex_order[8] = { 0, 1, 3, 2, 4, 5, 7, 6 };
-	const int sz = zones.size();
-	assert(!received[proc_num_from]);
-	for (int i = 0; i < sz; i++) {
-		silo_zone s;
-		int j;
-		s.fields = std::move(zones[i].fields);
-		//	printf("%e %e %e %e %e %e\n", zones[i].position[0], zones[i].position[1], zones[i].position[2], zones[i].span[0], zones[i].span[1],
-		//			zones[i].span[2]);
-		for (int ci0 = 0; ci0 < Nchild; ci0++) {
-			vertex v;
-			int ci = vertex_order[ci0];
-			for (int k = 0; k < NDIM; k++) {
-				const double factor = (0.5 * double(2 * ((ci >> k) & 1) - 1));
-				v[k] = zones[i].position[k] + zones[i].span[k] * factor;
-			}
-			mutex0.lock();
-			auto iter = nodedir.find(v);
-			if (iter == nodedir.end()) {
-				j = current_index;
-				v.index = j;
-				current_index++;
-				nodedir.insert(std::move(v));
-			} else {
-				j = iter->index;
-			}
-			mutex0.unlock();
-			s.vertices[ci0] = j;
-		}
-		mutex0.lock();
-		zonedir.push_back(std::move(s));
-		mutex0.unlock();
-	}
-	mutex0.lock();
-	received[proc_num_from] = true;
-	printf("Receive output from %i\n", proc_num_from);
-	if (std::all_of(received.begin(), received.end(), [](bool b) {return b;})) {
-		printf("Doing output\n");
-		mutex0.unlock();
-		do_output();
-		mutex0.lock();
-	}
-	mutex0.unlock();
-
 }

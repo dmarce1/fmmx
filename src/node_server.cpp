@@ -7,9 +7,11 @@
 
 #include "node_client.hpp"
 #include "node_server.hpp"
+#include "silo_output.hpp"
 
 #include <hpx/lcos/wait_all.hpp>
 #include <mutex>
+#include "key.hpp"
 #include "exafmm.hpp"
 
 exafmm_kernel exafmm;
@@ -24,6 +26,8 @@ constexpr integer ub0 = BW - 1;
 constexpr integer ub1 = NX - 1;
 constexpr integer ub2 = NX - 1;
 constexpr integer center_dir = 13;
+
+hpx::id_type node_server::output;
 
 constexpr std::array<integer, NNEIGHBOR> cbnd_size = { 1, 2, 1, 2, 4, 2, 1, 2, 1, 2, 4, 2, 4, 8, 4, 2, 4, 2, 1, 2, 1, 2,
 		4, 2, 1, 2, 1
@@ -97,19 +101,6 @@ integer ind3d(integer j, integer k, integer l) {
 
 integer ind4d(integer p, integer j, integer k, integer l, integer stride = NX) {
 	return l + stride * (k + stride * (j + stride * p));
-}
-
-std::size_t location_to_key(integer level, std::array<integer, NDIM> loc) {
-	std::size_t key = 1;
-	while (level > 0) {
-		for (integer d = 0; d != NDIM; ++d) {
-			key <<= 1;
-			key |= (loc[d] & 1);
-			loc[d] >>= 1;
-		}
-		level--;
-	}
-	return key;
 }
 
 bool location_is_phys_bnd(integer level, const std::array<integer, NDIM>& loc) {
@@ -326,7 +317,7 @@ void node_server::M2L(const Container& m, integer d) {
 		const integer jlb = (level != 0) ? std::max(((j1 >> 1) - 1) << 1, integer(0)) : 0;
 		const integer jub = (level != 0) ? std::min(((j1 >> 1) + 1) << 1, NX - 1) : NX - 1;
 		for (integer k1 = ylb[d] + y_off[d]; k1 <= yub[d] + y_off[d]; ++k1) {
-			const integer klb = (level != 0) ? std::max(((k1 >> 1) - 1) << 1, integer(0)): 0;
+			const integer klb = (level != 0) ? std::max(((k1 >> 1) - 1) << 1, integer(0)) : 0;
 			const integer kub = (level != 0) ? std::min(((k1 >> 1) + 1) << 1, NX - 1) : NX - 1;
 			for (integer l1 = zlb[d] + z_off[d]; l1 <= zub[d] + z_off[d]; ++l1) {
 				const integer llb = (level != 0) ? std::max(((l1 >> 1) - 1) << 1, integer(0)) : 0;
@@ -502,15 +493,35 @@ void node_server::execute() {
 		}
 	}
 	printf("End at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
-}
 
-node_server::node_server() :
-		my_id(neighbor_id[center_dir]) {
-	assert(false);
+	if (level == 0) {
+		std::list<std::size_t> leaf_list = get_leaf_list();
+		printf("%li leaves detected by root\n", leaf_list.size());
+		auto f = hpx::async<typename silo_output::do_output_action>(output, std::move(leaf_list));
+		f.get();
+	}
+
 }
 
 node_server::node_server(component_type* ptr) :
 		base_type(ptr), my_id(neighbor_id[center_dir]) {
+	assert(false);
+}
+
+std::vector<real> node_server::get_data() const {
+	std::vector<real> v((2 * PP) * N3);
+	for (integer i = 0; i != PP * N3; ++i) {
+		v[i] = M[i];
+	}
+	for (integer i = 0; i != PP * N3; ++i) {
+		v[i + PP * N3] = L[i];
+	}
+	return std::move(v);
+}
+
+node_server::node_server(component_type* ptr, hpx::id_type sid) :
+		base_type(ptr), my_id(neighbor_id[center_dir]) {
+	output = std::move(sid);
 	node_client pid = hpx::naming::invalid_id;
 	integer lev = 0;
 	std::array<integer, NDIM> loc { { 0, 0, 0 } };
@@ -520,6 +531,38 @@ node_server::node_server(component_type* ptr) :
 node_server::node_server(component_type* ptr, node_client pid, integer lev, std::array<integer, NDIM> loc) :
 		base_type(ptr), my_id(neighbor_id[center_dir]) {
 	initialize(std::move(pid), std::move(lev), std::move(loc));
+}
+
+integer node_server::get_node_count() const {
+	integer cnt = 1;
+	if (!is_leaf) {
+		std::vector<hpx::future<integer>> futs(NCHILD);
+		for (integer c = 0; c != NCHILD; ++c) {
+			futs[c] = child_id[c].get_node_count();
+		}
+		hpx::wait_all(futs);
+		for (integer c = 0; c != NCHILD; ++c) {
+			cnt += futs[c].get();
+		}
+	}
+	return cnt;
+}
+
+std::list<std::size_t> node_server::get_leaf_list() const {
+	std::list<std::size_t> list;
+	if (!is_leaf) {
+		std::vector<hpx::future<std::list<std::size_t>>>futs(NCHILD);
+		for (integer c = 0; c != NCHILD; ++c) {
+			futs[c] = child_id[c].get_leaf_list();
+		}
+		hpx::wait_all(futs);
+		for (integer c = 0; c != NCHILD; ++c) {
+			list.splice(list.end(), futs[c].get());
+		}
+	} else {
+		list.push_back(key);
+	}
+	return list;
 }
 
 void node_server::initialize(node_client pid, integer lev, std::array<integer, NDIM> loc) {

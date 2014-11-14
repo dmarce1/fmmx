@@ -9,6 +9,8 @@
 #define __NODE_SERVER__HPP
 
 #include <hpx/lcos/local/condition_variable.hpp>
+#include <boost/serialization/list.hpp>
+
 
 class node_server: public hpx::components::managed_component_base<node_server, hpx::components::detail::this_type,
 		hpx::traits::construct_with_back_ptr> {
@@ -16,6 +18,7 @@ public:
 	using component_type = hpx::components::managed_component<node_server>;
 	using base_type = hpx::components::managed_component_base<node_server, hpx::components::detail::this_type, hpx::traits::construct_with_back_ptr>;
 private:
+	static hpx::id_type output;
 	std::vector<real> M;
 	std::vector<real> L;
 	node_client parent_id;
@@ -39,11 +42,14 @@ private:
 	void initialize(node_client, integer, std::array<integer, NDIM>);
 	node_client& my_id;
 public:
-	node_server();
 	node_server(component_type*);
+	node_server(component_type*, hpx::id_type );
 	node_server(component_type*, node_client, integer, std::array<integer, NDIM>);
 	~node_server();
 	void get_tree();
+	integer get_node_count() const;
+	std::vector<real> get_data() const;
+	std::list<std::size_t> get_leaf_list() const;
 	hpx::future<std::vector<real>> get_multipoles() const;
 	hpx::future<std::vector<real>> get_expansions(integer ci) const;
 	hpx::future<std::vector<real>> get_boundary(integer d) const;
@@ -62,6 +68,9 @@ public:
 	void execute();
 	void refine();
 	//
+	HPX_DEFINE_COMPONENT_ACTION(node_server, get_node_count, get_node_count_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, get_data, get_data_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, get_leaf_list, get_leaf_list_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, set_boundary, set_boundary_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, set_multipoles, set_multipole_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, set_expansions, set_expansions_action); //
