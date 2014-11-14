@@ -511,10 +511,9 @@ node_server::node_server(component_type* ptr) :
 std::vector<real> node_server::get_data() const {
 	std::vector<real> v((2 * PP) * N3);
 	for (integer i = 0; i != PP * N3; ++i) {
-		v[i] = M[i];
-	}
-	for (integer i = 0; i != PP * N3; ++i) {
-		v[i + PP * N3] = L[i];
+		const auto j = (i / PP) + N3 * (i % PP);
+		v[2 * i] = M[j];
+		v[2 * i + 1] = L[j];
 	}
 	return std::move(v);
 }

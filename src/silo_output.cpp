@@ -54,6 +54,7 @@ void silo_output::do_output(std::list<std::size_t> node_list) {
 					for( integer a = 0; a != NDIM; ++a) {
 						corner[a] = real(loc[a]) / real(std::pow(2,lev));
 					}
+					integer cnt = 0;
 					span = 1.0 / real(NX*std::pow(2,lev));
 					for (integer j0 = 0; j0 != NX; ++j0) {
 						for (integer k0 = 0; k0 != NX; ++k0) {
@@ -63,6 +64,7 @@ void silo_output::do_output(std::list<std::size_t> node_list) {
 								for( integer k = 0; k != NF; ++k) {
 									s.fields[k] = *iter;
 									iter++;
+									cnt++;
 								}
 								for (int ci0 = 0; ci0 < Nchild; ci0++) {
 									vertex v;
@@ -105,7 +107,6 @@ void silo_output::do_output(std::list<std::size_t> node_list) {
 	std::string coordname_strs[NDIM];
 	double* coords[NDIM];
 	const char* coordnames[NDIM];
-	const int nfields = (zonedir.begin())->fields.size();
 
 	for (int di = 0; di < NDIM; di++) {
 		coord_vectors[di].resize(nnodes);
@@ -143,7 +144,7 @@ void silo_output::do_output(std::list<std::size_t> node_list) {
 	std::vector<double> data(nzones);
 	char fname[2];
 	fname[1] = '\0';
-	for (int fi = 0; fi != nfields; ++fi) {
+	for (int fi = 0; fi != NF; ++fi) {
 		int i = 0;
 		for (auto zi = zonedir.begin(); zi != zonedir.end(); zi++) {
 			data[i] = zi->fields[fi];

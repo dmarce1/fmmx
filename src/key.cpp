@@ -12,7 +12,7 @@ void key_to_location(std::size_t key, integer* level, std::array<integer, NDIM>*
 		for (integer d = NDIM-1; d>=0; --d) {
 			(*loc)[d] <<= 1;
 			(*loc)[d] |= (key & 1);
-			key <<= 1;
+			key >>= 1;
 		}
 		(*level)++;
 	}

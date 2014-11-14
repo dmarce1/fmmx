@@ -5,6 +5,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../src/exafmm.cpp \
+../src/key.cpp \
 ../src/main.cpp \
 ../src/new.cpp \
 ../src/node_client.cpp \
@@ -13,6 +14,7 @@ CPP_SRCS += \
 
 OBJS += \
 ./src/exafmm.o \
+./src/key.o \
 ./src/main.o \
 ./src/new.o \
 ./src/node_client.o \
@@ -21,6 +23,7 @@ OBJS += \
 
 CPP_DEPS += \
 ./src/exafmm.d \
+./src/key.d \
 ./src/main.d \
 ./src/new.d \
 ./src/node_client.d \

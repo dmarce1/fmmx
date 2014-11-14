@@ -26,9 +26,9 @@ public:
 	static constexpr double precision = 1.0e-10;
 	static constexpr int Nchild = 1 << NDIM;
 	struct zone {
-		std::vector<double> fields;
-		std::array<double, NDIM> position;
-		std::array<double, NDIM> span;
+		std::array<real, NF> fields;
+		std::array<real, NDIM> position;
+		std::array<real, NDIM> span;
 		zone() {
 		}
 		zone(const zone& z) {
@@ -57,7 +57,7 @@ public:
 		}
 	};
 	struct silo_zone {
-		std::vector<double> fields;
+		std::array<real,NF> fields;
 		std::vector<int> vertices;
 		silo_zone() :
 				vertices(Nchild) {
@@ -111,8 +111,7 @@ private:
 public:
 	silo_output() = default;
 	virtual ~silo_output() = default;
-	void do_output(std::list<std::size_t> leaves);
-	HPX_DEFINE_COMPONENT_ACTION_TPL( silo_output, do_output, do_output_action );
+	void do_output(std::list<std::size_t> leaves);HPX_DEFINE_COMPONENT_ACTION_TPL( silo_output, do_output, do_output_action );
 }
 ;
 
