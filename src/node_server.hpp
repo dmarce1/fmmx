@@ -8,7 +8,7 @@
 #ifndef __NODE_SERVER__HPP
 #define __NODE_SERVER__HPP
 
-#include <hpx/lcos/local/condition_variable.hpp>
+#include <hpx/lcos/local/counting_semaphore.hpp>
 #include <boost/serialization/list.hpp>
 
 
@@ -31,8 +31,7 @@ private:
 	std::array<hpx::future<std::vector<real>>, NNEIGHBOR> neighbor_futures;
 	std::array<hpx::future<std::vector<real>>, NCHILD> child_futures;
 	hpx::future<std::vector<real>> parent_future;
-	hpx::lcos::local::condition_variable input_condition;
-	hpx::lcos::local::spinlock input_lock;
+	hpx::lcos::local::counting_semaphore input_condition;
 	std::array<integer, NDIM> location;
 	real dx;
 	integer level;
@@ -47,6 +46,7 @@ public:
 	node_server(component_type*, node_client, integer, std::array<integer, NDIM>);
 	~node_server();
 	void get_tree();
+	void init_t0();
 	integer get_node_count() const;
 	std::vector<real> get_data() const;
 	std::list<std::size_t> get_leaf_list() const;

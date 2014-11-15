@@ -238,25 +238,23 @@ hpx::future<std::vector<real>> node_server::get_boundary(integer d) const {
 void node_server::set_boundary(hpx::future<std::vector<real>> f, integer d) {
 	neighbor_futures[d] = std::move(f);
 	neighbor_status[d] = READY;
-	input_condition.notify_one();
+	input_condition.signal();
 }
 
 void node_server::set_multipoles(hpx::future<std::vector<real>> f, integer ci) {
 	child_futures[ci] = std::move(f);
 	child_status[ci] = READY;
-	input_condition.notify_one();
+	input_condition.signal();
 }
 
 void node_server::set_expansions(hpx::future<std::vector<real>> f) {
 	parent_future = std::move(f);
 	parent_status = READY;
-	input_condition.notify_one();
+	input_condition.signal();
 }
 
 void node_server::wait_for_signal() {
-	hpx::this_thread::sleep_for(boost::posix_time::milliseconds(1));
-//	std::unique_lock<decltype(input_lock)> lock(input_lock);
-//	input_condition.wait(lock);
+	input_condition.wait();
 }
 
 void node_server::M2M(const std::vector<real>& mptr, integer c) {
@@ -408,11 +406,34 @@ void node_server::get_tree() {
 	}
 }
 
+void node_server::init_t0() {
+	real cx, cy, cz, dx;
+	dx = 1.0 / real(std::pow(2, level) * NX);
+	cx = real(location[0]) / real(std::pow(2, level));
+	cy = real(location[1]) / real(std::pow(2, level));
+	cz = real(location[2]) / real(std::pow(2, level));
+	for (integer j = 0; j != NX; ++j) {
+		real x = cx + (real(j) + .5) * dx - .5;
+		for (integer k = 0; k != NX; ++k) {
+			real y = cy + (real(k) + .5) * dx - .5;
+			for (integer l = 0; l != NX; ++l) {
+				real z = cz + (real(l) + .5) * dx - .5;
+				if (sqrt(x * x + y * y + z * z) < .5) {
+					M[ind4d(0, j, k, l)] = 1.0;
+				} else {
+					M[ind4d(0, j, k, l)] = 0.0;
+				}
+			}
+		}
+	}
+}
+
 void node_server::execute() {
 	printf("Begin at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
 	if (level < MAXLEVEL) {
 		refine();
 	}
+	init_t0();
 	get_tree();
 
 	printf("Ascend at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
@@ -430,7 +451,6 @@ void node_server::execute() {
 				case READY:
 					M2M(child_futures[c].get(), c);
 					child_status[c] = COMPLETE;
-					break;
 				default:
 					break;
 				}
@@ -452,40 +472,40 @@ void node_server::execute() {
 		neighbor_id[d].set_boundary(bnd_fut, dir_reverse[d]);
 	}
 	M2L(M, center_dir);
-	neighbor_status[center_dir] = COMPLETE;
-	do {
-		wait_for_signal();
-		done = true;
-		for (integer d = 0; d != NNEIGHBOR; ++d) {
-			switch (neighbor_status[d]) {
+	if (level > 0) {
+		neighbor_status[center_dir] = COMPLETE;
+		do {
+			wait_for_signal();
+			done = true;
+			for (integer d = 0; d != NNEIGHBOR; ++d) {
+				switch (neighbor_status[d]) {
+				case WAITING:
+					done = false;
+					break;
+				case READY:
+					M2L(neighbor_futures[d].get(), d);
+					neighbor_status[d] = COMPLETE;
+				default:
+					break;
+				}
+			}
+		} while (!done);
+		do {
+			wait_for_signal();
+			done = true;
+			switch (parent_status) {
 			case WAITING:
 				done = false;
 				break;
 			case READY:
-				M2L(neighbor_futures[d].get(), d);
-				neighbor_status[d] = COMPLETE;
-				break;
+				L2L(parent_future.get());
+				parent_status = COMPLETE;
 			default:
 				break;
 			}
-		}
-	} while (!done);
+		} while (!done);
+	}
 	printf("Descend at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
-	do {
-		wait_for_signal();
-		done = true;
-		switch (parent_status) {
-		case WAITING:
-			done = false;
-			break;
-		case READY:
-			L2L(parent_future.get());
-			parent_status = COMPLETE;
-			break;
-		default:
-			break;
-		}
-	} while (!done);
 	if (!is_leaf) {
 		for (integer ci = 0; ci != NCHILD; ++ci) {
 			auto f = get_expansions(ci);
@@ -495,10 +515,10 @@ void node_server::execute() {
 	printf("End at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
 
 	if (level == 0) {
-		std::list<std::size_t> leaf_list = get_leaf_list();
-		printf("%li leaves detected by root\n", leaf_list.size());
-		auto f = hpx::async<typename silo_output::do_output_action>(output, std::move(leaf_list));
-		f.get();
+			std::list<std::size_t> leaf_list = get_leaf_list();
+			printf("%li leaves detected by root\n", leaf_list.size());
+			auto f = hpx::async<typename silo_output::do_output_action>(output, std::move(leaf_list));
+			f.get();
 	}
 
 }
