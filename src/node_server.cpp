@@ -34,31 +34,31 @@ constexpr std::array<integer, NNEIGHBOR> cbnd_size = { 1, 2, 1, 2, 4, 2, 1, 2, 1
 
 };
 
-constexpr std::array<integer, NNEIGHBOR> x_off = { -BW, -BW, -BW, BW, -BW, -BW, BW, -BW, -BW, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+constexpr std::array<integer, NNEIGHBOR> z_off = { -BW, -BW, -BW, BW, -BW, -BW, BW, -BW, -BW, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		+BW, +BW, +BW, +BW, +BW, +BW, +BW, +BW, +BW };
 
 constexpr std::array<integer, NNEIGHBOR> y_off = { -BW, -BW, -BW, 0, 0, 0, +BW, +BW, +BW, -BW, -BW, -BW, 0, 0, 0, +BW,
 		+BW, +BW, -BW, -BW, -BW, 0, 0, 0, +BW, +BW, +BW };
 
-constexpr std::array<integer, NNEIGHBOR> z_off = { -BW, 0, +BW, -BW, 0, +BW, -BW, 0, +BW, -BW, 0, +BW, -BW, 0, +BW, -BW,
+constexpr std::array<integer, NNEIGHBOR> x_off = { -BW, 0, +BW, -BW, 0, +BW, -BW, 0, +BW, -BW, 0, +BW, -BW, 0, +BW, -BW,
 		0, +BW, -BW, 0, +BW, -BW, 0, +BW, -BW, 0, +BW };
 
-constexpr std::array<integer, NNEIGHBOR> xlb = { lb0, lb0, lb0, lb0, lb0, lb0, lb0, lb0, lb0, lb1, lb1, lb1, lb1, lb1,
+constexpr std::array<integer, NNEIGHBOR> zlb = { lb0, lb0, lb0, lb0, lb0, lb0, lb0, lb0, lb0, lb1, lb1, lb1, lb1, lb1,
 		lb1, lb1, lb1, lb1, lb2, lb2, lb2, lb2, lb2, lb2, lb2, lb2, lb2 };
 
 constexpr std::array<integer, NNEIGHBOR> ylb = { lb0, lb0, lb0, lb1, lb1, lb1, lb2, lb2, lb2, lb0, lb0, lb0, lb1, lb1,
 		lb1, lb2, lb2, lb2, lb0, lb0, lb0, lb1, lb1, lb1, lb2, lb2, lb2 };
 
-constexpr std::array<integer, NNEIGHBOR> zlb = { lb0, lb1, lb2, lb0, lb1, lb2, lb0, lb1, lb2, lb0, lb1, lb2, lb0, lb1,
+constexpr std::array<integer, NNEIGHBOR> xlb = { lb0, lb1, lb2, lb0, lb1, lb2, lb0, lb1, lb2, lb0, lb1, lb2, lb0, lb1,
 		lb2, lb0, lb1, lb2, lb0, lb1, lb2, lb0, lb1, lb2, lb0, lb1, lb2 };
 
-constexpr std::array<integer, NNEIGHBOR> xub = { ub0, ub0, ub0, ub0, ub0, ub0, ub0, ub0, ub0, ub1, ub1, ub1, ub1, ub1,
+constexpr std::array<integer, NNEIGHBOR> zub = { ub0, ub0, ub0, ub0, ub0, ub0, ub0, ub0, ub0, ub1, ub1, ub1, ub1, ub1,
 		ub1, ub1, ub1, ub1, ub2, ub2, ub2, ub2, ub2, ub2, ub2, ub2, ub2 };
 
 constexpr std::array<integer, NNEIGHBOR> yub = { ub0, ub0, ub0, ub1, ub1, ub1, ub2, ub2, ub2, ub0, ub0, ub0, ub1, ub1,
 		ub1, ub2, ub2, ub2, ub0, ub0, ub0, ub1, ub1, ub1, ub2, ub2, ub2 };
 
-constexpr std::array<integer, NNEIGHBOR> zub = { ub0, ub1, ub2, ub0, ub1, ub2, ub0, ub1, ub2, ub0, ub1, ub2, ub0, ub1,
+constexpr std::array<integer, NNEIGHBOR> xub = { ub0, ub1, ub2, ub0, ub1, ub2, ub0, ub1, ub2, ub0, ub1, ub2, ub0, ub1,
 		ub2, ub0, ub1, ub2, ub0, ub1, ub2, ub0, ub1, ub2, ub0, ub1, ub2 };
 
 constexpr std::array<integer, NNEIGHBOR> bnd_size = { BW * BW * BW, BW * BW * NX, BW * BW * BW, BW * NX * BW, BW * NX
@@ -71,28 +71,28 @@ constexpr integer octlb1 = NX / 2;
 constexpr integer octub0 = NX / 2 - 1;
 constexpr integer octub1 = NX - 1;
 
-constexpr std::array<integer, NCHILD> oct_xlb = { octlb0, octlb0, octlb0, octlb0, octlb1, octlb1, octlb1, octlb1 };
+constexpr std::array<integer, NCHILD> oct_zlb = { octlb0, octlb0, octlb0, octlb0, octlb1, octlb1, octlb1, octlb1 };
 
 constexpr std::array<integer, NCHILD> oct_ylb = { octlb0, octlb0, octlb1, octlb1, octlb0, octlb0, octlb1, octlb1 };
 
-constexpr std::array<integer, NCHILD> oct_zlb = { octlb0, octlb1, octlb0, octlb1, octlb0, octlb1, octlb0, octlb1 };
+constexpr std::array<integer, NCHILD> oct_xlb = { octlb0, octlb1, octlb0, octlb1, octlb0, octlb1, octlb0, octlb1 };
 
-constexpr std::array<integer, NCHILD> oct_xub = { octub0, octub0, octub0, octub0, octub1, octub1, octub1, octub1 };
+constexpr std::array<integer, NCHILD> oct_zub = { octub0, octub0, octub0, octub0, octub1, octub1, octub1, octub1 };
 
 constexpr std::array<integer, NCHILD> oct_yub = { octub0, octub0, octub1, octub1, octub0, octub0, octub1, octub1 };
 
-constexpr std::array<integer, NCHILD> oct_zub = { octub0, octub1, octub0, octub1, octub0, octub1, octub0, octub1 };
+constexpr std::array<integer, NCHILD> oct_xub = { octub0, octub1, octub0, octub1, octub0, octub1, octub0, octub1 };
 
 constexpr std::array<integer, NNEIGHBOR> dir_reverse = { 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11,
 		10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
 
-constexpr std::array<integer, NNEIGHBOR> dir_x = { -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
+constexpr std::array<integer, NNEIGHBOR> dir_z = { -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
 		1, 1, 1, 1, 1, 1, 1 };
 
 constexpr std::array<integer, NNEIGHBOR> dir_y = { -1, -1, -1, 0, 0, 0, 1, 1, 1, -1, -1, -1, 0, 0, 0, 1, 1, 1, -1, -1,
 		-1, 0, 0, 0, 1, 1, 1 };
 
-constexpr std::array<integer, NNEIGHBOR> dir_z = { -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1,
+constexpr std::array<integer, NNEIGHBOR> dir_x = { -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1,
 		-1, 0, 1, -1, 0, 1 };
 
 integer ind3d(integer j, integer k, integer l) {
@@ -104,17 +104,17 @@ integer ind4d(integer p, integer j, integer k, integer l, integer stride = NX) {
 }
 
 bool location_is_phys_bnd(integer level, const std::array<integer, NDIM>& loc, integer d) {
-	if (dir_x[d] == +1 && loc[2] == (1 << level) - 1) {
+	if (dir_x[d] == +1 && loc[0] == (1 << level) - 1) {
 		return true;
-	} else if (dir_x[d] == -1 && loc[2] == 0) {
+	} else if (dir_x[d] == -1 && loc[0] == 0) {
 		return true;
 	} else if (dir_y[d] == +1 && loc[1] == (1 << level) - 1) {
 		return true;
 	} else if (dir_y[d] == -1 && loc[1] == 0) {
 		return true;
-	} else if (dir_z[d] == +1 && loc[0] == (1 << level) - 1) {
+	} else if (dir_z[d] == +1 && loc[2] == (1 << level) - 1) {
 		return true;
-	} else if (dir_z[d] == -1 && loc[0] == 0) {
+	} else if (dir_z[d] == -1 && loc[2] == 0) {
 		return true;
 	} else {
 		return false;
@@ -217,14 +217,12 @@ hpx::future<std::vector<real>> node_server::get_boundary(integer d) const {
 	return hpx::async(hpx::launch::deferred, [=]() {
 		std::vector<real> bnd(PP * bnd_size[d]);
 		auto i = bnd.begin();
-		int cnt = 0;
 		for (integer p = 0; p != PP; ++p) {
 			for (integer j = xlb[d]; j <= xub[d]; ++j) {
 				for (integer k = ylb[d]; k <= yub[d]; ++k) {
 					for (integer l = zlb[d]; l <= zub[d]; ++l) {
 						*i = M[ind4d(p, j, k, l)];
 						++i;
-						++cnt;
 					}
 				}
 			}
@@ -313,13 +311,13 @@ void node_server::M2L(const Container& m, integer d) {
 	const real delta = 1.0 / real(std::pow(integer(2), level));
 	for (integer j1 = xlb[d] + x_off[d]; j1 <= xub[d] + x_off[d]; ++j1) {
 		const integer jlb = (level != 0) ? std::max(((j1 >> 1) - 1) << 1, integer(0)) : 0;
-		const integer jub = (level != 0) ? std::min(((j1 >> 1) + 1) << 1, NX - 1) : NX - 1;
+		const integer jub = (level != 0) ? std::min((((j1 >> 1) + 1) << 1)+1, NX - 1) : NX - 1;
 		for (integer k1 = ylb[d] + y_off[d]; k1 <= yub[d] + y_off[d]; ++k1) {
 			const integer klb = (level != 0) ? std::max(((k1 >> 1) - 1) << 1, integer(0)) : 0;
-			const integer kub = (level != 0) ? std::min(((k1 >> 1) + 1) << 1, NX - 1) : NX - 1;
+			const integer kub = (level != 0) ? std::min((((k1 >> 1) + 1) << 1)+1, NX - 1) : NX - 1;
 			for (integer l1 = zlb[d] + z_off[d]; l1 <= zub[d] + z_off[d]; ++l1) {
 				const integer llb = (level != 0) ? std::max(((l1 >> 1) - 1) << 1, integer(0)) : 0;
-				const integer lub = (level != 0) ? std::min(((l1 >> 1) + 1) << 1, NX - 1) : NX - 1;
+				const integer lub = (level != 0) ? std::min((((l1 >> 1) + 1) << 1) + 1, NX - 1) : NX - 1;
 				integer cnt = 0;
 				auto i_list = list.begin();
 				auto i_xdist = dist[0].begin();
@@ -338,7 +336,7 @@ void node_server::M2L(const Container& m, integer d) {
 							if (!is_leaf && std::abs(l0 - l1) < 2) {
 								continue;
 							}
-							integer r2 = std::abs(j1 - j0) + std::abs(k1 - k0) + std::abs(l1 - l0);
+							const integer r2 = std::abs(j1 - j0) + std::abs(k1 - k0) + std::abs(l1 - l0);
 							if (r2 != 0) {
 								*i_list++ = ind3d(j0, k0, l0);
 								*i_xdist++ = real(j1 - j0) * dx;
@@ -369,19 +367,6 @@ void node_server::M2L(const Container& m, integer d) {
 	}
 }
 
-std::vector<node_client> node_server::get_children_at_direction(integer d) const {
-	std::vector<node_client> cids(cbnd_size[d]);
-	auto i = cids.begin();
-	for (integer j = dir_x[d] == +1 ? 1 : 0; j != (dir_x[d] == -1 ? 1 : 2); ++j) {
-		for (integer k = dir_y[d] == +1 ? 1 : 0; k != (dir_y[d] == -1 ? 1 : 2); ++k) {
-			for (integer l = dir_z[d] == +1 ? 1 : 0; l != (dir_z[d] == -1 ? 1 : 2); ++l) {
-				*i = child_id[4 * j + k * 2 + l];
-			}
-		}
-	}
-	return cids;
-}
-
 void node_server::get_tree() {
 	std::vector<hpx::future<hpx::id_type>> id_futs(NNEIGHBOR);
 	std::vector<std::size_t> ids(NNEIGHBOR);
@@ -389,9 +374,9 @@ void node_server::get_tree() {
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
 		if (!location_is_phys_bnd(level, location, d)) {
 			auto this_loc = location;
-			this_loc[2] += dir_x[d];
+			this_loc[0] += dir_x[d];
 			this_loc[1] += dir_y[d];
-			this_loc[0] += dir_z[d];
+			this_loc[2] += dir_z[d];
 			*i = location_to_key(level, std::move(this_loc));
 			++i;
 		}
@@ -473,9 +458,6 @@ void node_server::execute() {
 		neighbor_id[d].set_boundary(bnd_fut, dir_reverse[d]);
 	}
 	M2L(M, center_dir);
-	for (integer i = 0; i != L.size(); ++i) {
-		printf("%e-------\n", L[i]);
-	}
 	if (level > 0) {
 		neighbor_status[center_dir] = COMPLETE;
 		do {
@@ -487,7 +469,7 @@ void node_server::execute() {
 					done = false;
 					break;
 				case READY:
-		//			M2L(neighbor_futures[d].get(), d);
+					M2L(neighbor_futures[d].get(), d);
 					neighbor_status[d] = COMPLETE;
 				default:
 					break;
@@ -502,7 +484,7 @@ void node_server::execute() {
 				done = false;
 				break;
 			case READY:
-				L2L(parent_future.get());
+		//		L2L(parent_future.get());
 				parent_status = COMPLETE;
 			default:
 				break;
@@ -542,9 +524,6 @@ std::vector<real> node_server::get_data() const {
 		const auto j = (i / PP) + N3 * (i % PP);
 		v[2 * i] = M[j];
 		v[2 * i + 1] = L[j];
-		if (level > 0) {
-			printf("----%e\n", L[j]);
-		}
 	}
 	return std::move(v);
 }

@@ -57,7 +57,6 @@ public:
 	void set_boundary(hpx::future<std::vector<real>> f, integer d);
 	void set_multipoles(hpx::future<std::vector<real>> f, integer ci);
 	void set_expansions(hpx::future<std::vector<real>>);
-	std::vector<node_client> get_children_at_direction(integer) const;
 	void wait_for_signal() const;
 	void M2M(const std::vector<real>&, integer);
 	template<class Container>
@@ -75,7 +74,6 @@ public:
 	HPX_DEFINE_COMPONENT_ACTION(node_server, set_boundary, set_boundary_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, set_multipoles, set_multipole_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, set_expansions, set_expansions_action); //
-	HPX_DEFINE_COMPONENT_ACTION(node_server, get_children_at_direction, get_children_at_direction_action); //
 	//
 };
 

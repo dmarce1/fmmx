@@ -1,6 +1,3 @@
-
-
-
 #include "key.hpp"
 
 void key_to_location(std::size_t key, integer* level, std::array<integer, NDIM>* loc) {
@@ -9,13 +6,14 @@ void key_to_location(std::size_t key, integer* level, std::array<integer, NDIM>*
 	}
 	*level = 0;
 	while (key != 1) {
-		for (integer d = NDIM-1; d>=0; --d) {
+		for (integer d = 0; d < NDIM; ++d) {
 			(*loc)[d] <<= 1;
 			(*loc)[d] |= (key & 1);
 			key >>= 1;
 		}
 		(*level)++;
 	}
+	printf("%lx %li %li %li %li\n", key, *level, (*loc)[0], (*loc)[1], (*loc)[2]);
 }
 
 std::size_t location_to_key(integer level, std::array<integer, NDIM> loc) {
@@ -23,11 +21,12 @@ std::size_t location_to_key(integer level, std::array<integer, NDIM> loc) {
 	while (level > 0) {
 		for (integer d = 0; d != NDIM; ++d) {
 			key <<= 1;
-			key |= (loc[d] & 1);
-			loc[d] >>= 1;
+			key |= (loc[NDIM - 1 - d] & 1);
+			loc[NDIM - 1 - d] >>= 1;
 		}
 		level--;
 	}
+	printf("%lx\n", key);
 	return key;
 }
 

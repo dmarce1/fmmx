@@ -34,15 +34,6 @@ hpx::future<std::vector<real>> node_client::get_data() const {
 	return hpx::async<typename node_server::get_data_action>(id);
 }
 
-hpx::future<std::vector<node_client>> node_client::get_children_at_direction(integer d) {
-	if (id != hpx::naming::invalid_id) {
-		return hpx::async<typename node_server::get_children_at_direction_action>(id, d);
-	} else {
-		std::vector<node_client> tmp;
-		return hpx::make_ready_future(tmp);
-	}
-}
-
 node_client& node_client::operator=(const hpx::id_type& i) {
 	id = i;
 	return *this;
