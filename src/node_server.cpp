@@ -103,28 +103,22 @@ integer ind4d(integer p, integer j, integer k, integer l, integer stride = NX) {
 	return l + stride * (k + stride * (j + stride * p));
 }
 
-bool location_is_phys_bnd(integer level, const std::array<integer, NDIM>& loc) {
-	for (integer d = 0; d != NNEIGHBOR; ++d) {
-		if (dir_x[d] == +1 && loc[2] == (1 << level) - 1) {
-			return true;
-		}
-		if (dir_x[d] == -1 && loc[2] == 0) {
-			return true;
-		}
-		if (dir_y[d] == +1 && loc[1] == (1 << level) - 1) {
-			return true;
-		}
-		if (dir_y[d] == -1 && loc[1] == 0) {
-			return true;
-		}
-		if (dir_z[d] == +1 && loc[0] == (1 << level) - 1) {
-			return true;
-		}
-		if (dir_z[d] == -1 && loc[0] == 0) {
-			return true;
-		}
+bool location_is_phys_bnd(integer level, const std::array<integer, NDIM>& loc, integer d) {
+	if (dir_x[d] == +1 && loc[2] == (1 << level) - 1) {
+		return true;
+	} else if (dir_x[d] == -1 && loc[2] == 0) {
+		return true;
+	} else if (dir_y[d] == +1 && loc[1] == (1 << level) - 1) {
+		return true;
+	} else if (dir_y[d] == -1 && loc[1] == 0) {
+		return true;
+	} else if (dir_z[d] == +1 && loc[0] == (1 << level) - 1) {
+		return true;
+	} else if (dir_z[d] == -1 && loc[0] == 0) {
+		return true;
+	} else {
+		return false;
 	}
-	return false;
 }
 
 void node_server::reset_children() {
@@ -145,7 +139,11 @@ void node_server::reset_parent() {
 
 void node_server::reset_neighbors() {
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
-		neighbor_status[d] = location_is_phys_bnd(level, location) ? COMPLETE : WAITING;
+		if (location_is_phys_bnd(level, location, d)) {
+			neighbor_status[d] = COMPLETE;
+		} else {
+			neighbor_status[d] = WAITING;
+		}
 	}
 }
 
@@ -220,10 +218,10 @@ hpx::future<std::vector<real>> node_server::get_boundary(integer d) const {
 		std::vector<real> bnd(PP * bnd_size[d]);
 		auto i = bnd.begin();
 		int cnt = 0;
-		for (integer j = xlb[d]; j <= xub[d]; ++j) {
-			for (integer k = ylb[d]; k <= yub[d]; ++k) {
-				for (integer l = zlb[d]; l <= zub[d]; ++l) {
-					for (integer p = 0; p != PP; ++p) {
+		for (integer p = 0; p != PP; ++p) {
+			for (integer j = xlb[d]; j <= xub[d]; ++j) {
+				for (integer k = ylb[d]; k <= yub[d]; ++k) {
+					for (integer l = zlb[d]; l <= zub[d]; ++l) {
 						*i = M[ind4d(p, j, k, l)];
 						++i;
 						++cnt;
@@ -253,7 +251,7 @@ void node_server::set_expansions(hpx::future<std::vector<real>> f) {
 	input_condition.signal();
 }
 
-void node_server::wait_for_signal() {
+void node_server::wait_for_signal() const {
 	input_condition.wait();
 }
 
@@ -291,7 +289,7 @@ void node_server::L2L(const std::vector<real>& l_in) {
 			for (integer j = 0; j != NX; j += 2) {
 				for (integer k = 0; k != NX; k += 2) {
 					for (integer l = 0; l != NX; l += 2) {
-						L[ind4d(p, j + (c & 1), k + ((c >> 1) & 1), l + ((c >> 2) & 1))] = l_in[ind4d(p, j >> 1, k >> 1,
+						L[ind4d(p, j + (c & 1), k + ((c >> 1) & 1), l + ((c >> 2) & 1))] += l_in[ind4d(p, j >> 1, k >> 1,
 								l >> 1, NX / 2)];
 					}
 				}
@@ -303,6 +301,8 @@ void node_server::L2L(const std::vector<real>& l_in) {
 
 template<class Container>
 void node_server::M2L(const Container& m, integer d) {
+	const integer N = m.size() / PP;
+	integer is = 0;
 	std::vector<integer> list(level == 0 ? N3 : 216);
 	std::vector<real> l_out;
 	std::vector<real> m_in(PP);
@@ -349,19 +349,20 @@ void node_server::M2L(const Container& m, integer d) {
 						}
 					}
 				}
-				auto i_m = m.begin();
-				for (integer p = 0; p != PP; ++p) {
+				auto i_m = m.begin() + is;
+				for (integer p = 0; p < PP - 1; ++p) {
 					m_in[p] = *i_m;
-					++i_m;
+					i_m += N;
 				}
+				m_in[PP - 1] = *i_m;
 				l_out.resize(PP * cnt);
 				exafmm.M2L(l_out, m_in, dist, cnt);
-				++i_m;
 				for (integer p = 0; p != PP; ++p) {
 					for (integer i = 0; i != cnt; ++i) {
 						L[p * N3 + list[i]] += l_out[i];
 					}
 				}
+				++is;
 
 			}
 		}
@@ -386,7 +387,7 @@ void node_server::get_tree() {
 	std::vector<std::size_t> ids(NNEIGHBOR);
 	auto i = ids.begin();
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
-		if (!location_is_phys_bnd(level, location)) {
+		if (!location_is_phys_bnd(level, location, d)) {
 			auto this_loc = location;
 			this_loc[2] += dir_x[d];
 			this_loc[1] += dir_y[d];
@@ -399,7 +400,7 @@ void node_server::get_tree() {
 	hpx::wait_all(std::move(f));
 	auto j = f.begin();
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
-		if (!location_is_phys_bnd(level, location)) {
+		if (!location_is_phys_bnd(level, location, d)) {
 			neighbor_id[d] = j->get();
 			++j;
 		}
@@ -472,6 +473,9 @@ void node_server::execute() {
 		neighbor_id[d].set_boundary(bnd_fut, dir_reverse[d]);
 	}
 	M2L(M, center_dir);
+	for (integer i = 0; i != L.size(); ++i) {
+		printf("%e-------\n", L[i]);
+	}
 	if (level > 0) {
 		neighbor_status[center_dir] = COMPLETE;
 		do {
@@ -483,7 +487,7 @@ void node_server::execute() {
 					done = false;
 					break;
 				case READY:
-					M2L(neighbor_futures[d].get(), d);
+		//			M2L(neighbor_futures[d].get(), d);
 					neighbor_status[d] = COMPLETE;
 				default:
 					break;
@@ -513,12 +517,13 @@ void node_server::execute() {
 		}
 	}
 	printf("End at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
-
+	output_ready = true;
+	input_condition.signal();
 	if (level == 0) {
-			std::list<std::size_t> leaf_list = get_leaf_list();
-			printf("%li leaves detected by root\n", leaf_list.size());
-			auto f = hpx::async<typename silo_output::do_output_action>(output, std::move(leaf_list));
-			f.get();
+		std::list<std::size_t> leaf_list = get_leaf_list();
+		printf("%li leaves detected by root\n", leaf_list.size());
+		auto f = hpx::async<typename silo_output::do_output_action>(output, std::move(leaf_list));
+		f.get();
 	}
 
 }
@@ -529,11 +534,17 @@ node_server::node_server(component_type* ptr) :
 }
 
 std::vector<real> node_server::get_data() const {
+	while (output_ready != true) {
+		wait_for_signal();
+	}
 	std::vector<real> v((2 * PP) * N3);
 	for (integer i = 0; i != PP * N3; ++i) {
 		const auto j = (i / PP) + N3 * (i % PP);
 		v[2 * i] = M[j];
 		v[2 * i + 1] = L[j];
+		if (level > 0) {
+			printf("----%e\n", L[j]);
+		}
 	}
 	return std::move(v);
 }
@@ -585,6 +596,7 @@ std::list<std::size_t> node_server::get_leaf_list() const {
 }
 
 void node_server::initialize(node_client pid, integer lev, std::array<integer, NDIM> loc) {
+	output_ready = false;
 	M.resize(PP * N3);
 	L.resize(PP * N3);
 	neighbors_set = false;

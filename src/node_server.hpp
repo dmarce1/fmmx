@@ -21,6 +21,7 @@ private:
 	static hpx::id_type output;
 	std::vector<real> M;
 	std::vector<real> L;
+	std::atomic<bool> output_ready;
 	node_client parent_id;
 	std::array<node_client, NCHILD> child_id;
 	std::array<node_client, NNEIGHBOR> neighbor_id;
@@ -31,7 +32,7 @@ private:
 	std::array<hpx::future<std::vector<real>>, NNEIGHBOR> neighbor_futures;
 	std::array<hpx::future<std::vector<real>>, NCHILD> child_futures;
 	hpx::future<std::vector<real>> parent_future;
-	hpx::lcos::local::counting_semaphore input_condition;
+	mutable hpx::lcos::local::counting_semaphore input_condition;
 	std::array<integer, NDIM> location;
 	real dx;
 	integer level;
@@ -57,7 +58,7 @@ public:
 	void set_multipoles(hpx::future<std::vector<real>> f, integer ci);
 	void set_expansions(hpx::future<std::vector<real>>);
 	std::vector<node_client> get_children_at_direction(integer) const;
-	void wait_for_signal();
+	void wait_for_signal() const;
 	void M2M(const std::vector<real>&, integer);
 	template<class Container>
 	void M2L(const Container&, integer);

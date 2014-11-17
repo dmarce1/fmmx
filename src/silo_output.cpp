@@ -69,9 +69,9 @@ void silo_output::do_output(std::list<std::size_t> node_list) {
 								for (int ci0 = 0; ci0 < Nchild; ci0++) {
 									vertex v;
 									int ci = vertex_order[ci0];
-									v[0] = (j0 + (0.5 * real(2 * ((ci >> 0) & 1) - 1)))*span + corner[0];
-									v[1] = (k0 + (0.5 * real(2 * ((ci >> 1) & 1) - 1)))*span + corner[1];
-									v[2] = (l0 + (0.5 * real(2 * ((ci >> 2) & 1) - 1)))*span + corner[2];
+									v[0] = (real(j0) + (0.5 * real(2 * ((ci >> 0) & 1) - 1))+0.5)*span + corner[0];
+									v[1] = (real(k0) + (0.5 * real(2 * ((ci >> 1) & 1) - 1))+0.5)*span + corner[1];
+									v[2] = (real(l0) + (0.5 * real(2 * ((ci >> 2) & 1) - 1))+0.5)*span + corner[2];
 									mutex0.lock();
 									auto iter = nodedir.find(v);
 									if (iter == nodedir.end()) {

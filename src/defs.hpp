@@ -15,13 +15,13 @@ using integer = std::int64_t;
 
 constexpr integer NX = 8;
 constexpr integer BW = 2;
-constexpr integer P = 2;
+constexpr integer P = 1;
 constexpr integer N3 = NX * NX * NX;
 constexpr integer PP = P * P;
 constexpr integer NDIM = 3;
 constexpr integer NCHILD = 8;
 constexpr integer NNEIGHBOR = 27;
-constexpr integer MAXLEVEL = 2;
+constexpr integer MAXLEVEL = 1;
 constexpr integer NF = 2 * PP;
 
 #endif /* DEF_HPP_ */
