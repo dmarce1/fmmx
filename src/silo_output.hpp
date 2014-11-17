@@ -107,7 +107,7 @@ private:
 	int current_index;
 	vertex_dir_type nodedir;
 	silo_zone_dir_type zonedir;
-	mutable hpx::lcos::local::mutex mutex0;
+	mutable hpx::lcos::local::spinlock mutex0;
 public:
 	silo_output() = default;
 	virtual ~silo_output() = default;

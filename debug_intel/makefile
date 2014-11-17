@@ -44,7 +44,7 @@ all: fmmx
 fmmx: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Intel C++ Linker'
-	icpc  $(OBJS) $(USER_OBJS) $(LIBS) -tbb `pkg-config --libs hpx_application` -o "fmmx"
+	icpc  $(OBJS) $(USER_OBJS) $(LIBS) -tbb -check-pointers=rw `pkg-config --libs hpx_application` -o "fmmx"
 	@echo 'Finished building target: $@'
 	@echo ' '
 
