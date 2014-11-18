@@ -41,8 +41,8 @@ constexpr std::array<integer, NNEIGHBOR> cbnd_size = { 1, 2, 1, 2, 4, 2, 1, 2, 1
 
 };
 
-constexpr std::array<integer, NNEIGHBOR> z_off = { -BW, -BW, -BW, -BW, -BW, -BW, -BW, -BW, -BW, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		+BW, +BW, +BW, +BW, +BW, +BW, +BW, +BW, +BW };
+constexpr std::array<integer, NNEIGHBOR> z_off = { -BW, -BW, -BW, -BW, -BW, -BW, -BW, -BW, -BW, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, +BW, +BW, +BW, +BW, +BW, +BW, +BW, +BW, +BW };
 
 constexpr std::array<integer, NNEIGHBOR> y_off = { -BW, -BW, -BW, 0, 0, 0, +BW, +BW, +BW, -BW, -BW, -BW, 0, 0, 0, +BW,
 		+BW, +BW, -BW, -BW, -BW, 0, 0, 0, +BW, +BW, +BW };
@@ -210,6 +210,9 @@ hpx::future<std::vector<real>> node_server::get_multipoles() const {
 }
 
 void node_server::refine() {
+	if (my_id == hpx::invalid_id) {
+		my_id = hpx::find_id_from_basename("fmmx_node", location_to_key(level, location)).get();
+	}
 	std::vector<hpx::future<hpx::id_type>> cids(NCHILD);
 	for (integer ci = 0; ci != NCHILD; ++ci) {
 		std::array<integer, NDIM> cloc(location);
@@ -217,12 +220,26 @@ void node_server::refine() {
 			cloc[d] <<= 1;
 			cloc[d] += (ci >> d) & integer(1);
 		}
-		cids[ci] = hpx::new_ < node_server > (hpx::find_here(), my_id, level + 1, std::move(cloc));
+		cids[ci] = hpx::new_ < node_server > (hpx::find_here(), get_gid(), level + 1, cloc);
+
 	}
 	is_leaf = false;
 	hpx::wait_all(cids);
+	std::vector<hpx::future<bool>> id_test(NCHILD);
 	for (integer ci = 0; ci != NCHILD; ++ci) {
+		std::array<integer, NDIM> cloc(location);
+		for (integer d = 0; d != NDIM; ++d) {
+			cloc[d] <<= 1;
+			cloc[d] += (ci >> d) & integer(1);
+		}
 		child_id[ci] = cids[ci].get();
+		id_test[ci] = hpx::register_id_with_basename("fmmx_node", child_id[ci], location_to_key(level + 1, cloc));
+	}
+	for (integer ci = 0; ci != NCHILD; ++ci) {
+		if (!id_test[ci].get()) {
+			printf("Failed to register id_with_basename\n");
+			abort();
+		}
 	}
 }
 
@@ -380,7 +397,7 @@ void node_server::M2L(const std::vector<real>& m, integer d) {
 				exafmm.M2L(l_out, m_in, dist, cnt);
 				for (integer p = 0; p != PP; ++p) {
 					for (integer i = 0; i != cnt; ++i) {
-						L[p * N3 + list[i]] += l_out[i];
+						L[p * N3 + list[i]] += l_out[p * cnt + i];
 					}
 				}
 				++is;
@@ -392,7 +409,6 @@ void node_server::M2L(const std::vector<real>& m, integer d) {
 }
 
 void node_server::get_tree() {
-	std::vector<hpx::future<hpx::id_type>> id_futs(NNEIGHBOR);
 	std::vector<std::size_t> ids(NNEIGHBOR);
 	auto i = ids.begin();
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
@@ -444,6 +460,7 @@ void node_server::init_t0() {
 }
 
 void node_server::execute() {
+	bool done;
 	printf("Begin at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
 	if (level < MAXLEVEL) {
 		refine();
@@ -453,7 +470,6 @@ void node_server::execute() {
 
 	printf("Ascend at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
 	hpx::this_thread::sleep_for(boost::posix_time::milliseconds(1));
-	bool done;
 	if (!is_leaf) {
 		do {
 			wait_for_signal();
@@ -513,7 +529,7 @@ void node_server::execute() {
 				done = false;
 				break;
 			case READY:
-				//		L2L(parent_future.get());
+				L2L(parent_future.get());
 				parent_status = COMPLETE;
 			default:
 				break;
@@ -535,11 +551,9 @@ void node_server::execute() {
 		auto f = hpx::async<typename silo_output::do_output_action>(output, std::move(leaf_list));
 		f.get();
 	}
-
 }
 
-node_server::node_server(component_type* ptr) :
-		base_type(ptr), my_id(neighbor_id[center_dir]) {
+node_server::node_server() {
 	assert(false);
 }
 
@@ -547,16 +561,19 @@ std::vector<real> node_server::get_data() const {
 	data_ready.wait();
 	printf("Getting data\n");
 	std::vector<real> v((2 * PP) * N3);
-	for (integer i = 0; i != PP * N3; ++i) {
-		const auto j = (i / PP) + N3 * (i % PP);
-		v[2 * i] = M[j];
-		v[2 * i + 1] = L[j];
+	auto l = v.begin();
+	for (integer i = 0; i != N3; ++i) {
+		for (integer p = 0; p != PP; ++p) {
+			*l++ = M[N3 * p + i];
+		}
+		for (integer p = 0; p != PP; ++p) {
+			*l++ = L[N3 * p + i];
+		}
 	}
 	return std::move(v);
 }
 
-node_server::node_server(component_type* ptr, hpx::id_type sid) :
-		base_type(ptr), my_id(neighbor_id[center_dir]) {
+node_server::node_server(hpx::id_type sid) {
 	output = std::move(sid);
 	node_client pid = hpx::naming::invalid_id;
 	integer lev = 0;
@@ -564,8 +581,7 @@ node_server::node_server(component_type* ptr, hpx::id_type sid) :
 	initialize(std::move(pid), std::move(lev), std::move(loc));
 }
 
-node_server::node_server(component_type* ptr, node_client pid, integer lev, std::array<integer, NDIM> loc) :
-		base_type(ptr), my_id(neighbor_id[center_dir]) {
+node_server::node_server(node_client pid, integer lev, std::array<integer, NDIM> loc) {
 	initialize(std::move(pid), std::move(lev), std::move(loc));
 }
 
@@ -608,17 +624,11 @@ void node_server::initialize(node_client pid, integer lev, std::array<integer, N
 	location = loc;
 	level = lev;
 	parent_id = node_client(pid);
-	my_id = get_gid();
 	is_leaf = true;
 	reset_children();
 	reset_parent();
 	reset_neighbors();
 	key = location_to_key(level, std::move(loc));
-	auto f = hpx::register_id_with_basename("fmmx_node", my_id, key);
-	if (!f.get()) {
-		printf("Failed to register id_with_basename\n");
-		abort();
-	}
 	dx = 1.0 / real(std::pow(2, level) * NX);
 	my_thread = hpx::thread([=]() {
 		execute();

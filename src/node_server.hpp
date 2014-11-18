@@ -11,12 +11,7 @@
 #include <hpx/lcos/local/counting_semaphore.hpp>
 #include <boost/serialization/list.hpp>
 
-
-class node_server: public hpx::components::managed_component_base<node_server, hpx::components::detail::this_type,
-		hpx::traits::construct_with_back_ptr> {
-public:
-	using component_type = hpx::components::managed_component<node_server>;
-	using base_type = hpx::components::managed_component_base<node_server, hpx::components::detail::this_type, hpx::traits::construct_with_back_ptr>;
+class node_server: public hpx::components::managed_component_base<node_server> {
 private:
 	static hpx::id_type output;
 	std::vector<real> M;
@@ -34,17 +29,17 @@ private:
 	mutable hpx::lcos::local::counting_semaphore input_condition;
 	mutable hpx::lcos::local::counting_semaphore data_ready;
 	std::array<integer, NDIM> location;
+	hpx::id_type my_id;
 	real dx;
 	integer level;
 	hpx::thread my_thread;
 	bool is_leaf;
 	std::uint64_t key;
 	void initialize(node_client, integer, std::array<integer, NDIM>);
-	node_client& my_id;
 public:
-	node_server(component_type*);
-	node_server(component_type*, hpx::id_type );
-	node_server(component_type*, node_client, integer, std::array<integer, NDIM>);
+	node_server();
+	node_server(hpx::id_type);
+	node_server(node_client, integer, std::array<integer, NDIM>);
 	~node_server();
 	void get_tree();
 	void init_t0();
@@ -72,7 +67,8 @@ public:
 	HPX_DEFINE_COMPONENT_ACTION(node_server, get_leaf_list, get_leaf_list_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, set_boundary, set_boundary_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, set_multipoles, set_multipole_action); //
-	HPX_DEFINE_COMPONENT_ACTION(node_server, set_expansions, set_expansions_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, set_expansions, set_expansions_action);
+	//
 	//
 };
 
