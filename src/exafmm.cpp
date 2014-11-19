@@ -104,8 +104,8 @@ void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 					COMPLEX_MULT(tmp_r, tmp_i, CjM[nmp], SGN(m) * CjM[nmm], Cnm_r[jknm], Cnm_i[jknm]);
 					const auto& Yp = Ynm[jnkmp];
 					const auto& Ym = Ynm[jnkmm];
-//#pragma vector aligned
-//#pragma simd
+#pragma vector aligned
+#pragma simd
 					for (integer i = 0; i != N; ++i) {
 						COMPLEX_MULT_ADD(L_r[i], L_i[i], tmp_r, tmp_i, Yp[i], sgn * Ym[i]);
 					}

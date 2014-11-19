@@ -10,6 +10,7 @@
 
 #include <hpx/lcos/local/counting_semaphore.hpp>
 #include <boost/serialization/list.hpp>
+#include <boost/atomic.hpp>
 
 class node_server: public hpx::components::managed_component_base<node_server> {
 private:
@@ -19,10 +20,9 @@ private:
 	node_client parent_id;
 	std::array<node_client, NCHILD> child_id;
 	std::array<node_client, NNEIGHBOR> neighbor_id;
-	std::atomic<integer> parent_status;
-	std::atomic<bool> neighbors_set;
-	std::array<std::atomic<integer>, NCHILD> child_status;
-	std::array<std::atomic<integer>, NNEIGHBOR> neighbor_status;
+	boost::atomic<integer> parent_status;
+	std::array<boost::atomic<integer>, NCHILD> child_status;
+	std::array<boost::atomic<integer>, NNEIGHBOR> neighbor_status;
 	std::array<hpx::future<std::vector<real>>, NNEIGHBOR> neighbor_futures;
 	std::array<hpx::future<std::vector<real>>, NCHILD> child_futures;
 	hpx::future<std::vector<real>> parent_future;

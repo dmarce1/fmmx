@@ -1,4 +1,4 @@
-#if defined(__ICC) || defined(__INTEL_COMPILER)
+//#if defined(__ICC) || defined(__INTEL_COMPILER)
 
 #include <new>
 #include <cstdlib>
@@ -73,4 +73,4 @@ void operator delete[](void* ptr, const std::nothrow_t& ) noexcept {
 	deallocate(ptr);
 }
 
-#endif
+//#endif
