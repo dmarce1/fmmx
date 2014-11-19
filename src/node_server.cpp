@@ -213,7 +213,7 @@ void node_server::refine() {
 	if (my_id == hpx::invalid_id) {
 		my_id = hpx::find_id_from_basename("fmmx_node", location_to_key(level, location)).get();
 	}
-	std::vector<hpx::future<hpx::id_type>> cids(NCHILD);
+	std::vector < hpx::future < hpx::id_type >> cids(NCHILD);
 	for (integer ci = 0; ci != NCHILD; ++ci) {
 		std::array<integer, NDIM> cloc(location);
 		for (integer d = 0; d != NDIM; ++d) {
@@ -224,7 +224,7 @@ void node_server::refine() {
 
 	}
 	is_leaf = false;
-	hpx::wait_all(cids);
+	hpx::wait_all (cids);
 	std::vector<hpx::future<bool>> id_test(NCHILD);
 	for (integer ci = 0; ci != NCHILD; ++ci) {
 		std::array<integer, NDIM> cloc(location);
@@ -316,7 +316,7 @@ void node_server::L2L(const std::vector<real>& l_in) {
 			for (integer j = 0; j != NX; j += 2) {
 				for (integer k = 0; k != NX; k += 2) {
 					for (integer l = 0; l != NX; l += 2) {
-						L[ind4d(p, j + (c & 1), k + ((c >> 1) & 1), l + ((c >> 2) & 1))] += l_in[ind4d(p, j >> 1,
+						L[ind4d(p, j + (c & 1), k + ((c >> 1) & 1), l + ((c >> 2) & 1))] += l_out[ind4d(p, j >> 1,
 								k >> 1, l >> 1, NX / 2)];
 					}
 				}
@@ -409,7 +409,7 @@ void node_server::M2L(const std::vector<real>& m, integer d) {
 }
 
 void node_server::get_tree() {
-	std::vector<std::size_t> ids(NNEIGHBOR);
+	std::vector < std::size_t > ids(NNEIGHBOR);
 	auto i = ids.begin();
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
 		if (!location_is_phys_bnd(level, location, d)) {
@@ -421,7 +421,7 @@ void node_server::get_tree() {
 			++i;
 		}
 	}
-	auto f = hpx::find_ids_from_basename("fmmx_node", std::vector<std::size_t>(ids.begin(), i));
+	auto f = hpx::find_ids_from_basename("fmmx_node", std::vector < std::size_t > (ids.begin(), i));
 	hpx::wait_all(std::move(f));
 	auto j = f.begin();
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
@@ -546,7 +546,7 @@ void node_server::execute() {
 	printf("End at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
 	data_ready.signal();
 	if (level == 0) {
-		std::list<std::size_t> leaf_list = get_leaf_list();
+		std::list < std::size_t > leaf_list = get_leaf_list();
 		printf("%li leaves detected by root\n", leaf_list.size());
 		auto f = hpx::async<typename silo_output::do_output_action>(output, std::move(leaf_list));
 		f.get();
@@ -588,11 +588,11 @@ node_server::node_server(node_client pid, integer lev, std::array<integer, NDIM>
 integer node_server::get_node_count() const {
 	integer cnt = 1;
 	if (!is_leaf) {
-		std::vector<hpx::future<integer>> futs(NCHILD);
+		std::vector < hpx::future < integer >> futs(NCHILD);
 		for (integer c = 0; c != NCHILD; ++c) {
 			futs[c] = child_id[c].get_node_count();
 		}
-		hpx::wait_all(futs);
+		hpx::wait_all (futs);
 		for (integer c = 0; c != NCHILD; ++c) {
 			cnt += futs[c].get();
 		}
@@ -601,13 +601,13 @@ integer node_server::get_node_count() const {
 }
 
 std::list<std::size_t> node_server::get_leaf_list() const {
-	std::list<std::size_t> list;
+	std::list < std::size_t > list;
 	if (!is_leaf) {
-		std::vector<hpx::future<std::list<std::size_t>>>futs(NCHILD);
+		std::vector < hpx::future<std::list<std::size_t>>>futs(NCHILD);
 		for (integer c = 0; c != NCHILD; ++c) {
 			futs[c] = child_id[c].get_leaf_list();
 		}
-		hpx::wait_all(futs);
+		hpx::wait_all (futs);
 		for (integer c = 0; c != NCHILD; ++c) {
 			list.splice(list.end(), futs[c].get());
 		}
