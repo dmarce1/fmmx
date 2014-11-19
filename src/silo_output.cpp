@@ -34,9 +34,9 @@ void silo_output::do_output(std::list<std::size_t> node_list) {
 	std::vector<hpx::future<hpx::id_type> >
 	find_ids_from_basename(char const * base_name, std::vector<std::size_t> const & ids);
 
-	std::vector<std::size_t> id_list(node_list.begin(), node_list.end());
+	std::vector < std::size_t > id_list(node_list.begin(), node_list.end());
 	auto id_list_ptr = &id_list;
-	std::vector<hpx::future<hpx::id_type> > node_futs = hpx::find_ids_from_basename("fmmx_node", std::move(id_list));
+	std::vector < hpx::future<hpx::id_type> > node_futs = hpx::find_ids_from_basename("fmmx_node", std::move(id_list));
 	std::vector<hpx::future<void>> data_futs(node_futs.size());
 
 #ifndef NO_OUTPUT
@@ -142,22 +142,31 @@ void silo_output::do_output(std::list<std::size_t> node_list) {
 			(int) DB_DOUBLE, olist);
 
 	std::vector<double> data(nzones);
-	char fname[2];
-	fname[1] = '\0';
+	std::array<char[32], NF> field_names;
+	for (integer j = 0; j != P; ++j) {
+		integer l;
+		for (integer m = 0; m <= j; ++m) {
+			l = j * j + j - m;
+			sprintf(field_names[l], "M_imag_j%li_m%li", j, m);
+			sprintf(field_names[l + NF / 2], "L_imag_j%li_m%li", j, m);
+			l = j * j + j + m;
+			sprintf(field_names[l], "M_real_j%li_m%li", j, m);
+			sprintf(field_names[l + NF / 2], "L_real_j%li_m%li", j, m);
+		}
+	}
 	for (int fi = 0; fi != NF; ++fi) {
 		int i = 0;
 		for (auto zi = zonedir.begin(); zi != zonedir.end(); zi++) {
 			data[i] = zi->fields[fi];
 			i++;
 		}
-		fname[0] = 'A' + char(fi);
-		exec_on_separate_thread(&DBPutUcdvar1, db, const_cast<const char*>(fname), "mesh",
+		exec_on_separate_thread(&DBPutUcdvar1, db, const_cast<const char*>(field_names[fi]), "mesh",
 				reinterpret_cast<DB_DTPTR1>(data.data()), nzones, static_cast<DB_DTPTR1>(nullptr), 0, (int) DB_DOUBLE,
 				(int) DB_ZONECENT, olist);
 	}
-
 	zonedir.clear();
 
 	exec_on_separate_thread(DBClose, db);
+	printf( "Output Done\n");
 #endif
 }
