@@ -30,7 +30,7 @@ R exec_on_separate_thread(R (*fptr)(Args...), Args ...args) {
 }
 
 void silo_output::do_output(std::list<std::size_t> node_list) {
-
+#ifndef NOUTPUT
 	std::vector<hpx::future<hpx::id_type> >
 	find_ids_from_basename(char const * base_name, std::vector<std::size_t> const & ids);
 
@@ -38,8 +38,6 @@ void silo_output::do_output(std::list<std::size_t> node_list) {
 	auto id_list_ptr = &id_list;
 	std::vector < hpx::future<hpx::id_type> > node_futs = hpx::find_ids_from_basename("fmmx_node", std::move(id_list));
 	std::vector<hpx::future<void>> data_futs(node_futs.size());
-
-#ifndef NO_OUTPUT
 	for (integer i0 = 0; i0 != node_futs.size(); ++i0) {
 		data_futs[i0] = (node_client(node_futs[i0].get()).get_data()).then(
 				hpx::util::unwrapped([=](std::vector<real> data) {

@@ -35,8 +35,8 @@ real exafmm_kernel::Cnm_i[P * P * P * P];
 void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 		const std::array<std::vector<real>, NDIM>& d, integer N) {
 	std::vector<std::vector<real>> Ynm(P * P, std::vector<real>(N));
-//#pragma vector aligned
-//#pragma simd
+#pragma vector aligned
+#pragma simd
 	for (integer i = 0; i != N; ++i) {
 		real rho = std::sqrt(d[0][i] * d[0][i] + d[1][i] * d[1][i] + d[2][i] * d[2][i]);
 		real theta = std::acos(d[2][i] / rho);
@@ -85,8 +85,8 @@ void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 		for (integer k = 0; k <= j; ++k) {
 			const integer jkp = j * j + j + k;
 			const integer jkm = j * j + j - k;
-//#pragma vector aligned
-//#pragma simd
+#pragma vector aligned
+#pragma simd
 			for (integer i = 0; i != N; ++i) {
 				L_r[i] = L_i[i] = real(0.0);
 			}
@@ -113,8 +113,8 @@ void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 			}
 			auto Cp = CiL.data() + N * jkp;
 			auto Cm = CiL.data() + N * jkm;
-//#pragma vector aligned
-//#pragma simd
+#pragma vector aligned
+#pragma simd
 			for (integer i = 0; i != N; ++i) {
 				Cp[i] = L_r[i];
 				Cm[i] = (k == 0) ? L_r[i] : L_i[i];

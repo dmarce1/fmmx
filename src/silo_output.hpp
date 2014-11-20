@@ -8,7 +8,7 @@
 #ifndef SILO_OUTPsUT_HPP_
 #define SILO_OUTPsUT_HPP_
 
-#ifndef NO_OUTPUT
+#ifndef NOUTPUT
 #include <silo.h>
 #endif
 

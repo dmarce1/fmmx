@@ -12,7 +12,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../
    LOOP END
 
    LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/exafmm.cpp(37,62)
-      remark #15388: vectorization support: reference __first_16137 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15388: vectorization support: reference __first_16143 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15399: vectorization support: unroll factor set to 2
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
@@ -31,9 +31,17 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../
 LOOP END
 
 LOOP BEGIN at ../src/exafmm.cpp(40,2)
-   remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between d line 41 and _M_start line 58
-   remark #15346: vector dependence: assumed FLOW dependence between F64 line 58 and d line 41
+   remark #15301: SIMD LOOP WAS VECTORIZED
+   remark #15449: unmasked aligned unit stride stores: 12 
+   remark #15458: masked indexed (or gather) loads: 9 
+   remark #15475: --- begin vector loop cost summary ---
+   remark #15476: scalar loop cost: 1898 
+   remark #15477: vector loop cost: 816.000 
+   remark #15478: estimated potential speedup: 1.500 
+   remark #15479: lightweight vector operations: 429 
+   remark #15480: medium-overhead vector operations: 2 
+   remark #15482: vectorized math library calls: 9 
+   remark #15488: --- end vector loop cost summary ---
 
    LOOP BEGIN at ../src/exafmm.cpp(50,3)
 
@@ -45,6 +53,10 @@ LOOP BEGIN at ../src/exafmm.cpp(40,2)
    LOOP END
 LOOP END
 
+LOOP BEGIN at ../src/exafmm.cpp(40,2)
+<Remainder>
+LOOP END
+
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/exafmm.cpp(82,24)
    remark #15542: loop was not vectorized: inner loop was already vectorized
 
@@ -53,7 +65,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../
    LOOP END
 
    LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/exafmm.cpp(82,24)
-      remark #15388: vectorization support: reference __first_16137 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15388: vectorization support: reference __first_16143 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15399: vectorization support: unroll factor set to 2
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
@@ -79,7 +91,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../
    LOOP END
 
    LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/exafmm.cpp(83,24)
-      remark #15388: vectorization support: reference __first_16137 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15388: vectorization support: reference __first_16143 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15399: vectorization support: unroll factor set to 2
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
@@ -104,32 +116,23 @@ LOOP BEGIN at ../src/exafmm.cpp(84,2)
       remark #15542: loop was not vectorized: inner loop was already vectorized
 
       LOOP BEGIN at ../src/exafmm.cpp(90,4)
-      <Peeled>
-      LOOP END
-
-      LOOP BEGIN at ../src/exafmm.cpp(90,4)
-         remark #15389: vectorization support: reference F64 has unaligned access   [ ../src/exafmm.cpp(91,17) ]
+         remark #15388: vectorization support: reference F64 has aligned access   [ ../src/exafmm.cpp(91,17) ]
          remark #15388: vectorization support: reference _M_start has aligned access   [ ../src/exafmm.cpp(91,8) ]
-         remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/exafmm.cpp(91,8) ]
          remark #15399: vectorization support: unroll factor set to 4
-         remark #15300: LOOP WAS VECTORIZED
-         remark #15442: entire loop may be executed in remainder
-         remark #15449: unmasked aligned unit stride stores: 1 
-         remark #15451: unmasked unaligned unit stride stores: 1 
+         remark #15301: SIMD LOOP WAS VECTORIZED
+         remark #15449: unmasked aligned unit stride stores: 2 
          remark #15475: --- begin vector loop cost summary ---
          remark #15476: scalar loop cost: 9 
-         remark #15477: vector loop cost: 14.000 
-         remark #15478: estimated potential speedup: 2.390 
-         remark #15479: lightweight vector operations: 5 
-         remark #15481: heavy-overhead vector operations: 1 
+         remark #15477: vector loop cost: 6.000 
+         remark #15478: estimated potential speedup: 5.000 
+         remark #15479: lightweight vector operations: 6 
          remark #15488: --- end vector loop cost summary ---
       LOOP END
 
       LOOP BEGIN at ../src/exafmm.cpp(90,4)
       <Remainder>
-         remark #15389: vectorization support: reference F64 has unaligned access   [ ../src/exafmm.cpp(91,17) ]
+         remark #15388: vectorization support: reference F64 has aligned access   [ ../src/exafmm.cpp(91,17) ]
          remark #15388: vectorization support: reference _M_start has aligned access   [ ../src/exafmm.cpp(91,8) ]
-         remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/exafmm.cpp(91,8) ]
          remark #15301: REMAINDER LOOP WAS VECTORIZED
       LOOP END
 
@@ -170,9 +173,19 @@ LOOP BEGIN at ../src/exafmm.cpp(84,2)
       LOOP END
 
       LOOP BEGIN at ../src/exafmm.cpp(118,4)
-         remark #15344: loop was not vectorized: vector dependence prevents vectorization
-         remark #15346: vector dependence: assumed OUTPUT dependence between Cp line 119 and Cm line 120
-         remark #15346: vector dependence: assumed OUTPUT dependence between Cm line 120 and Cp line 119
+         remark #15388: vectorization support: reference Cp has aligned access   [ ../src/exafmm.cpp(119,5) ]
+         remark #15388: vectorization support: reference _M_start has aligned access   [ ../src/exafmm.cpp(119,5) ]
+         remark #15388: vectorization support: reference Cm has aligned access   [ ../src/exafmm.cpp(120,36) ]
+         remark #15388: vectorization support: reference _M_start has aligned access   [ ../src/exafmm.cpp(120,36) ]
+         remark #15301: SIMD LOOP WAS VECTORIZED
+         remark #15448: unmasked aligned unit stride loads: 2 
+         remark #15449: unmasked aligned unit stride stores: 2 
+         remark #15475: --- begin vector loop cost summary ---
+         remark #15476: scalar loop cost: 11 
+         remark #15477: vector loop cost: 1.500 
+         remark #15478: estimated potential speedup: 7.330 
+         remark #15479: lightweight vector operations: 6 
+         remark #15488: --- end vector loop cost summary ---
       LOOP END
 
       LOOP BEGIN at ../src/exafmm.cpp(118,4)
@@ -180,9 +193,19 @@ LOOP BEGIN at ../src/exafmm.cpp(84,2)
       LOOP END
 
       LOOP BEGIN at ../src/exafmm.cpp(118,4)
-         remark #15344: loop was not vectorized: vector dependence prevents vectorization
-         remark #15346: vector dependence: assumed OUTPUT dependence between Cp line 119 and Cm line 120
-         remark #15346: vector dependence: assumed OUTPUT dependence between Cm line 120 and Cp line 119
+         remark #15388: vectorization support: reference Cp has aligned access   [ ../src/exafmm.cpp(119,5) ]
+         remark #15388: vectorization support: reference _M_start has aligned access   [ ../src/exafmm.cpp(119,5) ]
+         remark #15388: vectorization support: reference Cm has aligned access   [ ../src/exafmm.cpp(120,36) ]
+         remark #15388: vectorization support: reference F64 has aligned access   [ ../src/exafmm.cpp(120,36) ]
+         remark #15301: SIMD LOOP WAS VECTORIZED
+         remark #15448: unmasked aligned unit stride loads: 2 
+         remark #15449: unmasked aligned unit stride stores: 2 
+         remark #15475: --- begin vector loop cost summary ---
+         remark #15476: scalar loop cost: 11 
+         remark #15477: vector loop cost: 1.500 
+         remark #15478: estimated potential speedup: 7.330 
+         remark #15479: lightweight vector operations: 6 
+         remark #15488: --- end vector loop cost summary ---
       LOOP END
 
       LOOP BEGIN at ../src/exafmm.cpp(118,4)
@@ -215,8 +238,8 @@ Begin optimization report for: std::vector<std::vector<real, std::allocator<real
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(424,9)
    remark #15382: vectorization support: call to function _ZdlPv cannot be vectorized   [ /usr/include/c++/4.9.0/ext/new_allocator.h(110,9) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between __first_17018 line 160 and  line 110
-   remark #15346: vector dependence: assumed FLOW dependence between  line 110 and __first_17018 line 160
+   remark #15346: vector dependence: assumed ANTI dependence between __first_17024 line 160 and  line 110
+   remark #15346: vector dependence: assumed FLOW dependence between  line 110 and __first_17024 line 160
 LOOP END
 ===========================================================================
 
@@ -230,7 +253,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/exafmm.cpp(139,24)
-   remark #15389: vectorization support: reference __first_16137 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15389: vectorization support: reference __first_16143 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15399: vectorization support: unroll factor set to 2
    remark #15300: LOOP WAS VECTORIZED
@@ -257,7 +280,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../
    LOOP END
 
    LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/exafmm.cpp(140,24)
-      remark #15388: vectorization support: reference __first_16137 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15388: vectorization support: reference __first_16143 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15399: vectorization support: unroll factor set to 2
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
@@ -283,7 +306,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../
    LOOP END
 
    LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/exafmm.cpp(140,32)
-      remark #15388: vectorization support: reference __first_16137 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15388: vectorization support: reference __first_16143 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15399: vectorization support: unroll factor set to 2
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
@@ -458,7 +481,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/exafmm.cpp(190,24)
-   remark #15389: vectorization support: reference __first_16137 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15389: vectorization support: reference __first_16143 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15399: vectorization support: unroll factor set to 2
    remark #15300: LOOP WAS VECTORIZED
@@ -485,7 +508,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../
    LOOP END
 
    LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/exafmm.cpp(192,24)
-      remark #15388: vectorization support: reference __first_16137 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15388: vectorization support: reference __first_16143 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15399: vectorization support: unroll factor set to 2
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
@@ -511,7 +534,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../
    LOOP END
 
    LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/exafmm.cpp(192,32)
-      remark #15388: vectorization support: reference __first_16137 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15388: vectorization support: reference __first_16143 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15399: vectorization support: unroll factor set to 2
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
@@ -969,7 +992,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined int
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(322,4)
-   remark #15388: vectorization support: reference __cur.16858 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_construct.h(75,42) ]
+   remark #15388: vectorization support: reference __cur.16864 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_construct.h(75,42) ]
    remark #15389: vectorization support: reference _M_current has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_construct.h(75,42) ]
    remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_construct.h(75,42) ]
    remark #15399: vectorization support: unroll factor set to 4
@@ -989,7 +1012,7 @@ LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(322,4)
 <Remainder>
-   remark #15389: vectorization support: reference __cur.16858 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_construct.h(75,42) ]
+   remark #15389: vectorization support: reference __cur.16864 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_construct.h(75,42) ]
    remark #15389: vectorization support: reference _M_current has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_construct.h(75,42) ]
    remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_construct.h(75,42) ]
    remark #15301: REMAINDER LOOP WAS VECTORIZED

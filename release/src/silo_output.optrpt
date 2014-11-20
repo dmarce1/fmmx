@@ -1,0 +1,855 @@
+
+Begin optimization report for: silo_output::do_output(silo_output *, std::list<std::size_t, std::allocator<std::_Bit_type>> *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(514,8) inlined into ../src/silo_output.cpp(40,53)
+<Peeled>
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(514,8) inlined into ../src/silo_output.cpp(40,53)
+   remark #15399: vectorization support: unroll factor set to 4
+   remark #15300: LOOP WAS VECTORIZED
+   remark #15442: entire loop may be executed in remainder
+   remark #15455: masked aligned unit stride stores: 1 
+   remark #15475: --- begin vector loop cost summary ---
+   remark #15476: scalar loop cost: 22 
+   remark #15477: vector loop cost: 20.000 
+   remark #15478: estimated potential speedup: 4.170 
+   remark #15479: lightweight vector operations: 8 
+   remark #15480: medium-overhead vector operations: 1 
+   remark #15488: --- end vector loop cost summary ---
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(514,8) inlined into ../src/silo_output.cpp(40,53)
+<Remainder>
+   remark #15301: REMAINDER LOOP WAS VECTORIZED
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(514,8) inlined into ../src/silo_output.cpp(40,53)
+<Remainder>
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.cpp(43,39)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.cpp(106,22)
+   remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.cpp(107,14)
+   remark #15300: LOOP WAS VECTORIZED
+   remark #15451: unmasked unaligned unit stride stores: 1 
+   remark #15475: --- begin vector loop cost summary ---
+   remark #15476: scalar loop cost: 6 
+   remark #15477: vector loop cost: 3.000 
+   remark #15478: estimated potential speedup: 1.050 
+   remark #15479: lightweight vector operations: 2 
+   remark #15481: heavy-overhead vector operations: 1 
+   remark #15488: --- end vector loop cost summary ---
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.cpp(107,14)
+<Remainder>
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.cpp(111,2)
+   remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.cpp(118,37)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+
+   LOOP BEGIN at ../src/silo_output.cpp(119,3)
+      remark #15344: loop was not vectorized: vector dependence prevents vectorization
+      remark #15346: vector dependence: assumed FLOW dependence between coords line 120 and coords line 120
+      remark #15346: vector dependence: assumed ANTI dependence between coords line 120 and coords line 120
+   LOOP END
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.cpp(129,37)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+
+   LOOP BEGIN at ../src/silo_output.cpp(130,3)
+      remark #15344: loop was not vectorized: vector dependence prevents vectorization
+      remark #15346: vector dependence: assumed FLOW dependence between _M_start line 131 and _M_start line 131
+      remark #15346: vector dependence: assumed ANTI dependence between _M_start line 131 and _M_start line 131
+   LOOP END
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.cpp(146,2)
+   remark #15382: vectorization support: call to function sprintf cannot be vectorized   [ ../src/silo_output.cpp(150,4) ]
+   remark #15382: vectorization support: call to function sprintf cannot be vectorized   [ ../src/silo_output.cpp(151,4) ]
+   remark #15382: vectorization support: call to function sprintf cannot be vectorized   [ ../src/silo_output.cpp(153,4) ]
+   remark #15382: vectorization support: call to function sprintf cannot be vectorized   [ ../src/silo_output.cpp(154,4) ]
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization
+   remark #15346: vector dependence: assumed OUTPUT dependence between  line 150 and  line 154
+   remark #15346: vector dependence: assumed OUTPUT dependence between  line 154 and  line 150
+
+   LOOP BEGIN at ../src/silo_output.cpp(148,3)
+      remark #15382: vectorization support: call to function sprintf cannot be vectorized   [ ../src/silo_output.cpp(150,4) ]
+      remark #15382: vectorization support: call to function sprintf cannot be vectorized   [ ../src/silo_output.cpp(151,4) ]
+      remark #15382: vectorization support: call to function sprintf cannot be vectorized   [ ../src/silo_output.cpp(153,4) ]
+      remark #15382: vectorization support: call to function sprintf cannot be vectorized   [ ../src/silo_output.cpp(154,4) ]
+      remark #15344: loop was not vectorized: vector dependence prevents vectorization
+      remark #15346: vector dependence: assumed OUTPUT dependence between  line 150 and  line 154
+      remark #15346: vector dependence: assumed OUTPUT dependence between  line 154 and  line 150
+   LOOP END
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.cpp(157,2)
+   remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
+
+   LOOP BEGIN at ../src/silo_output.cpp(159,38)
+      remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+   LOOP END
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.cpp(170,2)
+   remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
+   remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization
+   remark #15346: vector dependence: assumed ANTI dependence between __mem_4775 line 547 and __mem_4775 line 68
+   remark #15346: vector dependence: assumed FLOW dependence between U712 line 68 and U712 line 547
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.cpp(170,2)
+   remark #15382: vectorization support: call to function _ZNSt6vectorIdSaIdEED1Ev cannot be vectorized
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.cpp(107,14)
+   remark #15382: vectorization support: call to function _ZN44_INTERNAL_22____src_silo_output_cpp_c2dfd5bd9__gnu_cxx27__exchange_and_add_dispatchEPii cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(245,12) ]
+   remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization
+   remark #15346: vector dependence: assumed ANTI dependence between _M_refcount line 547 and _M_refcount line 245
+   remark #15346: vector dependence: assumed FLOW dependence between U70f line 245 and U70f line 547
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.cpp(106,22)
+   remark #15382: vectorization support: call to function _ZNSt6vectorIdSaIdEED1Ev cannot be vectorized
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.cpp(106,22)
+   remark #15382: vectorization support: call to function _ZNSt6vectorIdSaIdEED1Ev cannot be vectorized
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::vector<std::size_t, std::allocator<std::_Bit_type>>::vector<std::list<std::size_t, std::allocator<std::_Bit_type>>::iterator, void>(std::vector<std::size_t, std::allocator<std::_Bit_type>> *, std::list<std::size_t, std::allocator<std::_Bit_type>>::iterator, std::list<std::size_t, std::allocator<std::_Bit_type>>::iterator, const std::vector<std::size_t, std::allocator<std::_Bit_type>>::allocator_type &)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_iterator_base_funcs.h(80,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(404,11)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(404,11)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP END
+===========================================================================
+
+Begin optimization report for: hpx::lcos::detail::wait_all_frame<hpx::util::tuple<const std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>> &>>::wait_all(hpx::lcos::detail::wait_all_frame<hpx::util::tuple<const std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>> &>> *)
+
+    Report from: Vector optimizations [vec]
+
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(144,38) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/wait_all.hpp(302,28)
+   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: hpx::lcos::detail::wait_all_frame<hpx::util::tuple<const std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>> &>>::await_range<boost::lazy_enable_if_c<true, boost::fusion::result_of::begin<const hpx::util::tuple<const std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>> &>>>::type, boost::range_iterator<boost::unwrap_reference<const std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>>::type, void>::type>(hpx::lcos::detail::wait_all_frame<hpx::util::tuple<const std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>> &>> *, boost::lazy_enable_if_c<true, boost::fusion::result_of::begin<const hpx::util::tuple<const std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>> &>>>::type, boost::range_iterator<boost::unwrap_reference<const std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>>::type, void>::type, boost::range_iterator<boost::unwrap_reference<const std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>>::type, void>::type)
+
+    Report from: Vector optimizations [vec]
+
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/wait_all.hpp(194,33)
+   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/smart_ptr/detail/atomic_count_gcc_x86.hpp(60,0) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: boost::unique_lock<hpx::lcos::local::spinlock>::lock(boost::unique_lock<hpx::lcos::local::spinlock> *)
+
+    Report from: Vector optimizations [vec]
+
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(144,38) inlined into /home/dmarce1/packages/intel64/include/boost/thread/lock_types.hpp(346,10)
+   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::_List_base<silo_output::silo_zone, std::allocator<silo_output::silo_zone>>::_M_clear(std::_List_base<silo_output::silo_zone, std::allocator<silo_output::silo_zone>> *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/list.tcc(70,7)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::vector<double, std::allocator<double>>::vector(std::vector<double, std::allocator<double>> *, std::vector<double, std::allocator<double>>::size_type, const std::vector<double, std::allocator<double>>::allocator_type &)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(279,9)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(279,9)
+   <Peeled>
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(279,9)
+      remark #15388: vectorization support: reference __first_251068 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15399: vectorization support: unroll factor set to 2
+      remark #15300: LOOP WAS VECTORIZED
+      remark #15442: entire loop may be executed in remainder
+      remark #15449: unmasked aligned unit stride stores: 1 
+      remark #15475: --- begin vector loop cost summary ---
+      remark #15476: scalar loop cost: 3 
+      remark #15477: vector loop cost: 1.500 
+      remark #15478: estimated potential speedup: 1.280 
+      remark #15479: lightweight vector operations: 3 
+      remark #15488: --- end vector loop cost summary ---
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(279,9)
+   <Remainder>
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>::~vector(std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>> *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(424,9)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>>::~vector(std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>> *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(424,9)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::vector<int, std::allocator<int>>::vector(std::vector<int, std::allocator<int>> *, std::vector<int, std::allocator<int>>::size_type, const std::vector<int, std::allocator<int>>::allocator_type &)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(279,9)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(279,9)
+   <Peeled>
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(279,9)
+      remark #15389: vectorization support: reference __first_306747 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15300: LOOP WAS VECTORIZED
+      remark #15442: entire loop may be executed in remainder
+      remark #15449: unmasked aligned unit stride stores: 1 
+      remark #15475: --- begin vector loop cost summary ---
+      remark #15476: scalar loop cost: 2 
+      remark #15477: vector loop cost: 0.750 
+      remark #15478: estimated potential speedup: 1.450 
+      remark #15479: lightweight vector operations: 3 
+      remark #15488: --- end vector loop cost summary ---
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(279,9)
+   <Remainder>
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::_Rb_tree<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_type, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type, std::_Identity<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type>, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_compare, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::_Key_alloc_type>::clear(std::_Rb_tree<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_type, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type, std::_Identity<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type>, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_compare, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::_Key_alloc_type> *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(1242,7) inlined into /usr/include/c++/4.9.0/bits/stl_tree.h(908,9)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::_Rb_tree<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_type, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type, std::_Identity<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type>, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_compare, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::_Key_alloc_type>::_M_erase(std::_Rb_tree<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_type, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type, std::_Identity<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type>, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_compare, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::_Key_alloc_type> *, std::_Rb_tree<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_type, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type, std::_Identity<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type>, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_compare, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::_Key_alloc_type>::_Link_type)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(1242,7)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::list<silo_output::silo_zone, std::allocator<silo_output::silo_zone>>::size(const std::list<silo_output::silo_zone, std::allocator<silo_output::silo_zone>> *) const
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_iterator_base_funcs.h(80,7) inlined into /usr/include/c++/4.9.0/bits/stl_list.h(887,16)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::_Destroy_aux<false>::__destroy<std::_Vector_base<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>::pointer>(std::_Vector_base<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>::pointer, std::_Vector_base<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>::pointer)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP END
+===========================================================================
+
+Begin optimization report for: hpx::util::scoped_unlock<hpx::lcos::local::spinlock::scoped_lock>::~scoped_unlock(hpx::util::scoped_unlock<hpx::lcos::local::spinlock::scoped_lock> *)
+
+    Report from: Vector optimizations [vec]
+
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(144,38) inlined into /home/dmarce1/packages/intel64/include/hpx/util/scoped_unlock.hpp(24,16)
+   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: hpx::lcos::local::detail::condition_variable::reset_queue_entry::~reset_queue_entry(hpx::lcos::local::detail::condition_variable::reset_queue_entry *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/intrusive/detail/common_slist_algorithms.hpp(37,26) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/detail/condition_variable.hpp(61,24)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+===========================================================================
+
+Begin optimization report for: lambda []::operator()(const struct lambda [] *, std::vector<double, std::allocator<double>> *)->void
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at ../src/silo_output.cpp(54,6)
+   remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/silo_output.cpp(55,13) ]
+   remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/silo_output.cpp(55,13) ]
+   remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/silo_output.cpp(55,13) ]
+   remark #15410: vectorization support: conversion from int to float will be emulated   [ ../src/silo_output.cpp(55,27) ]
+   remark #15300: LOOP WAS VECTORIZED
+   remark #15448: unmasked aligned unit stride loads: 1 
+   remark #15449: unmasked aligned unit stride stores: 1 
+   remark #15475: --- begin vector loop cost summary ---
+   remark #15476: scalar loop cost: 135 
+   remark #15477: vector loop cost: 24.000 
+   remark #15478: estimated potential speedup: 2.200 
+   remark #15479: lightweight vector operations: 7 
+   remark #15480: medium-overhead vector operations: 2 
+   remark #15487: type converts: 1 
+   remark #15488: --- end vector loop cost summary ---
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.cpp(54,6)
+<Remainder>
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/silo_output.cpp(62,19)
+   remark #15389: vectorization support: reference __first_306747 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15427: loop was completely unrolled
+   remark #15399: vectorization support: unroll factor set to 2
+   remark #15300: LOOP WAS VECTORIZED
+   remark #15451: unmasked unaligned unit stride stores: 1 
+   remark #15475: --- begin vector loop cost summary ---
+   remark #15476: scalar loop cost: 2 
+   remark #15477: vector loop cost: 3.000 
+   remark #15478: estimated potential speedup: 1.060 
+   remark #15479: lightweight vector operations: 2 
+   remark #15481: heavy-overhead vector operations: 1 
+   remark #15488: --- end vector loop cost summary ---
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.cpp(64,9)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at ../src/silo_output.cpp(64,9)
+   <Multiversioned v2>
+      remark #15388: vectorization support: reference _M_elems has aligned access   [ ../src/silo_output.cpp(65,18) ]
+      remark #15389: vectorization support: reference _M_current has unaligned access   [ ../src/silo_output.cpp(65,18) ]
+      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/silo_output.cpp(65,18) ]
+      remark #15399: vectorization support: unroll factor set to 4
+      remark #15300: LOOP WAS VECTORIZED
+      remark #15449: unmasked aligned unit stride stores: 1 
+      remark #15450: unmasked unaligned unit stride loads: 1 
+      remark #15475: --- begin vector loop cost summary ---
+      remark #15476: scalar loop cost: 4 
+      remark #15477: vector loop cost: 4.750 
+      remark #15478: estimated potential speedup: 1.350 
+      remark #15479: lightweight vector operations: 4 
+      remark #15480: medium-overhead vector operations: 1 
+      remark #15481: heavy-overhead vector operations: 1 
+      remark #15488: --- end vector loop cost summary ---
+   LOOP END
+
+   LOOP BEGIN at ../src/silo_output.cpp(64,9)
+   <Remainder, Multiversioned v2>
+   LOOP END
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/silo_output.cpp(70,17)
+   remark #15389: vectorization support: reference __first_251068 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
+   remark #15451: unmasked unaligned unit stride stores: 1 
+   remark #15475: --- begin vector loop cost summary ---
+   remark #15476: scalar loop cost: 3 
+   remark #15477: vector loop cost: 3.000 
+   remark #15478: estimated potential speedup: 0.750 
+   remark #15479: lightweight vector operations: 2 
+   remark #15481: heavy-overhead vector operations: 1 
+   remark #15488: --- end vector loop cost summary ---
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.cpp(76,35)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+
+   LOOP BEGIN at ../src/silo_output.hpp(93,4) inlined into ../src/silo_output.cpp(76,35)
+      remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
+   LOOP END
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.hpp(93,4) inlined into ../src/silo_output.cpp(76,35)
+   remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.hpp(93,4) inlined into ../src/silo_output.cpp(81,26)
+   remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
+LOOP END
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at ../src/silo_output.cpp(59,6)
+   remark #15536: loop was not vectorized: inner loop throttling prevents vectorization of this outer loop. Refer to inner loop message for more details.
+
+   LOOP BEGIN at ../src/silo_output.cpp(60,7)
+      remark #15536: loop was not vectorized: inner loop throttling prevents vectorization of this outer loop. Refer to inner loop message for more details.
+
+      LOOP BEGIN at ../src/silo_output.cpp(61,8)
+         remark #15536: loop was not vectorized: inner loop throttling prevents vectorization of this outer loop. Refer to inner loop message for more details.
+
+         LOOP BEGIN at ../src/silo_output.cpp(69,9)
+            remark #15536: loop was not vectorized: inner loop throttling prevents vectorization of this outer loop. Refer to inner loop message for more details.
+
+            LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(144,38) inlined into ../src/silo_output.cpp(75,17)
+               remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
+            LOOP END
+         LOOP END
+
+         LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(144,38) inlined into ../src/silo_output.cpp(88,16)
+            remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
+         LOOP END
+      LOOP END
+   LOOP END
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::list<silo_output::silo_zone, std::allocator<silo_output::silo_zone>>::_M_create_node<std::remove_reference<silo_output::silo_zone &>::type>(std::list<silo_output::silo_zone, std::allocator<silo_output::silo_zone>> *, std::remove_reference<silo_output::silo_zone &>::type &&)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_list.h(514,32)
+   remark #15389: vectorization support: reference __first_306747 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15427: loop was completely unrolled
+   remark #15399: vectorization support: unroll factor set to 2
+   remark #15300: LOOP WAS VECTORIZED
+   remark #15451: unmasked unaligned unit stride stores: 1 
+   remark #15475: --- begin vector loop cost summary ---
+   remark #15476: scalar loop cost: 2 
+   remark #15477: vector loop cost: 3.000 
+   remark #15478: estimated potential speedup: 1.060 
+   remark #15479: lightweight vector operations: 2 
+   remark #15481: heavy-overhead vector operations: 1 
+   remark #15488: --- end vector loop cost summary ---
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::_Rb_tree<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_type, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type, std::_Identity<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type>, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_compare, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::_Key_alloc_type>::_M_create_node<std::remove_reference<silo_output::vertex &>::type>(std::_Rb_tree<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_type, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type, std::_Identity<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type>, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_compare, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::_Key_alloc_type> *, std::remove_reference<silo_output::vertex &>::type &&)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_tree.h(421,8)
+   remark #15389: vectorization support: reference __first_251068 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
+   remark #15451: unmasked unaligned unit stride stores: 1 
+   remark #15475: --- begin vector loop cost summary ---
+   remark #15476: scalar loop cost: 3 
+   remark #15477: vector loop cost: 3.000 
+   remark #15478: estimated potential speedup: 0.750 
+   remark #15479: lightweight vector operations: 2 
+   remark #15481: heavy-overhead vector operations: 1 
+   remark #15488: --- end vector loop cost summary ---
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::_Rb_tree<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_type, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type, std::_Identity<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type>, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_compare, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::_Key_alloc_type>::_M_get_insert_unique_pos(std::_Rb_tree<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_type, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type, std::_Identity<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type>, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_compare, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::_Key_alloc_type> *, const std::_Rb_tree<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_type, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type, std::_Identity<std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::value_type>, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::key_compare, std::set<silo_output::vertex, silo_output::vertex_less_functor, std::allocator<silo_output::vertex>>::_Key_alloc_type>::key_type &)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(1441,7)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+
+   LOOP BEGIN at ../src/silo_output.hpp(93,4) inlined into /usr/include/c++/4.9.0/bits/stl_tree.h(1444,35)
+      remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
+   LOOP END
+LOOP END
+
+LOOP BEGIN at ../src/silo_output.hpp(93,4) inlined into /usr/include/c++/4.9.0/bits/stl_tree.h(1455,33)
+   remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
+LOOP END
+===========================================================================
+
+Begin optimization report for: hpx::lcos::detail::continuation<hpx::lcos::future<std::vector<double, std::allocator<double>>>, boost::disable_if_c<false, hpx::util::detail::unwrapped_impl<struct lambda []>>::type, boost::detail::cpp0x_result_of_impl<boost::disable_if_c<false, hpx::util::detail::unwrapped_impl<struct lambda []>>::type (hpx::lcos::future<std::vector<double, std::allocator<double>>> *), void>::type>::reset_id::~reset_id(hpx::lcos::detail::continuation<hpx::lcos::future<std::vector<double, std::allocator<double>>>, boost::disable_if_c<false, hpx::util::detail::unwrapped_impl<struct lambda []>>::type, boost::detail::cpp0x_result_of_impl<boost::disable_if_c<false, hpx::util::detail::unwrapped_impl<struct lambda []>>::type (hpx::lcos::future<std::vector<double, std::allocator<double>>> *), void>::type>::reset_id *)
+
+    Report from: Vector optimizations [vec]
+
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(144,38) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_continuation.hpp(181,25)
+   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: boost::exception_detail::string_stub_dump<boost::error_info<boost::tag_original_exception_type, const std::type_info *>>(std::string *, const boost::error_info<boost::tag_original_exception_type, const std::type_info *> &)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/exception/detail/object_hex_dump.hpp(40,52) inlined into /home/dmarce1/packages/intel64/include/boost/exception/to_string_stub.hpp(85,27)
+   remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
+LOOP END
+===========================================================================
+
+Begin optimization report for: hpx::lcos::detail::future_data<void>::wait_until(hpx::lcos::detail::future_data<void> *, const boost::chrono::steady_clock::time_point &, hpx::error_code &)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/intrusive/detail/common_slist_algorithms.hpp(37,26) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/detail/future_data.hpp(361,27)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/intrusive/detail/common_slist_algorithms.hpp(37,26) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/detail/future_data.hpp(361,27)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+===========================================================================
+
+Begin optimization report for: hpx::lcos::detail::future_data<void>::wait(hpx::lcos::detail::future_data<void> *, hpx::error_code &)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/intrusive/detail/common_slist_algorithms.hpp(37,26) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/detail/future_data.hpp(342,23)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/intrusive/detail/common_slist_algorithms.hpp(37,26) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/detail/future_data.hpp(342,23)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+===========================================================================
+
+Begin optimization report for: hpx::lcos::local::detail::condition_variable::notify_all<hpx::lcos::local::spinlock::scoped_lock>(hpx::lcos::local::detail::condition_variable *, hpx::lcos::local::spinlock::scoped_lock &, hpx::error_code &)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/detail/condition_variable.hpp(140,13)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+===========================================================================
+
+Begin optimization report for: hpx::lcos::local::detail::condition_variable::abort_all<hpx::lcos::local::no_mutex>(hpx::lcos::local::detail::condition_variable *, hpx::lcos::local::no_mutex &)
+
+    Report from: Vector optimizations [vec]
+
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/detail/condition_variable.hpp(171,13)
+   remark #15529: loop was not vectorized: volatile assignment was not vectorized. Try using non-volatile assignment.   [ /home/dmarce1/packages/intel64/include/hpx/runtime/threads/detail/tagged_thread_state.hpp(39,24) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::add_msg(const hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type> *, const hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type &) const
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(1259,7) inlined into /home/dmarce1/packages/intel64/include/hpx/util/logging/detail/cache_before_init.hpp(138,47)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined into /home/dmarce1/packages/intel64/include/hpx/util/logging/detail/cache_before_init.hpp(139,22)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /home/dmarce1/packages/intel64/include/hpx/util/logging/detail/cache_before_init.hpp(139,22)
+   remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
+   remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
+   remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
+   remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization
+   remark #15346: vector dependence: assumed ANTI dependence between U6c line 245 and U6c line 249
+   remark #15346: vector dependence: assumed FLOW dependence between U67 line 249 and U67 line 245
+LOOP END
+===========================================================================
+
+Begin optimization report for: boost::exception_detail::error_info_container_impl::clone(boost::exception_detail::refcount_ptr<boost::exception_detail::error_info_container> *, const boost::exception_detail::error_info_container_impl *) const
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(105,7) inlined into /home/dmarce1/packages/intel64/include/boost/exception/info.hpp(159,26)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(119,7) inlined into /home/dmarce1/packages/intel64/include/boost/exception/info.hpp(159,26)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(1242,7) inlined into /home/dmarce1/packages/intel64/include/boost/exception/info.hpp(159,26)
+   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/smart_ptr/detail/sp_counted_base_gcc_x86.hpp(43,0) ]
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(1216,4) inlined into /home/dmarce1/packages/intel64/include/boost/exception/info.hpp(159,26)
+   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/smart_ptr/detail/sp_counted_base_gcc_x86.hpp(59,0) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: boost::exception_detail::error_info_container_impl::release(const boost::exception_detail::error_info_container_impl *) const
+
+    Report from: Vector optimizations [vec]
+
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(1242,7) inlined into /home/dmarce1/packages/intel64/include/boost/exception/info.hpp(148,21)
+   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/smart_ptr/detail/sp_counted_base_gcc_x86.hpp(43,0) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: boost::exception_detail::error_info_container_impl::diagnostic_information(const boost::exception_detail::error_info_container_impl *, const char *) const
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/exception/info.hpp(113,91)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+===========================================================================
+
+Begin optimization report for: boost::exception_detail::error_info_container_impl::get(boost::shared_ptr<boost::exception_detail::error_info_base> *, const boost::exception_detail::error_info_container_impl *, const boost::exception_detail::type_info_ &) const
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/typeinfo(116,35) inlined into /home/dmarce1/packages/intel64/include/boost/exception/info.hpp(94,61)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+===========================================================================
+
+Begin optimization report for: boost::exception_detail::error_info_container_impl::set(boost::exception_detail::error_info_container_impl *, const boost::shared_ptr<boost::exception_detail::error_info_base> &, const boost::exception_detail::type_info_ &)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/typeinfo(116,35) inlined into /home/dmarce1/packages/intel64/include/boost/exception/info.hpp(87,22)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::_Destroy_aux<false>::__destroy<std::vector<hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::message, std::allocator<hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::message>>::pointer>(std::vector<hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::message, std::allocator<hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::message>>::pointer, std::vector<hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::message, std::allocator<hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::message>>::pointer)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4)
+   remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
+   remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
+   remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
+   remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization
+   remark #15346: vector dependence: assumed ANTI dependence between U6c line 245 and U6c line 249
+   remark #15346: vector dependence: assumed FLOW dependence between U67 line 249 and U67 line 245
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::_Rb_tree<std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::key_type, std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::value_type, std::_Select1st<std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::value_type>, std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::key_compare, std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::_Pair_alloc_type>::_M_get_insert_hint_unique_pos(std::_Rb_tree<std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::key_type, std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::value_type, std::_Select1st<std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::value_type>, std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::key_compare, std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::_Pair_alloc_type> *, std::_Rb_tree<std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::key_type, std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::value_type, std::_Select1st<std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::value_type>, std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::key_compare, std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::_Pair_alloc_type>::const_iterator, const std::_Rb_tree<std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::key_type, std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::value_type, std::_Select1st<std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::value_type>, std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::key_compare, std::map<hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info, std::less<hpx::util::logging::detail::thread_id_type>, std::allocator<std::pair<const hpx::util::logging::detail::thread_id_type, hpx::util::logging::detail::cache_before_init<hpx::util::logging::detail::find_gather_if_default<hpx::util::logging::logger_holder<hpx::util::logger_type>::gather_type>::msg_type>::thread_info>>>::_Pair_alloc_type>::key_type &)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(1441,7) inlined into /usr/include/c++/4.9.0/bits/stl_tree.h(1545,38)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(1441,7) inlined into /usr/include/c++/4.9.0/bits/stl_tree.h(1561,38)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(1441,7) inlined into /usr/include/c++/4.9.0/bits/stl_tree.h(1577,38)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::_Rb_tree<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_type, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type, std::_Select1st<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type>, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_compare, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::_Pair_alloc_type>::_M_erase(std::_Rb_tree<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_type, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type, std::_Select1st<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type>, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_compare, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::_Pair_alloc_type> *, std::_Rb_tree<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_type, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type, std::_Select1st<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type>, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_compare, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::_Pair_alloc_type>::_Link_type)
+
+    Report from: Vector optimizations [vec]
+
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(1242,7)
+   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/smart_ptr/detail/sp_counted_base_gcc_x86.hpp(43,0) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::_Rb_tree<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_type, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type, std::_Select1st<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type>, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_compare, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::_Pair_alloc_type>::_M_copy(std::_Rb_tree<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_type, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type, std::_Select1st<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type>, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_compare, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::_Pair_alloc_type> *, std::_Rb_tree<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_type, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type, std::_Select1st<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type>, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_compare, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::_Pair_alloc_type>::_Const_Link_type, std::_Rb_tree<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_type, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type, std::_Select1st<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type>, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_compare, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::_Pair_alloc_type>::_Link_type)
+
+    Report from: Vector optimizations [vec]
+
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(1216,4)
+   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/smart_ptr/detail/sp_counted_base_gcc_x86.hpp(59,0) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::_Rb_tree<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_type, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type, std::_Select1st<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type>, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_compare, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::_Pair_alloc_type>::_M_get_insert_hint_unique_pos(std::_Rb_tree<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_type, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type, std::_Select1st<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type>, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_compare, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::_Pair_alloc_type> *, std::_Rb_tree<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_type, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type, std::_Select1st<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type>, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_compare, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::_Pair_alloc_type>::const_iterator, const std::_Rb_tree<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_type, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type, std::_Select1st<std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::value_type>, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::key_compare, std::map<boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>, std::less<boost::exception_detail::type_info_>, std::allocator<std::pair<const boost::exception_detail::type_info_, boost::shared_ptr<boost::exception_detail::error_info_base>>>>::_Pair_alloc_type>::key_type &)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(1441,7) inlined into /usr/include/c++/4.9.0/bits/stl_tree.h(1545,38)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(1441,7) inlined into /usr/include/c++/4.9.0/bits/stl_tree.h(1561,38)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(1441,7) inlined into /usr/include/c++/4.9.0/bits/stl_tree.h(1577,38)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::vector<double, std::allocator<double>>::_M_default_append(std::vector<double, std::allocator<double>> *, std::vector<double, std::allocator<double>>::size_type)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(545,8)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(545,8)
+   <Peeled>
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(545,8)
+      remark #15388: vectorization support: reference __first_251068 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15399: vectorization support: unroll factor set to 2
+      remark #15300: LOOP WAS VECTORIZED
+      remark #15442: entire loop may be executed in remainder
+      remark #15449: unmasked aligned unit stride stores: 1 
+      remark #15475: --- begin vector loop cost summary ---
+      remark #15476: scalar loop cost: 3 
+      remark #15477: vector loop cost: 1.500 
+      remark #15478: estimated potential speedup: 1.280 
+      remark #15479: lightweight vector operations: 3 
+      remark #15488: --- end vector loop cost summary ---
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(545,8)
+   <Remainder>
+   LOOP END
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(559,9)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(562,5)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(562,5)
+   <Peeled>
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(562,5)
+      remark #15388: vectorization support: reference __first_251068 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15399: vectorization support: unroll factor set to 2
+      remark #15300: LOOP WAS VECTORIZED
+      remark #15442: entire loop may be executed in remainder
+      remark #15449: unmasked aligned unit stride stores: 1 
+      remark #15475: --- begin vector loop cost summary ---
+      remark #15476: scalar loop cost: 3 
+      remark #15477: vector loop cost: 1.500 
+      remark #15478: estimated potential speedup: 1.280 
+      remark #15479: lightweight vector operations: 3 
+      remark #15488: --- end vector loop cost summary ---
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(562,5)
+   <Remainder>
+   LOOP END
+LOOP END
+===========================================================================
