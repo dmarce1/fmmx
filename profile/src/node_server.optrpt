@@ -4,19 +4,19 @@ Begin optimization report for: node_server::node_server(node_server *)
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(521,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(507,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(521,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(507,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(521,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(507,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(521,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(507,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 ===========================================================================
@@ -112,19 +112,19 @@ Begin optimization report for: node_server::node_server(node_server *const)
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(521,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(507,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(521,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(507,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(521,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(507,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(521,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(507,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 ===========================================================================
@@ -134,19 +134,19 @@ Begin optimization report for: node_server::node_server(node_server *, hpx::nami
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(540,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(526,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(540,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(526,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(540,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(526,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(540,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(526,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 ===========================================================================
@@ -156,19 +156,19 @@ Begin optimization report for: node_server::node_server(node_server *const, hpx:
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(540,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(526,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(540,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(526,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(540,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(526,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(540,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(526,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 ===========================================================================
@@ -178,19 +178,19 @@ Begin optimization report for: node_server::node_server(node_server *, node_clie
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(548,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(534,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(548,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(534,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(548,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(534,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(548,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(534,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 ===========================================================================
@@ -200,19 +200,19 @@ Begin optimization report for: node_server::node_server(node_server *const, node
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(548,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(534,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(548,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(534,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(548,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(534,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(548,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(534,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 ===========================================================================
@@ -222,11 +222,11 @@ Begin optimization report for: node_server::~node_server(node_server *)
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(609,1)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(596,1)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(609,1)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(596,1)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 ===========================================================================
@@ -236,11 +236,11 @@ Begin optimization report for: node_server::~node_server(node_server *const)
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(607,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(594,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(607,14)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(594,14)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 ===========================================================================
@@ -250,7 +250,7 @@ Begin optimization report for: node_server::get_node_count(const node_server *) 
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(511,29) inlined into ../src/node_server.cpp(555,42)
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(511,29) inlined into ../src/node_server.cpp(541,42)
    remark #15427: loop was completely unrolled
    remark #15399: vectorization support: unroll factor set to 4
    remark #15300: LOOP WAS VECTORIZED
@@ -264,15 +264,15 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(511,29) inlined in
    remark #15488: --- end vector loop cost summary ---
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(556,3)
+LOOP BEGIN at ../src/node_server.cpp(542,3)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(560,3)
+LOOP BEGIN at ../src/node_server.cpp(546,3)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into ../src/node_server.cpp(563,2)
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into ../src/node_server.cpp(549,2)
    remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
 LOOP END
 ===========================================================================
@@ -306,21 +306,21 @@ Begin optimization report for: node_server::get_data(std::vector<double, std::al
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/node_server.cpp(527,22)
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/node_server.cpp(513,22)
    remark #15398: loop was not vectorized: loop was transformed to memset or memcpy
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(529,2)
+LOOP BEGIN at ../src/node_server.cpp(515,2)
    remark #15542: loop was not vectorized: inner loop was already vectorized
 
-   LOOP BEGIN at ../src/node_server.cpp(530,3)
+   LOOP BEGIN at ../src/node_server.cpp(516,3)
    <Peeled, Multiversioned v1>
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(530,3)
+   LOOP BEGIN at ../src/node_server.cpp(516,3)
    <Multiversioned v1>
-      remark #15389: vectorization support: reference _M_current has unaligned access   [ ../src/node_server.cpp(531,4) ]
-      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(531,4) ]
+      remark #15389: vectorization support: reference _M_current has unaligned access   [ ../src/node_server.cpp(517,4) ]
+      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(517,4) ]
       remark #15399: vectorization support: unroll factor set to 4
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
@@ -336,34 +336,34 @@ LOOP BEGIN at ../src/node_server.cpp(529,2)
       remark #15488: --- end vector loop cost summary ---
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(530,3)
+   LOOP BEGIN at ../src/node_server.cpp(516,3)
    <Remainder, Multiversioned v1>
-      remark #15389: vectorization support: reference _M_current has unaligned access   [ ../src/node_server.cpp(531,4) ]
-      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(531,4) ]
+      remark #15389: vectorization support: reference _M_current has unaligned access   [ ../src/node_server.cpp(517,4) ]
+      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(517,4) ]
       remark #15301: REMAINDER LOOP WAS VECTORIZED
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(530,3)
+   LOOP BEGIN at ../src/node_server.cpp(516,3)
    <Remainder, Multiversioned v1>
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(530,3)
+   LOOP BEGIN at ../src/node_server.cpp(516,3)
    <Multiversioned v2>
       remark #15304: loop was not vectorized: non-vectorizable loop instance from multiversioning
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(530,3)
+   LOOP BEGIN at ../src/node_server.cpp(516,3)
    <Remainder, Multiversioned v2>
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(533,3)
+   LOOP BEGIN at ../src/node_server.cpp(519,3)
    <Peeled, Multiversioned v1>
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(533,3)
+   LOOP BEGIN at ../src/node_server.cpp(519,3)
    <Multiversioned v1>
-      remark #15389: vectorization support: reference _M_current has unaligned access   [ ../src/node_server.cpp(534,4) ]
-      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(534,4) ]
+      remark #15389: vectorization support: reference _M_current has unaligned access   [ ../src/node_server.cpp(520,4) ]
+      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(520,4) ]
       remark #15399: vectorization support: unroll factor set to 4
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
@@ -379,23 +379,23 @@ LOOP BEGIN at ../src/node_server.cpp(529,2)
       remark #15488: --- end vector loop cost summary ---
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(533,3)
+   LOOP BEGIN at ../src/node_server.cpp(519,3)
    <Remainder, Multiversioned v1>
-      remark #15389: vectorization support: reference _M_current has unaligned access   [ ../src/node_server.cpp(534,4) ]
-      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(534,4) ]
+      remark #15389: vectorization support: reference _M_current has unaligned access   [ ../src/node_server.cpp(520,4) ]
+      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(520,4) ]
       remark #15301: REMAINDER LOOP WAS VECTORIZED
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(533,3)
+   LOOP BEGIN at ../src/node_server.cpp(519,3)
    <Remainder, Multiversioned v1>
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(533,3)
+   LOOP BEGIN at ../src/node_server.cpp(519,3)
    <Multiversioned v2>
       remark #15304: loop was not vectorized: non-vectorizable loop instance from multiversioning
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(533,3)
+   LOOP BEGIN at ../src/node_server.cpp(519,3)
    <Remainder, Multiversioned v2>
    LOOP END
 LOOP END
@@ -406,7 +406,7 @@ Begin optimization report for: node_server::get_leaf_list(std::list<std::size_t,
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(511,29) inlined into ../src/node_server.cpp(570,56)
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(511,29) inlined into ../src/node_server.cpp(556,56)
    remark #15427: loop was completely unrolled
    remark #15399: vectorization support: unroll factor set to 4
    remark #15300: LOOP WAS VECTORIZED
@@ -420,19 +420,19 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(511,29) inlined in
    remark #15488: --- end vector loop cost summary ---
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(571,3)
+LOOP BEGIN at ../src/node_server.cpp(557,3)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(575,18)
+LOOP BEGIN at ../src/node_server.cpp(561,18)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 
-   LOOP BEGIN at /usr/include/c++/4.9.0/bits/list.tcc(70,7) inlined into ../src/node_server.cpp(576,9)
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/list.tcc(70,7) inlined into ../src/node_server.cpp(562,9)
       remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
    LOOP END
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into ../src/node_server.cpp(578,2)
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into ../src/node_server.cpp(564,2)
    remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
 LOOP END
 ===========================================================================
@@ -494,11 +494,11 @@ Begin optimization report for: node_server::send_expansions(node_server *)
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at ../src/node_server.cpp(349,19)
+LOOP BEGIN at ../src/node_server.cpp(337,19)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/event.hpp(79,17) inlined into ../src/node_server.cpp(354,14)
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/event.hpp(79,17) inlined into ../src/node_server.cpp(342,14)
    remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
 LOOP END
 
@@ -506,7 +506,7 @@ LOOP END
 Non-optimizable loops:
 
 
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(50,9) inlined into ../src/node_server.cpp(354,14)
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(50,9) inlined into ../src/node_server.cpp(342,14)
    remark #15341: loop was not vectorized: nonstandard loop is not a vectorization candidate
 LOOP END
 ===========================================================================
@@ -516,11 +516,11 @@ Begin optimization report for: node_server::set_boundary(node_server *, hpx::lco
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at ../src/node_server.cpp(349,19) inlined into ../src/node_server.cpp(261,3)
+LOOP BEGIN at ../src/node_server.cpp(337,19) inlined into ../src/node_server.cpp(249,3)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/event.hpp(79,17) inlined into ../src/node_server.cpp(261,3)
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/event.hpp(79,17) inlined into ../src/node_server.cpp(249,3)
    remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
 LOOP END
 
@@ -528,7 +528,7 @@ LOOP END
 Non-optimizable loops:
 
 
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(50,9) inlined into ../src/node_server.cpp(261,3)
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(50,9) inlined into ../src/node_server.cpp(249,3)
    remark #15341: loop was not vectorized: nonstandard loop is not a vectorization candidate
 LOOP END
 ===========================================================================
@@ -538,11 +538,11 @@ Begin optimization report for: node_server::M2L(node_server *, const std::vector
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/node_server.cpp(380,37)
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/node_server.cpp(368,37)
    remark #15398: loop was not vectorized: loop was transformed to memset or memcpy
 
-   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/node_server.cpp(380,37)
-      remark #15389: vectorization support: reference __first_532310 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/node_server.cpp(368,37)
+      remark #15389: vectorization support: reference __first_518387 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
       remark #15449: unmasked aligned unit stride stores: 1 
@@ -555,52 +555,52 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../
       remark #15488: --- end vector loop cost summary ---
    LOOP END
 
-   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/node_server.cpp(380,37)
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/node_server.cpp(368,37)
    <Remainder>
    LOOP END
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(383,38)
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(371,38)
    remark #15382: vectorization support: call to function _ZNSt6vectorIdSaIdEEC1Ev cannot be vectorized
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(384,17)
+LOOP BEGIN at ../src/node_server.cpp(372,17)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(401,61)
+LOOP BEGIN at ../src/node_server.cpp(382,61)
    remark #15542: loop was not vectorized: inner loop was already vectorized
 
-   LOOP BEGIN at ../src/node_server.cpp(410,5)
+   LOOP BEGIN at ../src/node_server.cpp(391,5)
       remark #15344: loop was not vectorized: vector dependence prevents vectorization
-      remark #15346: vector dependence: assumed OUTPUT dependence between U1fd line 416 and U1fd line 419
-      remark #15346: vector dependence: assumed OUTPUT dependence between U20b line 419 and U20b line 416
+      remark #15346: vector dependence: assumed OUTPUT dependence between U1f9 line 397 and U1f9 line 400
+      remark #15346: vector dependence: assumed OUTPUT dependence between U207 line 400 and U207 line 397
 
-      LOOP BEGIN at ../src/node_server.cpp(411,6)
+      LOOP BEGIN at ../src/node_server.cpp(392,6)
          remark #15344: loop was not vectorized: vector dependence prevents vectorization
-         remark #15346: vector dependence: assumed OUTPUT dependence between U1fd line 416 and U1fd line 419
-         remark #15346: vector dependence: assumed OUTPUT dependence between U20b line 419 and U20b line 416
+         remark #15346: vector dependence: assumed OUTPUT dependence between U1f9 line 397 and U1f9 line 400
+         remark #15346: vector dependence: assumed OUTPUT dependence between U207 line 400 and U207 line 397
 
-         LOOP BEGIN at ../src/node_server.cpp(413,7)
+         LOOP BEGIN at ../src/node_server.cpp(394,7)
             remark #15344: loop was not vectorized: vector dependence prevents vectorization
-            remark #15346: vector dependence: assumed OUTPUT dependence between U1fd line 416 and U1fd line 419
-            remark #15346: vector dependence: assumed OUTPUT dependence between U20b line 419 and U20b line 416
+            remark #15346: vector dependence: assumed OUTPUT dependence between U1f9 line 397 and U1f9 line 400
+            remark #15346: vector dependence: assumed OUTPUT dependence between U207 line 400 and U207 line 397
          LOOP END
 
-         LOOP BEGIN at ../src/node_server.cpp(413,7)
+         LOOP BEGIN at ../src/node_server.cpp(394,7)
          <Remainder>
          LOOP END
       LOOP END
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(426,5)
+   LOOP BEGIN at ../src/node_server.cpp(407,5)
    <Peeled, Multiversioned v1>
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(426,5)
+   LOOP BEGIN at ../src/node_server.cpp(407,5)
    <Multiversioned v1>
-      remark #15388: vectorization support: reference _M_start has aligned access   [ ../src/node_server.cpp(427,10) ]
+      remark #15388: vectorization support: reference _M_start has aligned access   [ ../src/node_server.cpp(408,10) ]
       remark #15399: vectorization support: unroll factor set to 2
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
@@ -615,34 +615,34 @@ LOOP BEGIN at ../src/node_server.cpp(401,61)
       remark #15488: --- end vector loop cost summary ---
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(426,5)
+   LOOP BEGIN at ../src/node_server.cpp(407,5)
    <Remainder, Multiversioned v1>
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(426,5)
+   LOOP BEGIN at ../src/node_server.cpp(407,5)
    <Multiversioned v2>
       remark #15304: loop was not vectorized: non-vectorizable loop instance from multiversioning
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(435,6)
+   LOOP BEGIN at ../src/node_server.cpp(416,6)
       remark #15344: loop was not vectorized: vector dependence prevents vectorization
-      remark #15346: vector dependence: assumed ANTI dependence between this line 437 and F64 line 437
-      remark #15346: vector dependence: assumed FLOW dependence between F64 line 437 and this line 437
+      remark #15346: vector dependence: assumed ANTI dependence between this line 418 and F64 line 418
+      remark #15346: vector dependence: assumed FLOW dependence between F64 line 418 and this line 418
 
-      LOOP BEGIN at ../src/node_server.cpp(436,7)
+      LOOP BEGIN at ../src/node_server.cpp(417,7)
          remark #15344: loop was not vectorized: vector dependence prevents vectorization
-         remark #15346: vector dependence: assumed ANTI dependence between this line 437 and F64 line 437
-         remark #15346: vector dependence: assumed FLOW dependence between F64 line 437 and this line 437
+         remark #15346: vector dependence: assumed ANTI dependence between this line 418 and F64 line 418
+         remark #15346: vector dependence: assumed FLOW dependence between F64 line 418 and this line 418
       LOOP END
 
-      LOOP BEGIN at ../src/node_server.cpp(436,7)
+      LOOP BEGIN at ../src/node_server.cpp(417,7)
       <Remainder>
       LOOP END
    LOOP END
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(446,2)
-   remark #15382: vectorization support: call to function _ZNSt6vectorIdSaIdEED1Ev cannot be vectorized
+LOOP BEGIN at /usr/include/c++/4.9.0/array(81,12) inlined into ../src/node_server.cpp(427,2)
+   remark #15382: vectorization support: call to function _ZdlPv cannot be vectorized   [ /usr/include/c++/4.9.0/ext/new_allocator.h(110,9) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
 LOOP END
 
@@ -650,10 +650,10 @@ LOOP END
 Non-optimizable loops:
 
 
-LOOP BEGIN at ../src/node_server.cpp(395,59)
+LOOP BEGIN at ../src/node_server.cpp(376,59)
    remark #15536: loop was not vectorized: inner loop throttling prevents vectorization of this outer loop. Refer to inner loop message for more details.
 
-   LOOP BEGIN at ../src/node_server.cpp(398,60)
+   LOOP BEGIN at ../src/node_server.cpp(379,60)
       remark #15341: loop was not vectorized: nonstandard loop is not a vectorization candidate
    LOOP END
 LOOP END
@@ -667,73 +667,11 @@ Begin optimization report for: std::vector<double, std::allocator<double>>::vect
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(322,4)
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
    remark #15346: vector dependence: assumed FLOW dependence between _M_current line 75 and _M_current line 75
-   remark #15346: vector dependence: assumed ANTI dependence between __cur.261993 line 75 and __cur.261993 line 75
+   remark #15346: vector dependence: assumed ANTI dependence between __cur.261536 line 75 and __cur.261536 line 75
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(322,4)
 <Remainder>
-LOOP END
-===========================================================================
-
-Begin optimization report for: std::vector<double, std::allocator<double>>::resize(std::vector<double, std::allocator<double>> *, std::vector<double, std::allocator<double>>::size_type)
-
-    Report from: Vector optimizations [vec]
-
-
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(676,4)
-   remark #15542: loop was not vectorized: inner loop was already vectorized
-
-   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(676,4)
-   <Peeled>
-   LOOP END
-
-   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(676,4)
-      remark #15388: vectorization support: reference __first_261694 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
-      remark #15399: vectorization support: unroll factor set to 2
-      remark #15300: LOOP WAS VECTORIZED
-      remark #15442: entire loop may be executed in remainder
-      remark #15449: unmasked aligned unit stride stores: 1 
-      remark #15475: --- begin vector loop cost summary ---
-      remark #15476: scalar loop cost: 3 
-      remark #15477: vector loop cost: 1.500 
-      remark #15478: estimated potential speedup: 1.280 
-      remark #15479: lightweight vector operations: 3 
-      remark #15488: --- end vector loop cost summary ---
-   LOOP END
-
-   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(676,4)
-   <Remainder>
-   LOOP END
-LOOP END
-
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(676,4)
-   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
-LOOP END
-
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(676,4)
-   remark #15542: loop was not vectorized: inner loop was already vectorized
-
-   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(676,4)
-   <Peeled>
-   LOOP END
-
-   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(676,4)
-      remark #15388: vectorization support: reference __first_261694 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
-      remark #15399: vectorization support: unroll factor set to 2
-      remark #15300: LOOP WAS VECTORIZED
-      remark #15442: entire loop may be executed in remainder
-      remark #15449: unmasked aligned unit stride stores: 1 
-      remark #15475: --- begin vector loop cost summary ---
-      remark #15476: scalar loop cost: 3 
-      remark #15477: vector loop cost: 1.500 
-      remark #15478: estimated potential speedup: 1.280 
-      remark #15479: lightweight vector operations: 3 
-      remark #15488: --- end vector loop cost summary ---
-   LOOP END
-
-   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(676,4)
-   <Remainder>
-   LOOP END
 LOOP END
 ===========================================================================
 
@@ -761,7 +699,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /us
    LOOP END
 
    LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(279,9)
-      remark #15388: vectorization support: reference __first_261694 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15388: vectorization support: reference __first_261237 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15399: vectorization support: unroll factor set to 2
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
@@ -785,27 +723,27 @@ Begin optimization report for: node_server::set_multipoles(node_server *, hpx::l
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at ../src/node_server.cpp(288,2) inlined into ../src/node_server.cpp(276,2)
+LOOP BEGIN at ../src/node_server.cpp(276,2) inlined into ../src/node_server.cpp(264,2)
    remark #15542: loop was not vectorized: inner loop was already vectorized
 
-   LOOP BEGIN at ../src/node_server.cpp(289,44) inlined into ../src/node_server.cpp(276,2)
+   LOOP BEGIN at ../src/node_server.cpp(277,44) inlined into ../src/node_server.cpp(264,2)
       remark #15542: loop was not vectorized: inner loop was already vectorized
 
-      LOOP BEGIN at ../src/node_server.cpp(290,45) inlined into ../src/node_server.cpp(276,2)
+      LOOP BEGIN at ../src/node_server.cpp(278,45) inlined into ../src/node_server.cpp(264,2)
          remark #15542: loop was not vectorized: inner loop was already vectorized
 
-         LOOP BEGIN at ../src/node_server.cpp(291,46) inlined into ../src/node_server.cpp(276,2)
+         LOOP BEGIN at ../src/node_server.cpp(279,46) inlined into ../src/node_server.cpp(264,2)
             remark #15542: loop was not vectorized: inner loop was already vectorized
 
-            LOOP BEGIN at ../src/node_server.cpp(291,46) inlined into ../src/node_server.cpp(276,2)
+            LOOP BEGIN at ../src/node_server.cpp(279,46) inlined into ../src/node_server.cpp(264,2)
             <Peeled, Multiversioned v2>
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(291,46) inlined into ../src/node_server.cpp(276,2)
+            LOOP BEGIN at ../src/node_server.cpp(279,46) inlined into ../src/node_server.cpp(264,2)
             <Multiversioned v2>
-               remark #15388: vectorization support: reference F64 has aligned access   [ ../src/node_server.cpp(292,7) ]
-               remark #15389: vectorization support: reference _M_current has unaligned access   [ ../src/node_server.cpp(292,7) ]
-               remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(292,7) ]
+               remark #15388: vectorization support: reference F64 has aligned access   [ ../src/node_server.cpp(280,7) ]
+               remark #15389: vectorization support: reference _M_current has unaligned access   [ ../src/node_server.cpp(280,7) ]
+               remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(280,7) ]
                remark #15399: vectorization support: unroll factor set to 4
                remark #15300: LOOP WAS VECTORIZED
                remark #15442: entire loop may be executed in remainder
@@ -821,7 +759,7 @@ LOOP BEGIN at ../src/node_server.cpp(288,2) inlined into ../src/node_server.cpp(
                remark #15488: --- end vector loop cost summary ---
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(291,46) inlined into ../src/node_server.cpp(276,2)
+            LOOP BEGIN at ../src/node_server.cpp(279,46) inlined into ../src/node_server.cpp(264,2)
             <Remainder, Multiversioned v2>
             LOOP END
          LOOP END
@@ -829,9 +767,9 @@ LOOP BEGIN at ../src/node_server.cpp(288,2) inlined into ../src/node_server.cpp(
    LOOP END
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(330,2) inlined into ../src/node_server.cpp(278,3)
-   remark #15389: vectorization support: reference this has unaligned access   [ ../src/node_server.cpp(331,3) ]
-   remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(331,3) ]
+LOOP BEGIN at ../src/node_server.cpp(318,2) inlined into ../src/node_server.cpp(266,3)
+   remark #15389: vectorization support: reference this has unaligned access   [ ../src/node_server.cpp(319,3) ]
+   remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(319,3) ]
    remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
    remark #15450: unmasked unaligned unit stride loads: 1 
    remark #15475: --- begin vector loop cost summary ---
@@ -844,11 +782,11 @@ LOOP BEGIN at ../src/node_server.cpp(330,2) inlined into ../src/node_server.cpp(
    remark #15488: --- end vector loop cost summary ---
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(334,2) inlined into ../src/node_server.cpp(278,3)
+LOOP BEGIN at ../src/node_server.cpp(322,2) inlined into ../src/node_server.cpp(266,3)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(349,19) inlined into ../src/node_server.cpp(282,3)
+LOOP BEGIN at ../src/node_server.cpp(337,19) inlined into ../src/node_server.cpp(270,3)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 ===========================================================================
@@ -876,19 +814,19 @@ Begin optimization report for: node_server::set_expansions(node_server *, hpx::l
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/node_server.cpp(266,2)
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/node_server.cpp(254,2)
    remark #15398: loop was not vectorized: loop was transformed to memset or memcpy
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(302,2) inlined into ../src/node_server.cpp(266,2)
+LOOP BEGIN at ../src/node_server.cpp(290,2) inlined into ../src/node_server.cpp(254,2)
    remark #15542: loop was not vectorized: inner loop was already vectorized
 
-   LOOP BEGIN at ../src/node_server.cpp(304,3) inlined into ../src/node_server.cpp(266,2)
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(306,9) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(308,9) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(306,9) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(308,9) ]
-      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(308,9) ]
+   LOOP BEGIN at ../src/node_server.cpp(292,3) inlined into ../src/node_server.cpp(254,2)
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(294,9) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(296,9) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(294,9) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(296,9) ]
+      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(296,9) ]
       remark #15300: LOOP WAS VECTORIZED
       remark #15449: unmasked aligned unit stride stores: 1 
       remark #15475: --- begin vector loop cost summary ---
@@ -901,90 +839,90 @@ LOOP BEGIN at ../src/node_server.cpp(302,2) inlined into ../src/node_server.cpp(
       remark #15488: --- end vector loop cost summary ---
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(313,3) inlined into ../src/node_server.cpp(266,2)
+   LOOP BEGIN at ../src/node_server.cpp(301,3) inlined into ../src/node_server.cpp(254,2)
       remark #15344: loop was not vectorized: vector dependence prevents vectorization
-      remark #15346: vector dependence: assumed ANTI dependence between F64 line 317 and F64 line 317
-      remark #15346: vector dependence: assumed FLOW dependence between this_256643 line 317 and this_256643 line 317
+      remark #15346: vector dependence: assumed ANTI dependence between F64 line 305 and F64 line 305
+      remark #15346: vector dependence: assumed FLOW dependence between this_255328 line 305 and this_255328 line 305
 
-      LOOP BEGIN at ../src/node_server.cpp(314,4) inlined into ../src/node_server.cpp(266,2)
+      LOOP BEGIN at ../src/node_server.cpp(302,4) inlined into ../src/node_server.cpp(254,2)
          remark #15344: loop was not vectorized: vector dependence prevents vectorization
-         remark #15346: vector dependence: assumed ANTI dependence between F64 line 317 and F64 line 317
-         remark #15346: vector dependence: assumed FLOW dependence between this_256643 line 317 and this_256643 line 317
+         remark #15346: vector dependence: assumed ANTI dependence between F64 line 305 and F64 line 305
+         remark #15346: vector dependence: assumed FLOW dependence between this_255328 line 305 and this_255328 line 305
 
-         LOOP BEGIN at ../src/node_server.cpp(315,5) inlined into ../src/node_server.cpp(266,2)
+         LOOP BEGIN at ../src/node_server.cpp(303,5) inlined into ../src/node_server.cpp(254,2)
             remark #15344: loop was not vectorized: vector dependence prevents vectorization
-            remark #15346: vector dependence: assumed ANTI dependence between F64 line 317 and F64 line 317
-            remark #15346: vector dependence: assumed FLOW dependence between this_256643 line 317 and this_256643 line 317
+            remark #15346: vector dependence: assumed ANTI dependence between F64 line 305 and F64 line 305
+            remark #15346: vector dependence: assumed FLOW dependence between this_255328 line 305 and this_255328 line 305
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6) inlined into ../src/node_server.cpp(266,2)
+            LOOP BEGIN at ../src/node_server.cpp(304,6) inlined into ../src/node_server.cpp(254,2)
                remark #15344: loop was not vectorized: vector dependence prevents vectorization
-               remark #15346: vector dependence: assumed ANTI dependence between F64 line 317 and F64 line 317
-               remark #15346: vector dependence: assumed FLOW dependence between this_256643 line 317 and this_256643 line 317
+               remark #15346: vector dependence: assumed ANTI dependence between F64 line 305 and F64 line 305
+               remark #15346: vector dependence: assumed FLOW dependence between this_255328 line 305 and this_255328 line 305
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6) inlined into ../src/node_server.cpp(266,2)
+            LOOP BEGIN at ../src/node_server.cpp(304,6) inlined into ../src/node_server.cpp(254,2)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6) inlined into ../src/node_server.cpp(266,2)
+            LOOP BEGIN at ../src/node_server.cpp(304,6) inlined into ../src/node_server.cpp(254,2)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6) inlined into ../src/node_server.cpp(266,2)
-            LOOP END
-         LOOP END
-
-         LOOP BEGIN at ../src/node_server.cpp(315,5) inlined into ../src/node_server.cpp(266,2)
-
-            LOOP BEGIN at ../src/node_server.cpp(316,6) inlined into ../src/node_server.cpp(266,2)
-            LOOP END
-
-            LOOP BEGIN at ../src/node_server.cpp(316,6) inlined into ../src/node_server.cpp(266,2)
-            LOOP END
-
-            LOOP BEGIN at ../src/node_server.cpp(316,6) inlined into ../src/node_server.cpp(266,2)
-            LOOP END
-
-            LOOP BEGIN at ../src/node_server.cpp(316,6) inlined into ../src/node_server.cpp(266,2)
+            LOOP BEGIN at ../src/node_server.cpp(304,6) inlined into ../src/node_server.cpp(254,2)
             LOOP END
          LOOP END
 
-         LOOP BEGIN at ../src/node_server.cpp(315,5) inlined into ../src/node_server.cpp(266,2)
+         LOOP BEGIN at ../src/node_server.cpp(303,5) inlined into ../src/node_server.cpp(254,2)
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6) inlined into ../src/node_server.cpp(266,2)
+            LOOP BEGIN at ../src/node_server.cpp(304,6) inlined into ../src/node_server.cpp(254,2)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6) inlined into ../src/node_server.cpp(266,2)
+            LOOP BEGIN at ../src/node_server.cpp(304,6) inlined into ../src/node_server.cpp(254,2)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6) inlined into ../src/node_server.cpp(266,2)
+            LOOP BEGIN at ../src/node_server.cpp(304,6) inlined into ../src/node_server.cpp(254,2)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6) inlined into ../src/node_server.cpp(266,2)
+            LOOP BEGIN at ../src/node_server.cpp(304,6) inlined into ../src/node_server.cpp(254,2)
             LOOP END
          LOOP END
 
-         LOOP BEGIN at ../src/node_server.cpp(315,5) inlined into ../src/node_server.cpp(266,2)
+         LOOP BEGIN at ../src/node_server.cpp(303,5) inlined into ../src/node_server.cpp(254,2)
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6) inlined into ../src/node_server.cpp(266,2)
+            LOOP BEGIN at ../src/node_server.cpp(304,6) inlined into ../src/node_server.cpp(254,2)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6) inlined into ../src/node_server.cpp(266,2)
+            LOOP BEGIN at ../src/node_server.cpp(304,6) inlined into ../src/node_server.cpp(254,2)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6) inlined into ../src/node_server.cpp(266,2)
+            LOOP BEGIN at ../src/node_server.cpp(304,6) inlined into ../src/node_server.cpp(254,2)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6) inlined into ../src/node_server.cpp(266,2)
+            LOOP BEGIN at ../src/node_server.cpp(304,6) inlined into ../src/node_server.cpp(254,2)
+            LOOP END
+         LOOP END
+
+         LOOP BEGIN at ../src/node_server.cpp(303,5) inlined into ../src/node_server.cpp(254,2)
+
+            LOOP BEGIN at ../src/node_server.cpp(304,6) inlined into ../src/node_server.cpp(254,2)
+            LOOP END
+
+            LOOP BEGIN at ../src/node_server.cpp(304,6) inlined into ../src/node_server.cpp(254,2)
+            LOOP END
+
+            LOOP BEGIN at ../src/node_server.cpp(304,6) inlined into ../src/node_server.cpp(254,2)
+            LOOP END
+
+            LOOP BEGIN at ../src/node_server.cpp(304,6) inlined into ../src/node_server.cpp(254,2)
             LOOP END
          LOOP END
       LOOP END
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(304,3) inlined into ../src/node_server.cpp(266,2)
+   LOOP BEGIN at ../src/node_server.cpp(292,3) inlined into ../src/node_server.cpp(254,2)
    <Remainder>
    LOOP END
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(349,19) inlined into ../src/node_server.cpp(271,3)
+LOOP BEGIN at ../src/node_server.cpp(337,19) inlined into ../src/node_server.cpp(259,3)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 ===========================================================================
@@ -994,29 +932,29 @@ Begin optimization report for: node_server::M2M(node_server *, const std::vector
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at ../src/node_server.cpp(288,2)
-   remark #15382: vectorization support: call to function ?1memcpy cannot be vectorized   [ ../src/node_server.cpp(292,7) ]
+LOOP BEGIN at ../src/node_server.cpp(276,2)
+   remark #15382: vectorization support: call to function ?1memcpy cannot be vectorized   [ ../src/node_server.cpp(280,7) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
 
-   LOOP BEGIN at ../src/node_server.cpp(289,44)
-      remark #15382: vectorization support: call to function ?1memcpy cannot be vectorized   [ ../src/node_server.cpp(292,7) ]
+   LOOP BEGIN at ../src/node_server.cpp(277,44)
+      remark #15382: vectorization support: call to function ?1memcpy cannot be vectorized   [ ../src/node_server.cpp(280,7) ]
       remark #15344: loop was not vectorized: vector dependence prevents vectorization
 
-      LOOP BEGIN at ../src/node_server.cpp(290,45)
-         remark #15382: vectorization support: call to function ?1memcpy cannot be vectorized   [ ../src/node_server.cpp(292,7) ]
+      LOOP BEGIN at ../src/node_server.cpp(278,45)
+         remark #15382: vectorization support: call to function ?1memcpy cannot be vectorized   [ ../src/node_server.cpp(280,7) ]
          remark #15344: loop was not vectorized: vector dependence prevents vectorization
-         remark #15346: vector dependence: assumed ANTI dependence between F64 line 291 and F64 line 292
-         remark #15346: vector dependence: assumed FLOW dependence between _M_current line 292 and _M_current line 291
+         remark #15346: vector dependence: assumed ANTI dependence between F64 line 279 and F64 line 280
+         remark #15346: vector dependence: assumed FLOW dependence between _M_current line 280 and _M_current line 279
 
-         LOOP BEGIN at ../src/node_server.cpp(291,46)
+         LOOP BEGIN at ../src/node_server.cpp(279,46)
             remark #15398: loop was not vectorized: loop was transformed to memset or memcpy
 
-            LOOP BEGIN at ../src/node_server.cpp(291,46)
+            LOOP BEGIN at ../src/node_server.cpp(279,46)
             <Multiversioned v2>
                remark #15304: loop was not vectorized: non-vectorizable loop instance from multiversioning
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(291,46)
+            LOOP BEGIN at ../src/node_server.cpp(279,46)
             <Remainder, Multiversioned v2>
             LOOP END
          LOOP END
@@ -1030,19 +968,19 @@ Begin optimization report for: node_server::L2L(node_server *, const std::vector
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/node_server.cpp(301,26)
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/node_server.cpp(289,26)
    remark #15398: loop was not vectorized: loop was transformed to memset or memcpy
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(302,2)
+LOOP BEGIN at ../src/node_server.cpp(290,2)
    remark #15542: loop was not vectorized: inner loop was already vectorized
 
-   LOOP BEGIN at ../src/node_server.cpp(304,3)
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(306,9) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(308,9) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(306,9) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(308,9) ]
-      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(308,9) ]
+   LOOP BEGIN at ../src/node_server.cpp(292,3)
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(294,9) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(296,9) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(294,9) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(296,9) ]
+      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(296,9) ]
       remark #15300: LOOP WAS VECTORIZED
       remark #15449: unmasked aligned unit stride stores: 1 
       remark #15475: --- begin vector loop cost summary ---
@@ -1055,85 +993,85 @@ LOOP BEGIN at ../src/node_server.cpp(302,2)
       remark #15488: --- end vector loop cost summary ---
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(313,3)
+   LOOP BEGIN at ../src/node_server.cpp(301,3)
       remark #15344: loop was not vectorized: vector dependence prevents vectorization
-      remark #15346: vector dependence: assumed ANTI dependence between this line 317 and F64 line 317
-      remark #15346: vector dependence: assumed FLOW dependence between F64 line 317 and this line 317
+      remark #15346: vector dependence: assumed ANTI dependence between this line 305 and F64 line 305
+      remark #15346: vector dependence: assumed FLOW dependence between F64 line 305 and this line 305
 
-      LOOP BEGIN at ../src/node_server.cpp(314,4)
+      LOOP BEGIN at ../src/node_server.cpp(302,4)
          remark #15344: loop was not vectorized: vector dependence prevents vectorization
-         remark #15346: vector dependence: assumed ANTI dependence between this line 317 and F64 line 317
-         remark #15346: vector dependence: assumed FLOW dependence between F64 line 317 and this line 317
+         remark #15346: vector dependence: assumed ANTI dependence between this line 305 and F64 line 305
+         remark #15346: vector dependence: assumed FLOW dependence between F64 line 305 and this line 305
 
-         LOOP BEGIN at ../src/node_server.cpp(315,5)
+         LOOP BEGIN at ../src/node_server.cpp(303,5)
             remark #15344: loop was not vectorized: vector dependence prevents vectorization
-            remark #15346: vector dependence: assumed ANTI dependence between this line 317 and F64 line 317
-            remark #15346: vector dependence: assumed FLOW dependence between F64 line 317 and this line 317
+            remark #15346: vector dependence: assumed ANTI dependence between this line 305 and F64 line 305
+            remark #15346: vector dependence: assumed FLOW dependence between F64 line 305 and this line 305
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6)
+            LOOP BEGIN at ../src/node_server.cpp(304,6)
                remark #15344: loop was not vectorized: vector dependence prevents vectorization
-               remark #15346: vector dependence: assumed ANTI dependence between this line 317 and F64 line 317
-               remark #15346: vector dependence: assumed FLOW dependence between F64 line 317 and this line 317
+               remark #15346: vector dependence: assumed ANTI dependence between this line 305 and F64 line 305
+               remark #15346: vector dependence: assumed FLOW dependence between F64 line 305 and this line 305
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6)
+            LOOP BEGIN at ../src/node_server.cpp(304,6)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6)
+            LOOP BEGIN at ../src/node_server.cpp(304,6)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6)
-            LOOP END
-         LOOP END
-
-         LOOP BEGIN at ../src/node_server.cpp(315,5)
-
-            LOOP BEGIN at ../src/node_server.cpp(316,6)
-            LOOP END
-
-            LOOP BEGIN at ../src/node_server.cpp(316,6)
-            LOOP END
-
-            LOOP BEGIN at ../src/node_server.cpp(316,6)
-            LOOP END
-
-            LOOP BEGIN at ../src/node_server.cpp(316,6)
+            LOOP BEGIN at ../src/node_server.cpp(304,6)
             LOOP END
          LOOP END
 
-         LOOP BEGIN at ../src/node_server.cpp(315,5)
+         LOOP BEGIN at ../src/node_server.cpp(303,5)
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6)
+            LOOP BEGIN at ../src/node_server.cpp(304,6)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6)
+            LOOP BEGIN at ../src/node_server.cpp(304,6)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6)
+            LOOP BEGIN at ../src/node_server.cpp(304,6)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6)
+            LOOP BEGIN at ../src/node_server.cpp(304,6)
             LOOP END
          LOOP END
 
-         LOOP BEGIN at ../src/node_server.cpp(315,5)
+         LOOP BEGIN at ../src/node_server.cpp(303,5)
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6)
+            LOOP BEGIN at ../src/node_server.cpp(304,6)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6)
+            LOOP BEGIN at ../src/node_server.cpp(304,6)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6)
+            LOOP BEGIN at ../src/node_server.cpp(304,6)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(316,6)
+            LOOP BEGIN at ../src/node_server.cpp(304,6)
+            LOOP END
+         LOOP END
+
+         LOOP BEGIN at ../src/node_server.cpp(303,5)
+
+            LOOP BEGIN at ../src/node_server.cpp(304,6)
+            LOOP END
+
+            LOOP BEGIN at ../src/node_server.cpp(304,6)
+            LOOP END
+
+            LOOP BEGIN at ../src/node_server.cpp(304,6)
+            LOOP END
+
+            LOOP BEGIN at ../src/node_server.cpp(304,6)
             LOOP END
          LOOP END
       LOOP END
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(304,3)
+   LOOP BEGIN at ../src/node_server.cpp(292,3)
    <Remainder>
    LOOP END
 LOOP END
@@ -1144,11 +1082,11 @@ Begin optimization report for: node_server::execute(hpx::lcos::future<void> *, n
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(511,29) inlined into ../src/node_server.cpp(502,43)
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(511,29) inlined into ../src/node_server.cpp(483,43)
 <Peeled>
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(511,29) inlined into ../src/node_server.cpp(502,43)
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(511,29) inlined into ../src/node_server.cpp(483,43)
    remark #15300: LOOP WAS VECTORIZED
    remark #15442: entire loop may be executed in remainder
    remark #15455: masked aligned unit stride stores: 1 
@@ -1161,15 +1099,45 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(511,29) inlined in
    remark #15488: --- end vector loop cost summary ---
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(511,29) inlined into ../src/node_server.cpp(502,43)
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(511,29) inlined into ../src/node_server.cpp(483,43)
 <Remainder>
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(505,3)
+LOOP BEGIN at ../src/node_server.cpp(460,2) inlined into ../src/node_server.cpp(488,2)
+   remark #15541: outer loop was not auto-vectorized: consider using SIMD directive   [ ../src/node_server.cpp(462,5) ]
+
+   LOOP BEGIN at ../src/node_server.cpp(461,3) inlined into ../src/node_server.cpp(488,2)
+      remark #15398: loop was not vectorized: loop was transformed to memset or memcpy
+   LOOP END
+LOOP END
+
+LOOP BEGIN at ../src/node_server.cpp(465,2) inlined into ../src/node_server.cpp(488,2)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization
+   remark #15346: vector dependence: assumed ANTI dependence between F64 line 472 and F64 line 474
+   remark #15346: vector dependence: assumed FLOW dependence between this_256428 line 474 and this_256428 line 472
+
+   LOOP BEGIN at ../src/node_server.cpp(467,3) inlined into ../src/node_server.cpp(488,2)
+      remark #15344: loop was not vectorized: vector dependence prevents vectorization
+      remark #15346: vector dependence: assumed ANTI dependence between F64 line 472 and F64 line 474
+      remark #15346: vector dependence: assumed FLOW dependence between this_256428 line 474 and this_256428 line 472
+
+      LOOP BEGIN at ../src/node_server.cpp(469,4) inlined into ../src/node_server.cpp(488,2)
+         remark #15344: loop was not vectorized: vector dependence prevents vectorization
+         remark #15346: vector dependence: assumed ANTI dependence between F64 line 472 and F64 line 474
+         remark #15346: vector dependence: assumed FLOW dependence between this_256428 line 474 and this_256428 line 472
+      LOOP END
+   LOOP END
+LOOP END
+
+LOOP BEGIN at ../src/node_server.cpp(491,3)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into ../src/node_server.cpp(518,2)
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into ../src/node_server.cpp(501,18)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into ../src/node_server.cpp(504,2)
    remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
 LOOP END
 
@@ -1177,7 +1145,7 @@ LOOP END
 Non-optimizable loops:
 
 
-LOOP BEGIN at ../src/node_server.cpp(509,3)
+LOOP BEGIN at ../src/node_server.cpp(495,3)
    remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/smart_ptr/detail/atomic_count_gcc_x86.hpp(60,0) ]
 LOOP END
 ===========================================================================
@@ -1187,9 +1155,9 @@ Begin optimization report for: node_server::send_multipoles(node_server *)
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at ../src/node_server.cpp(330,2)
-   remark #15389: vectorization support: reference this has unaligned access   [ ../src/node_server.cpp(331,3) ]
-   remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(331,3) ]
+LOOP BEGIN at ../src/node_server.cpp(318,2)
+   remark #15389: vectorization support: reference this has unaligned access   [ ../src/node_server.cpp(319,3) ]
+   remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(319,3) ]
    remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
    remark #15450: unmasked unaligned unit stride loads: 1 
    remark #15475: --- begin vector loop cost summary ---
@@ -1206,44 +1174,30 @@ LOOP END
 Non-optimizable loops:
 
 
-LOOP BEGIN at ../src/node_server.cpp(334,2)
+LOOP BEGIN at ../src/node_server.cpp(322,2)
    remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/smart_ptr/detail/atomic_count_gcc_x86.hpp(60,0) ]
 LOOP END
 ===========================================================================
 
-Begin optimization report for: hpx::lcos::when_all<hpx::lcos::future<void>>(hpx::lcos::future<std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>> *, std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>> &)
+Begin optimization report for: std::transform<boost::range_iterator<std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>, void>::type, std::back_insert_iterator<std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>>, hpx::lcos::detail::when_acquire_future<hpx::lcos::future<void>>>(boost::range_iterator<std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>, void>::type, boost::range_iterator<std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>, void>::type, std::back_insert_iterator<std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>>, hpx::lcos::detail::when_acquire_future<hpx::lcos::future<void>>)
 
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/when_all.hpp(367,17)
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined into /usr/include/c++/4.9.0/bits/stl_algo.h(4163,12)
    remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/when_all.hpp(367,17)
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /usr/include/c++/4.9.0/bits/stl_algo.h(4163,12)
    remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algo.h(4162,22) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/when_all.hpp(371,13)
-   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
-LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/when_all.hpp(373,9)
-   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
-LOOP END
-===========================================================================
-
-Begin optimization report for: std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>::_M_emplace_back_aux<hpx::lcos::future<void>>(std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>> *, hpx::lcos::future<void> &&)
-
-    Report from: Vector optimizations [vec]
+Non-optimizable loops:
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(418,10)
-   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
-LOOP END
-
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(433,2)
-   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algo.h(4162,22)
+   remark #15341: loop was not vectorized: nonstandard loop is not a vectorization candidate
 LOOP END
 ===========================================================================
 
@@ -1253,6 +1207,16 @@ Begin optimization report for: std::_Destroy_aux<false>::__destroy<std::_Vector_
 
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP END
+===========================================================================
+
+Begin optimization report for: hpx::lcos::detail::future_data<std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>>::~future_data(hpx::lcos::detail::future_data<std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>> *const)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/detail/future_data.hpp(150,12)
    remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
 LOOP END
 ===========================================================================
@@ -1271,129 +1235,183 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /h
 LOOP END
 ===========================================================================
 
-Begin optimization report for: hpx::lcos::detail::future_data<std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>>::~future_data(hpx::lcos::detail::future_data<std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>> *const)
+Begin optimization report for: std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>::~vector(std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>> *)
 
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/detail/future_data.hpp(150,12)
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(424,9)
    remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
 LOOP END
 ===========================================================================
 
-Begin optimization report for: node_server::refine(hpx::lcos::future<void> *, node_server *)
+Begin optimization report for: std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>::reserve(std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>> *, std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>::size_type)
 
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(514,8) inlined into ../src/node_server.cpp(194,47)
-   remark #15427: loop was completely unrolled
-   remark #15399: vectorization support: unroll factor set to 4
-   remark #15300: LOOP WAS VECTORIZED
-   remark #15457: masked unaligned unit stride stores: 1 
-   remark #15475: --- begin vector loop cost summary ---
-   remark #15476: scalar loop cost: 22 
-   remark #15477: vector loop cost: 26.000 
-   remark #15478: estimated potential speedup: 3.140 
-   remark #15479: lightweight vector operations: 8 
-   remark #15480: medium-overhead vector operations: 1 
-   remark #15488: --- end vector loop cost summary ---
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(73,20)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(195,3)
-   remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(76,4)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP END
+===========================================================================
 
-   LOOP BEGIN at ../src/node_server.cpp(197,4)
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(198,9) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(198,9) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(199,9) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(199,9) ]
-      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(199,9) ]
-      remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
-      remark #15448: unmasked aligned unit stride loads: 1 
-      remark #15449: unmasked aligned unit stride stores: 2 
-      remark #15475: --- begin vector loop cost summary ---
-      remark #15476: scalar loop cost: 10 
-      remark #15477: vector loop cost: 20.500 
-      remark #15478: estimated potential speedup: 0.550 
-      remark #15479: lightweight vector operations: 12 
-      remark #15480: medium-overhead vector operations: 2 
-      remark #15481: heavy-overhead vector operations: 1 
-      remark #15487: type converts: 1 
-      remark #15488: --- end vector loop cost summary ---
-   LOOP END
+Begin optimization report for: node_server::get_tree(node_server *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/node_server.cpp(431,31)
+   remark #15398: loop was not vectorized: loop was transformed to memset or memcpy
 LOOP END
 
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(514,8) inlined into ../src/node_server.cpp(207,42)
-   remark #15427: loop was completely unrolled
-   remark #15399: vectorization support: unroll factor set to 4
-   remark #15300: LOOP WAS VECTORIZED
-   remark #15457: masked unaligned unit stride stores: 1 
-   remark #15475: --- begin vector loop cost summary ---
-   remark #15476: scalar loop cost: 22 
-   remark #15477: vector loop cost: 26.000 
-   remark #15478: estimated potential speedup: 3.140 
-   remark #15479: lightweight vector operations: 8 
-   remark #15480: medium-overhead vector operations: 1 
-   remark #15488: --- end vector loop cost summary ---
-LOOP END
-
-LOOP BEGIN at ../src/node_server.cpp(208,3)
-   remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
-
-   LOOP BEGIN at ../src/node_server.cpp(210,4)
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(211,9) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(211,9) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(212,9) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(212,9) ]
-      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(212,9) ]
-      remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
-      remark #15448: unmasked aligned unit stride loads: 1 
-      remark #15449: unmasked aligned unit stride stores: 2 
-      remark #15475: --- begin vector loop cost summary ---
-      remark #15476: scalar loop cost: 10 
-      remark #15477: vector loop cost: 20.500 
-      remark #15478: estimated potential speedup: 0.550 
-      remark #15479: lightweight vector operations: 12 
-      remark #15480: medium-overhead vector operations: 2 
-      remark #15481: heavy-overhead vector operations: 1 
-      remark #15487: type converts: 1 
-      remark #15488: --- end vector loop cost summary ---
-   LOOP END
-LOOP END
-
-LOOP BEGIN at ../src/node_server.cpp(217,3)
+LOOP BEGIN at ../src/node_server.cpp(433,2)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(223,3)
+LOOP BEGIN at ../src/node_server.cpp(446,2)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(479,2) inlined into ../src/node_server.cpp(228,2)
-   remark #15541: outer loop was not auto-vectorized: consider using SIMD directive   [ ../src/node_server.cpp(481,5) ]
-
-   LOOP BEGIN at ../src/node_server.cpp(480,3) inlined into ../src/node_server.cpp(228,2)
-      remark #15398: loop was not vectorized: loop was transformed to memset or memcpy
-   LOOP END
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into ../src/node_server.cpp(451,2)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
 LOOP END
+===========================================================================
 
-LOOP BEGIN at ../src/node_server.cpp(484,2) inlined into ../src/node_server.cpp(228,2)
+Begin optimization report for: std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>>::~vector(std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>> *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(424,9)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP END
+===========================================================================
+
+Begin optimization report for: hpx::lcos::detail::wait_all_frame<hpx::util::tuple<const std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>> &>>::await_range<boost::lazy_enable_if_c<true, boost::fusion::result_of::begin<const hpx::util::tuple<const std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>> &>>>::type, boost::range_iterator<boost::unwrap_reference<const std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>>>::type, void>::type>(hpx::lcos::detail::wait_all_frame<hpx::util::tuple<const std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>> &>> *, boost::lazy_enable_if_c<true, boost::fusion::result_of::begin<const hpx::util::tuple<const std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>> &>>>::type, boost::range_iterator<boost::unwrap_reference<const std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>>>::type, void>::type, boost::range_iterator<boost::unwrap_reference<const std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>>>::type, void>::type)
+
+    Report from: Vector optimizations [vec]
+
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/wait_all.hpp(194,33)
+   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/smart_ptr/detail/atomic_count_gcc_x86.hpp(60,0) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: std::vector<std::size_t, std::allocator<std::_Bit_type>>::vector<std::vector<std::size_t, std::allocator<std::_Bit_type>>::iterator, void>(std::vector<std::size_t, std::allocator<std::_Bit_type>> *, std::vector<std::size_t, std::allocator<std::_Bit_type>>::iterator, std::vector<std::size_t, std::allocator<std::_Bit_type>>::iterator, const std::vector<std::size_t, std::allocator<std::_Bit_type>>::allocator_type &)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(404,11)
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between F64 line 491 and F64 line 493
-   remark #15346: vector dependence: assumed FLOW dependence between this_257751 line 493 and this_257751 line 491
+   remark #15346: vector dependence: assumed FLOW dependence between _M_current line 75 and _M_current line 75
+   remark #15346: vector dependence: assumed ANTI dependence between __cur.518638 line 75 and __cur.518638 line 75
+LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(486,3) inlined into ../src/node_server.cpp(228,2)
-      remark #15344: loop was not vectorized: vector dependence prevents vectorization
-      remark #15346: vector dependence: assumed ANTI dependence between F64 line 491 and F64 line 493
-      remark #15346: vector dependence: assumed FLOW dependence between this_257751 line 493 and this_257751 line 491
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(404,11)
+<Remainder>
+LOOP END
+===========================================================================
 
-      LOOP BEGIN at ../src/node_server.cpp(488,4) inlined into ../src/node_server.cpp(228,2)
-         remark #15344: loop was not vectorized: vector dependence prevents vectorization
-         remark #15346: vector dependence: assumed ANTI dependence between F64 line 491 and F64 line 493
-         remark #15346: vector dependence: assumed FLOW dependence between this_257751 line 493 and this_257751 line 491
-      LOOP END
+Begin optimization report for: node_server::refine(node_server *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(514,8) inlined into ../src/node_server.cpp(195,46)
+   remark #15427: loop was completely unrolled
+   remark #15399: vectorization support: unroll factor set to 4
+   remark #15300: LOOP WAS VECTORIZED
+   remark #15457: masked unaligned unit stride stores: 1 
+   remark #15475: --- begin vector loop cost summary ---
+   remark #15476: scalar loop cost: 22 
+   remark #15477: vector loop cost: 26.000 
+   remark #15478: estimated potential speedup: 3.140 
+   remark #15479: lightweight vector operations: 8 
+   remark #15480: medium-overhead vector operations: 1 
+   remark #15488: --- end vector loop cost summary ---
+LOOP END
+
+LOOP BEGIN at ../src/node_server.cpp(196,2)
+   remark #15541: outer loop was not auto-vectorized: consider using SIMD directive
+
+   LOOP BEGIN at ../src/node_server.cpp(198,3)
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(199,8) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(199,8) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(200,8) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(200,8) ]
+      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(200,8) ]
+      remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
+      remark #15448: unmasked aligned unit stride loads: 1 
+      remark #15449: unmasked aligned unit stride stores: 2 
+      remark #15475: --- begin vector loop cost summary ---
+      remark #15476: scalar loop cost: 10 
+      remark #15477: vector loop cost: 20.500 
+      remark #15478: estimated potential speedup: 0.550 
+      remark #15479: lightweight vector operations: 12 
+      remark #15480: medium-overhead vector operations: 2 
+      remark #15481: heavy-overhead vector operations: 1 
+      remark #15487: type converts: 1 
+      remark #15488: --- end vector loop cost summary ---
    LOOP END
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(514,8) inlined into ../src/node_server.cpp(207,41)
+   remark #15427: loop was completely unrolled
+   remark #15399: vectorization support: unroll factor set to 4
+   remark #15300: LOOP WAS VECTORIZED
+   remark #15457: masked unaligned unit stride stores: 1 
+   remark #15475: --- begin vector loop cost summary ---
+   remark #15476: scalar loop cost: 22 
+   remark #15477: vector loop cost: 26.000 
+   remark #15478: estimated potential speedup: 3.140 
+   remark #15479: lightweight vector operations: 8 
+   remark #15480: medium-overhead vector operations: 1 
+   remark #15488: --- end vector loop cost summary ---
+LOOP END
+
+LOOP BEGIN at ../src/node_server.cpp(208,2)
+   remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
+
+   LOOP BEGIN at ../src/node_server.cpp(210,3)
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(211,8) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(211,8) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(212,8) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(212,8) ]
+      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(212,8) ]
+      remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
+      remark #15448: unmasked aligned unit stride loads: 1 
+      remark #15449: unmasked aligned unit stride stores: 2 
+      remark #15475: --- begin vector loop cost summary ---
+      remark #15476: scalar loop cost: 10 
+      remark #15477: vector loop cost: 20.500 
+      remark #15478: estimated potential speedup: 0.550 
+      remark #15479: lightweight vector operations: 12 
+      remark #15480: medium-overhead vector operations: 2 
+      remark #15481: heavy-overhead vector operations: 1 
+      remark #15487: type converts: 1 
+      remark #15488: --- end vector loop cost summary ---
+   LOOP END
+LOOP END
+
+LOOP BEGIN at ../src/node_server.cpp(217,2)
+   remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into ../src/node_server.cpp(222,2)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into ../src/node_server.cpp(222,2)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
 LOOP END
 ===========================================================================
 
@@ -1535,8 +1553,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /h
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U4c line 327 and U4c line 249
-   remark #15346: vector dependence: assumed FLOW dependence between __first_395580 line 249 and __first_395580 line 327
+   remark #15346: vector dependence: assumed ANTI dependence between U4a line 327 and U4a line 249
+   remark #15346: vector dependence: assumed FLOW dependence between __first_395123 line 249 and __first_395123 line 327
 LOOP END
 ===========================================================================
 
@@ -1592,8 +1610,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /h
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U4c line 327 and U4c line 249
-   remark #15346: vector dependence: assumed FLOW dependence between __first_395580 line 249 and __first_395580 line 327
+   remark #15346: vector dependence: assumed ANTI dependence between U4a line 327 and U4a line 249
+   remark #15346: vector dependence: assumed FLOW dependence between __first_395123 line 249 and __first_395123 line 327
 LOOP END
 
 LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/format_implementation.hpp(123,13)
@@ -1620,7 +1638,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(703,7) inlined into /us
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(703,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(718,4)
-   remark #15389: vectorization support: reference __first_260901 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
+   remark #15389: vectorization support: reference __first_260444 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
    remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
    remark #15399: vectorization support: unroll factor set to 4
    remark #15300: LOOP WAS VECTORIZED
@@ -1662,7 +1680,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(703,7) inlined into /us
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(703,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(728,4)
-   remark #15389: vectorization support: reference __first_260901 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
+   remark #15389: vectorization support: reference __first_260444 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
    remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
    remark #15399: vectorization support: unroll factor set to 4
    remark #15300: LOOP WAS VECTORIZED
@@ -1732,8 +1750,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /u
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U4c line 327 and U4c line 249
-   remark #15346: vector dependence: assumed FLOW dependence between __first_395580 line 249 and __first_395580 line 327
+   remark #15346: vector dependence: assumed ANTI dependence between U4a line 327 and U4a line 249
+   remark #15346: vector dependence: assumed FLOW dependence between __first_395123 line 249 and __first_395123 line 327
 LOOP END
 ===========================================================================
 
@@ -1749,8 +1767,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4)
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between __first line 327 and U4c line 249
-   remark #15346: vector dependence: assumed FLOW dependence between U4c line 249 and __first line 327
+   remark #15346: vector dependence: assumed ANTI dependence between __first line 327 and U4a line 249
+   remark #15346: vector dependence: assumed FLOW dependence between U4a line 249 and __first line 327
 LOOP END
 ===========================================================================
 
@@ -1766,8 +1784,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /u
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U4c line 327 and U4c line 249
-   remark #15346: vector dependence: assumed FLOW dependence between __first_395580 line 249 and __first_395580 line 327
+   remark #15346: vector dependence: assumed ANTI dependence between U4a line 327 and U4a line 249
+   remark #15346: vector dependence: assumed FLOW dependence between __first_395123 line 249 and __first_395123 line 327
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(692,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(232,4)
@@ -1777,8 +1795,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(692,7) inlined into /us
    remark #15382: vectorization support: call to function _ZNSt6localeD1Ev cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/optional/optional.hpp(722,66) ]
    remark #15382: vectorization support: call to function _ZNSt6localeC1ERKS_ cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/optional/optional.hpp(465,50) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed OUTPUT dependence between this_400120 line 64 and this_400120 line 466
-   remark #15346: vector dependence: assumed OUTPUT dependence between __first_400111 line 466 and __first_400111 line 64
+   remark #15346: vector dependence: assumed OUTPUT dependence between this_399663 line 64 and this_399663 line 466
+   remark #15346: vector dependence: assumed OUTPUT dependence between __first_399654 line 466 and __first_399654 line 64
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(200,8) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(233,4)
@@ -1792,8 +1810,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(748,7) inlined into /us
    remark #15382: vectorization support: call to function _ZNSt6localeD1Ev cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/optional/optional.hpp(722,66) ]
    remark #15382: vectorization support: call to function _ZNSt6localeC1ERKS_ cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/optional/optional.hpp(465,50) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed OUTPUT dependence between this_400120 line 64 and this_400120 line 466
-   remark #15346: vector dependence: assumed OUTPUT dependence between __first_400214 line 466 and __first_400214 line 64
+   remark #15346: vector dependence: assumed OUTPUT dependence between this_399663 line 64 and this_399663 line 466
+   remark #15346: vector dependence: assumed OUTPUT dependence between __first_399757 line 466 and __first_399757 line 64
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(239,9)
@@ -1803,8 +1821,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /u
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U4c line 327 and U4c line 249
-   remark #15346: vector dependence: assumed FLOW dependence between __first_395580 line 249 and __first_395580 line 327
+   remark #15346: vector dependence: assumed ANTI dependence between U4a line 327 and U4a line 249
+   remark #15346: vector dependence: assumed FLOW dependence between __first_395123 line 249 and __first_395123 line 327
 LOOP END
 ===========================================================================
 
@@ -1830,8 +1848,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /u
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U4c line 327 and U4c line 249
-   remark #15346: vector dependence: assumed FLOW dependence between __first_395580 line 249 and __first_395580 line 327
+   remark #15346: vector dependence: assumed ANTI dependence between U4a line 327 and U4a line 249
+   remark #15346: vector dependence: assumed FLOW dependence between __first_395123 line 249 and __first_395123 line 327
 LOOP END
 ===========================================================================
 
@@ -1847,8 +1865,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /h
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U4c line 327 and U4c line 249
-   remark #15346: vector dependence: assumed FLOW dependence between __first_395580 line 249 and __first_395580 line 327
+   remark #15346: vector dependence: assumed ANTI dependence between U4a line 327 and U4a line 249
+   remark #15346: vector dependence: assumed FLOW dependence between __first_395123 line 249 and __first_395123 line 327
 LOOP END
 ===========================================================================
 
@@ -1859,8 +1877,8 @@ Begin optimization report for: boost::basic_format<char, std::char_traits<char>,
 
 LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/format_implementation.hpp(257,29) inlined into /home/dmarce1/packages/intel64/include/boost/format/format_implementation.hpp(228,21)
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed FLOW dependence between sz.409931 line 263 and sz.409931 line 259
-   remark #15346: vector dependence: assumed ANTI dependence between sz.409931 line 259 and sz.409931 line 263
+   remark #15346: vector dependence: assumed FLOW dependence between sz.409474 line 263 and sz.409474 line 259
+   remark #15346: vector dependence: assumed ANTI dependence between sz.409474 line 259 and sz.409474 line 263
 LOOP END
 
 LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/format_implementation.hpp(230,29)
@@ -1894,91 +1912,6 @@ LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(50,
 LOOP END
 ===========================================================================
 
-Begin optimization report for: std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>::vector(std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>> *, std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>::size_type, const std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>::allocator_type &)
-
-    Report from: Vector optimizations [vec]
-
-
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(514,8) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(279,9)
-<Peeled>
-LOOP END
-
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(514,8) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(279,9)
-   remark #15399: vectorization support: unroll factor set to 4
-   remark #15300: LOOP WAS VECTORIZED
-   remark #15442: entire loop may be executed in remainder
-   remark #15455: masked aligned unit stride stores: 1 
-   remark #15475: --- begin vector loop cost summary ---
-   remark #15476: scalar loop cost: 22 
-   remark #15477: vector loop cost: 20.000 
-   remark #15478: estimated potential speedup: 4.170 
-   remark #15479: lightweight vector operations: 8 
-   remark #15480: medium-overhead vector operations: 1 
-   remark #15488: --- end vector loop cost summary ---
-LOOP END
-
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(514,8) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(279,9)
-<Remainder>
-   remark #15301: REMAINDER LOOP WAS VECTORIZED
-LOOP END
-
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(514,8) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(279,9)
-<Remainder>
-LOOP END
-===========================================================================
-
-Begin optimization report for: node_server::get_tree(node_server *)
-
-    Report from: Vector optimizations [vec]
-
-
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/node_server.cpp(450,31)
-   remark #15398: loop was not vectorized: loop was transformed to memset or memcpy
-LOOP END
-
-LOOP BEGIN at ../src/node_server.cpp(452,2)
-   remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
-LOOP END
-
-LOOP BEGIN at ../src/node_server.cpp(465,2)
-   remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
-LOOP END
-
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into ../src/node_server.cpp(470,2)
-   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
-LOOP END
-===========================================================================
-
-Begin optimization report for: hpx::lcos::detail::wait_all_frame<hpx::util::tuple<const std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>> &>>::await_range<boost::lazy_enable_if_c<true, boost::fusion::result_of::begin<const hpx::util::tuple<const std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>> &>>>::type, boost::range_iterator<boost::unwrap_reference<const std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>>>::type, void>::type>(hpx::lcos::detail::wait_all_frame<hpx::util::tuple<const std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>> &>> *, boost::lazy_enable_if_c<true, boost::fusion::result_of::begin<const hpx::util::tuple<const std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>> &>>>::type, boost::range_iterator<boost::unwrap_reference<const std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>>>::type, void>::type, boost::range_iterator<boost::unwrap_reference<const std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>>>::type, void>::type)
-
-    Report from: Vector optimizations [vec]
-
-
-
-Non-optimizable loops:
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/wait_all.hpp(194,33)
-   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/smart_ptr/detail/atomic_count_gcc_x86.hpp(60,0) ]
-LOOP END
-===========================================================================
-
-Begin optimization report for: std::vector<std::size_t, std::allocator<std::_Bit_type>>::vector<std::vector<std::size_t, std::allocator<std::_Bit_type>>::iterator, void>(std::vector<std::size_t, std::allocator<std::_Bit_type>> *, std::vector<std::size_t, std::allocator<std::_Bit_type>>::iterator, std::vector<std::size_t, std::allocator<std::_Bit_type>>::iterator, const std::vector<std::size_t, std::allocator<std::_Bit_type>>::allocator_type &)
-
-    Report from: Vector optimizations [vec]
-
-
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(404,11)
-   remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed FLOW dependence between _M_current line 75 and _M_current line 75
-   remark #15346: vector dependence: assumed ANTI dependence between __cur.532561 line 75 and __cur.532561 line 75
-LOOP END
-
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(404,11)
-<Remainder>
-LOOP END
-===========================================================================
-
 Begin optimization report for: hpx::lcos::detail::wait_all_frame<hpx::util::tuple<const std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>> &>>::wait_all(hpx::lcos::detail::wait_all_frame<hpx::util::tuple<const std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>> &>> *)
 
     Report from: Vector optimizations [vec]
@@ -2003,26 +1936,6 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /u
 LOOP END
 ===========================================================================
 
-Begin optimization report for: std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>>::~vector(std::vector<hpx::lcos::future<hpx::naming::id_type>, std::allocator<hpx::lcos::future<hpx::naming::id_type>>> *)
-
-    Report from: Vector optimizations [vec]
-
-
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(424,9)
-   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
-LOOP END
-===========================================================================
-
-Begin optimization report for: std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>::~vector(std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>> *)
-
-    Report from: Vector optimizations [vec]
-
-
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(424,9)
-   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
-LOOP END
-===========================================================================
-
 Begin optimization report for: std::vector<double, std::allocator<double>>::vector(std::vector<double, std::allocator<double>> *, std::vector<double, std::allocator<double>>::size_type, const std::vector<double, std::allocator<double>>::value_type &, const std::vector<double, std::allocator<double>>::allocator_type &)
 
     Report from: Vector optimizations [vec]
@@ -2033,7 +1946,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /us
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(292,9)
-   remark #15388: vectorization support: reference __first_261694 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15388: vectorization support: reference __first_261237 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15399: vectorization support: unroll factor set to 4
    remark #15300: LOOP WAS VECTORIZED
    remark #15442: entire loop may be executed in remainder
@@ -2048,7 +1961,7 @@ LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(292,9)
 <Remainder>
-   remark #15388: vectorization support: reference __first_261694 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15388: vectorization support: reference __first_261237 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15301: REMAINDER LOOP WAS VECTORIZED
 LOOP END
 
@@ -2105,8 +2018,8 @@ Begin optimization report for: boost::archive::detail::load_array_type<hpx::util
 LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/util/portable_binary_iarchive.hpp(302,44) inlined into /home/dmarce1/packages/intel64/include/boost/archive/detail/iserializer.hpp(591,12)
    remark #15382: vectorization support: call to function _ZN3hpx4util24portable_binary_iarchive9load_implERlc cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/util/portable_binary_iarchive.hpp(136,9) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed OUTPUT dependence between l.506357 line 135 and l.506357 line 136
-   remark #15346: vector dependence: assumed OUTPUT dependence between l.506357 line 136 and l.506357 line 135
+   remark #15346: vector dependence: assumed OUTPUT dependence between l.505569 line 135 and l.505569 line 136
+   remark #15346: vector dependence: assumed OUTPUT dependence between l.505569 line 136 and l.505569 line 135
 LOOP END
 ===========================================================================
 
@@ -2179,7 +2092,7 @@ Begin optimization report for: boost::basic_format<char, std::char_traits<char>,
 
 
 LOOP BEGIN at /usr/include/c++/4.9.0/streambuf(463,7) inlined into /home/dmarce1/packages/intel64/include/boost/format/format_implementation.hpp(28,35)
-   remark #15389: vectorization support: reference this_398216 has unaligned access
+   remark #15389: vectorization support: reference this_397759 has unaligned access
    remark #15381: vectorization support: unaligned access used inside loop body
    remark #15427: loop was completely unrolled
    remark #15399: vectorization support: unroll factor set to 3
@@ -2376,24 +2289,24 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /ho
    remark #15398: loop was not vectorized: loop was transformed to memset or memcpy
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(141,3) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+LOOP BEGIN at ../src/node_server.cpp(145,3) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
 
-   LOOP BEGIN at ../src/node_server.cpp(142,45) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+   LOOP BEGIN at ../src/node_server.cpp(146,45) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
       remark #15344: loop was not vectorized: vector dependence prevents vectorization
 
-      LOOP BEGIN at ../src/node_server.cpp(143,46) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+      LOOP BEGIN at ../src/node_server.cpp(147,46) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
          remark #15344: loop was not vectorized: vector dependence prevents vectorization
-         remark #15346: vector dependence: assumed OUTPUT dependence between F64 line 145 and F64 line 145
-         remark #15346: vector dependence: assumed OUTPUT dependence between F64 line 145 and F64 line 145
+         remark #15346: vector dependence: assumed OUTPUT dependence between F64 line 149 and F64 line 149
+         remark #15346: vector dependence: assumed OUTPUT dependence between F64 line 149 and F64 line 149
 
-         LOOP BEGIN at ../src/node_server.cpp(144,47) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+         LOOP BEGIN at ../src/node_server.cpp(148,47) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
             remark #15344: loop was not vectorized: vector dependence prevents vectorization
-            remark #15346: vector dependence: assumed FLOW dependence between this_253127 line 145 and this_253127 line 145
-            remark #15346: vector dependence: assumed ANTI dependence between F64 line 145 and F64 line 145
+            remark #15346: vector dependence: assumed FLOW dependence between this_252915 line 149 and this_252915 line 149
+            remark #15346: vector dependence: assumed ANTI dependence between F64 line 149 and F64 line 149
          LOOP END
 
-         LOOP BEGIN at ../src/node_server.cpp(144,47) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+         LOOP BEGIN at ../src/node_server.cpp(148,47) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
          <Remainder>
          LOOP END
       LOOP END
@@ -2410,93 +2323,93 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /ho
    remark #15398: loop was not vectorized: loop was transformed to memset or memcpy
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(159,3) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+LOOP BEGIN at ../src/node_server.cpp(163,3) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
    remark #15542: loop was not vectorized: inner loop was already vectorized
 
-   LOOP BEGIN at ../src/node_server.cpp(162,4) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+   LOOP BEGIN at ../src/node_server.cpp(166,4) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
       remark #15344: loop was not vectorized: vector dependence prevents vectorization
-      remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 168 and _M_start line 168
-      remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 168 and _M_start line 168
+      remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 172 and _M_start line 172
+      remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 172 and _M_start line 172
 
-      LOOP BEGIN at ../src/node_server.cpp(163,5) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+      LOOP BEGIN at ../src/node_server.cpp(167,5) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
          remark #15344: loop was not vectorized: vector dependence prevents vectorization
-         remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 168 and _M_start line 168
-         remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 168 and _M_start line 168
+         remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 172 and _M_start line 172
+         remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 172 and _M_start line 172
 
-         LOOP BEGIN at ../src/node_server.cpp(164,6) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+         LOOP BEGIN at ../src/node_server.cpp(168,6) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
             remark #15344: loop was not vectorized: vector dependence prevents vectorization
-            remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 168 and _M_start line 168
-            remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 168 and _M_start line 168
+            remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 172 and _M_start line 172
+            remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 172 and _M_start line 172
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
                remark #15344: loop was not vectorized: vector dependence prevents vectorization
-               remark #15346: vector dependence: assumed FLOW dependence between this_253661 line 168 and this_253661 line 168
-               remark #15346: vector dependence: assumed ANTI dependence between _M_start line 168 and _M_start line 168
+               remark #15346: vector dependence: assumed FLOW dependence between this_253449 line 172 and this_253449 line 172
+               remark #15346: vector dependence: assumed ANTI dependence between _M_start line 172 and _M_start line 172
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
-            LOOP END
-         LOOP END
-
-         LOOP BEGIN at ../src/node_server.cpp(164,6) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
-
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
-            LOOP END
-
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
-            LOOP END
-
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
-            LOOP END
-
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
             LOOP END
          LOOP END
 
-         LOOP BEGIN at ../src/node_server.cpp(164,6) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+         LOOP BEGIN at ../src/node_server.cpp(168,6) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
             LOOP END
          LOOP END
 
-         LOOP BEGIN at ../src/node_server.cpp(164,6) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+         LOOP BEGIN at ../src/node_server.cpp(168,6) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+            LOOP END
+         LOOP END
+
+         LOOP BEGIN at ../src/node_server.cpp(168,6) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+            LOOP END
+
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+            LOOP END
+
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+            LOOP END
+
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
             LOOP END
          LOOP END
       LOOP END
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(173,4) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(175,10) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(177,10) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(175,10) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(177,10) ]
-      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(177,10) ]
+   LOOP BEGIN at ../src/node_server.cpp(177,4) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(179,10) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(181,10) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(179,10) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(181,10) ]
+      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(181,10) ]
       remark #15300: LOOP WAS VECTORIZED
       remark #15449: unmasked aligned unit stride stores: 1 
       remark #15475: --- begin vector loop cost summary ---
@@ -2509,7 +2422,7 @@ LOOP BEGIN at ../src/node_server.cpp(159,3) inlined into /home/dmarce1/packages/
       remark #15488: --- end vector loop cost summary ---
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(173,4) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+   LOOP BEGIN at ../src/node_server.cpp(177,4) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
    <Remainder>
    LOOP END
 LOOP END
@@ -2528,7 +2441,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /ho
    LOOP END
 
    LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
-      remark #15388: vectorization support: reference __first_261694 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15388: vectorization support: reference __first_261237 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15399: vectorization support: unroll factor set to 2
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
@@ -2546,24 +2459,24 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /ho
    LOOP END
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(241,3) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+LOOP BEGIN at ../src/node_server.cpp(229,3) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
 
-   LOOP BEGIN at ../src/node_server.cpp(242,37) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+   LOOP BEGIN at ../src/node_server.cpp(230,37) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
       remark #15344: loop was not vectorized: vector dependence prevents vectorization
 
-      LOOP BEGIN at ../src/node_server.cpp(243,38) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+      LOOP BEGIN at ../src/node_server.cpp(231,38) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
          remark #15344: loop was not vectorized: vector dependence prevents vectorization
-         remark #15346: vector dependence: assumed OUTPUT dependence between _M_current line 245 and _M_current line 245
-         remark #15346: vector dependence: assumed OUTPUT dependence between _M_current line 245 and _M_current line 245
+         remark #15346: vector dependence: assumed OUTPUT dependence between _M_current line 233 and _M_current line 233
+         remark #15346: vector dependence: assumed OUTPUT dependence between _M_current line 233 and _M_current line 233
 
-         LOOP BEGIN at ../src/node_server.cpp(244,39) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+         LOOP BEGIN at ../src/node_server.cpp(232,39) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
             remark #15344: loop was not vectorized: vector dependence prevents vectorization
-            remark #15346: vector dependence: assumed FLOW dependence between this_256210 line 245 and this_256210 line 245
-            remark #15346: vector dependence: assumed ANTI dependence between _M_current line 245 and _M_current line 245
+            remark #15346: vector dependence: assumed FLOW dependence between this_254895 line 233 and this_254895 line 233
+            remark #15346: vector dependence: assumed ANTI dependence between _M_current line 233 and _M_current line 233
          LOOP END
 
-         LOOP BEGIN at ../src/node_server.cpp(244,39) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
+         LOOP BEGIN at ../src/node_server.cpp(232,39) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_task.hpp(65,40)
          <Remainder>
          LOOP END
       LOOP END
@@ -2705,20 +2618,6 @@ LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp
 LOOP END
 ===========================================================================
 
-Begin optimization report for: hpx::lcos::detail::continuation<hpx::lcos::future<std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>>, struct lambda [], boost::detail::cpp0x_result_of_impl<struct lambda [] (hpx::lcos::future<std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>> *), void>::type>::reset_id::~reset_id(hpx::lcos::detail::continuation<hpx::lcos::future<std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>>, struct lambda [], boost::detail::cpp0x_result_of_impl<struct lambda [] (hpx::lcos::future<std::vector<hpx::lcos::future<void>, std::allocator<hpx::lcos::future<void>>>> *), void>::type>::reset_id *)
-
-    Report from: Vector optimizations [vec]
-
-
-
-Non-optimizable loops:
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(144,38) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/packaged_continuation.hpp(181,25)
-   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
-LOOP END
-===========================================================================
-
 Begin optimization report for: hpx::components::detail::wrapper_heap_list<hpx::components::detail::fixed_wrapper_heap<hpx::components::managed_component<node_server, hpx::components::detail::this_type>::derived_type, hpx::lcos::local::spinlock>, hpx::lcos::local::spinlock>::get_gid(hpx::naming::gid_type *, hpx::components::detail::wrapper_heap_list<hpx::components::detail::fixed_wrapper_heap<hpx::components::managed_component<node_server, hpx::components::detail::this_type>::derived_type, hpx::lcos::local::spinlock>, hpx::lcos::local::spinlock> *, void *)
 
     Report from: Vector optimizations [vec]
@@ -2829,7 +2728,7 @@ LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock_poo
 LOOP END
 
 LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock_pool.hpp(88,47) inlined into /home/dmarce1/packages/intel64/include/boost/system/error_code.hpp(221,53)
-   remark #15389: vectorization support: reference Ucb9 has unaligned access   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(108,9) ]
+   remark #15389: vectorization support: reference Uc64 has unaligned access   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(108,9) ]
    remark #15381: vectorization support: unaligned access used inside loop body   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(108,9) ]
    remark #15300: LOOP WAS VECTORIZED
    remark #15449: unmasked aligned unit stride stores: 1 
@@ -2861,7 +2760,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(703,7) inlined into /us
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(703,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(466,5)
-   remark #15388: vectorization support: reference __first_264475 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
+   remark #15388: vectorization support: reference __first_264018 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
    remark #15399: vectorization support: unroll factor set to 4
    remark #15300: LOOP WAS VECTORIZED
    remark #15442: entire loop may be executed in remainder
@@ -2876,7 +2775,7 @@ LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(703,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(466,5)
 <Remainder>
-   remark #15388: vectorization support: reference __first_264475 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
+   remark #15388: vectorization support: reference __first_264018 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
    remark #15301: REMAINDER LOOP WAS VECTORIZED
 LOOP END
 
@@ -2889,7 +2788,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /us
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(471,5)
-   remark #15388: vectorization support: reference __first_261694 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15388: vectorization support: reference __first_261237 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15399: vectorization support: unroll factor set to 4
    remark #15300: LOOP WAS VECTORIZED
    remark #15442: entire loop may be executed in remainder
@@ -2904,7 +2803,7 @@ LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(471,5)
 <Remainder>
-   remark #15388: vectorization support: reference __first_261694 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15388: vectorization support: reference __first_261237 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15301: REMAINDER LOOP WAS VECTORIZED
 LOOP END
 
@@ -2921,7 +2820,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(703,7) inlined into /us
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(703,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(480,5)
-   remark #15388: vectorization support: reference __first_264475 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
+   remark #15388: vectorization support: reference __first_264018 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
    remark #15399: vectorization support: unroll factor set to 4
    remark #15300: LOOP WAS VECTORIZED
    remark #15442: entire loop may be executed in remainder
@@ -2936,7 +2835,7 @@ LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(703,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(480,5)
 <Remainder>
-   remark #15388: vectorization support: reference __first_264475 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
+   remark #15388: vectorization support: reference __first_264018 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
    remark #15301: REMAINDER LOOP WAS VECTORIZED
 LOOP END
 
@@ -2949,7 +2848,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /us
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(493,5)
-   remark #15388: vectorization support: reference __first_261694 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15388: vectorization support: reference __first_261237 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15399: vectorization support: unroll factor set to 4
    remark #15300: LOOP WAS VECTORIZED
    remark #15442: entire loop may be executed in remainder
@@ -2964,7 +2863,7 @@ LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(493,5)
 <Remainder>
-   remark #15388: vectorization support: reference __first_261694 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15388: vectorization support: reference __first_261237 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15301: REMAINDER LOOP WAS VECTORIZED
 LOOP END
 
@@ -3060,7 +2959,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /ho
    LOOP END
 
    LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
-      remark #15388: vectorization support: reference __first_261694 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15388: vectorization support: reference __first_261237 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15399: vectorization support: unroll factor set to 2
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
@@ -3078,24 +2977,24 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /ho
    LOOP END
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(241,3) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+LOOP BEGIN at ../src/node_server.cpp(229,3) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
 
-   LOOP BEGIN at ../src/node_server.cpp(242,37) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+   LOOP BEGIN at ../src/node_server.cpp(230,37) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
       remark #15344: loop was not vectorized: vector dependence prevents vectorization
 
-      LOOP BEGIN at ../src/node_server.cpp(243,38) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+      LOOP BEGIN at ../src/node_server.cpp(231,38) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
          remark #15344: loop was not vectorized: vector dependence prevents vectorization
-         remark #15346: vector dependence: assumed OUTPUT dependence between _M_current line 245 and _M_current line 245
-         remark #15346: vector dependence: assumed OUTPUT dependence between _M_current line 245 and _M_current line 245
+         remark #15346: vector dependence: assumed OUTPUT dependence between _M_current line 233 and _M_current line 233
+         remark #15346: vector dependence: assumed OUTPUT dependence between _M_current line 233 and _M_current line 233
 
-         LOOP BEGIN at ../src/node_server.cpp(244,39) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+         LOOP BEGIN at ../src/node_server.cpp(232,39) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
             remark #15344: loop was not vectorized: vector dependence prevents vectorization
-            remark #15346: vector dependence: assumed FLOW dependence between _M_current line 245 and f line 245
-            remark #15346: vector dependence: assumed ANTI dependence between f line 245 and _M_current line 245
+            remark #15346: vector dependence: assumed FLOW dependence between _M_current line 233 and f line 233
+            remark #15346: vector dependence: assumed ANTI dependence between f line 233 and _M_current line 233
          LOOP END
 
-         LOOP BEGIN at ../src/node_server.cpp(244,39) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+         LOOP BEGIN at ../src/node_server.cpp(232,39) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
          <Remainder>
          LOOP END
       LOOP END
@@ -3112,93 +3011,93 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /ho
    remark #15398: loop was not vectorized: loop was transformed to memset or memcpy
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(159,3) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+LOOP BEGIN at ../src/node_server.cpp(163,3) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
    remark #15542: loop was not vectorized: inner loop was already vectorized
 
-   LOOP BEGIN at ../src/node_server.cpp(162,4) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+   LOOP BEGIN at ../src/node_server.cpp(166,4) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
       remark #15344: loop was not vectorized: vector dependence prevents vectorization
-      remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 168 and _M_start line 168
-      remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 168 and _M_start line 168
+      remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 172 and _M_start line 172
+      remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 172 and _M_start line 172
 
-      LOOP BEGIN at ../src/node_server.cpp(163,5) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+      LOOP BEGIN at ../src/node_server.cpp(167,5) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
          remark #15344: loop was not vectorized: vector dependence prevents vectorization
-         remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 168 and _M_start line 168
-         remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 168 and _M_start line 168
+         remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 172 and _M_start line 172
+         remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 172 and _M_start line 172
 
-         LOOP BEGIN at ../src/node_server.cpp(164,6) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+         LOOP BEGIN at ../src/node_server.cpp(168,6) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
             remark #15344: loop was not vectorized: vector dependence prevents vectorization
-            remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 168 and _M_start line 168
-            remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 168 and _M_start line 168
+            remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 172 and _M_start line 172
+            remark #15346: vector dependence: assumed OUTPUT dependence between _M_start line 172 and _M_start line 172
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
                remark #15344: loop was not vectorized: vector dependence prevents vectorization
-               remark #15346: vector dependence: assumed FLOW dependence between _M_start line 168 and f line 168
-               remark #15346: vector dependence: assumed ANTI dependence between f line 168 and _M_start line 168
+               remark #15346: vector dependence: assumed FLOW dependence between _M_start line 172 and f line 172
+               remark #15346: vector dependence: assumed ANTI dependence between f line 172 and _M_start line 172
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
-            LOOP END
-         LOOP END
-
-         LOOP BEGIN at ../src/node_server.cpp(164,6) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
-
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
-            LOOP END
-
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
-            LOOP END
-
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
-            LOOP END
-
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
             LOOP END
          LOOP END
 
-         LOOP BEGIN at ../src/node_server.cpp(164,6) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+         LOOP BEGIN at ../src/node_server.cpp(168,6) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
             LOOP END
          LOOP END
 
-         LOOP BEGIN at ../src/node_server.cpp(164,6) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+         LOOP BEGIN at ../src/node_server.cpp(168,6) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
             LOOP END
 
-            LOOP BEGIN at ../src/node_server.cpp(165,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+            LOOP END
+         LOOP END
+
+         LOOP BEGIN at ../src/node_server.cpp(168,6) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+            LOOP END
+
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+            LOOP END
+
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+            LOOP END
+
+            LOOP BEGIN at ../src/node_server.cpp(169,7) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
             LOOP END
          LOOP END
       LOOP END
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(173,4) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(175,10) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(177,10) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(175,10) ]
-      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(177,10) ]
-      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(177,10) ]
+   LOOP BEGIN at ../src/node_server.cpp(177,4) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(179,10) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(181,10) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(179,10) ]
+      remark #15389: vectorization support: reference _M_elems has unaligned access   [ ../src/node_server.cpp(181,10) ]
+      remark #15381: vectorization support: unaligned access used inside loop body   [ ../src/node_server.cpp(181,10) ]
       remark #15300: LOOP WAS VECTORIZED
       remark #15449: unmasked aligned unit stride stores: 1 
       remark #15475: --- begin vector loop cost summary ---
@@ -3211,7 +3110,7 @@ LOOP BEGIN at ../src/node_server.cpp(159,3) inlined into /home/dmarce1/packages/
       remark #15488: --- end vector loop cost summary ---
    LOOP END
 
-   LOOP BEGIN at ../src/node_server.cpp(173,4) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
+   LOOP BEGIN at ../src/node_server.cpp(177,4) inlined into /home/dmarce1/packages/intel64/include/hpx/preprocessed/async_5.hpp(31,20)
    <Remainder>
    LOOP END
 LOOP END
@@ -3446,8 +3345,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /h
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U4c line 245 and U4c line 249
-   remark #15346: vector dependence: assumed FLOW dependence between U41 line 249 and U41 line 245
+   remark #15346: vector dependence: assumed ANTI dependence between U4a line 245 and U4a line 249
+   remark #15346: vector dependence: assumed FLOW dependence between U3f line 249 and U3f line 245
 LOOP END
 ===========================================================================
 
@@ -3457,7 +3356,7 @@ Begin optimization report for: hpx::util::logging::gather_holder<hpx::util::logg
 
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/basic_ios.h(454,7) inlined into /home/dmarce1/packages/intel64/include/hpx/util/logging/detail/logger.hpp(34,9)
-   remark #15389: vectorization support: reference this_266614 has unaligned access
+   remark #15389: vectorization support: reference this_266157 has unaligned access
    remark #15381: vectorization support: unaligned access used inside loop body
    remark #15427: loop was completely unrolled
    remark #15399: vectorization support: unroll factor set to 2
@@ -3473,7 +3372,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/basic_ios.h(454,7) inlined into /home/
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/basic_ios.h(454,7) inlined into /home/dmarce1/packages/intel64/include/hpx/util/logging/detail/logger.hpp(34,9)
-   remark #15389: vectorization support: reference this_266614 has unaligned access
+   remark #15389: vectorization support: reference this_266157 has unaligned access
    remark #15381: vectorization support: unaligned access used inside loop body
    remark #15427: loop was completely unrolled
    remark #15399: vectorization support: unroll factor set to 2
@@ -3489,7 +3388,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/basic_ios.h(454,7) inlined into /home/
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/streambuf(463,7) inlined into /home/dmarce1/packages/intel64/include/hpx/util/logging/detail/logger.hpp(34,9)
-   remark #15389: vectorization support: reference this_266633 has unaligned access
+   remark #15389: vectorization support: reference this_266176 has unaligned access
    remark #15381: vectorization support: unaligned access used inside loop body
    remark #15427: loop was completely unrolled
    remark #15399: vectorization support: unroll factor set to 3
@@ -3616,8 +3515,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4)
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U4c line 245 and U4c line 249
-   remark #15346: vector dependence: assumed FLOW dependence between U41 line 249 and U41 line 245
+   remark #15346: vector dependence: assumed ANTI dependence between U4a line 245 and U4a line 249
+   remark #15346: vector dependence: assumed FLOW dependence between U3f line 249 and U3f line 245
 LOOP END
 ===========================================================================
 
@@ -3695,33 +3594,95 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_tree.h(1441,7) inlined into /usr/i
 LOOP END
 ===========================================================================
 
+Begin optimization report for: std::vector<double, std::allocator<double>>::_M_default_append(std::vector<double, std::allocator<double>> *, std::vector<double, std::allocator<double>>::size_type)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(545,8)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(545,8)
+   <Peeled>
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(545,8)
+      remark #15388: vectorization support: reference __first_261237 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15399: vectorization support: unroll factor set to 2
+      remark #15300: LOOP WAS VECTORIZED
+      remark #15442: entire loop may be executed in remainder
+      remark #15449: unmasked aligned unit stride stores: 1 
+      remark #15475: --- begin vector loop cost summary ---
+      remark #15476: scalar loop cost: 3 
+      remark #15477: vector loop cost: 1.500 
+      remark #15478: estimated potential speedup: 1.280 
+      remark #15479: lightweight vector operations: 3 
+      remark #15488: --- end vector loop cost summary ---
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(545,8)
+   <Remainder>
+   LOOP END
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(74,23) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(559,9)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP END
+
+LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(562,5)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(562,5)
+   <Peeled>
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(562,5)
+      remark #15388: vectorization support: reference __first_261237 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15399: vectorization support: unroll factor set to 2
+      remark #15300: LOOP WAS VECTORIZED
+      remark #15442: entire loop may be executed in remainder
+      remark #15449: unmasked aligned unit stride stores: 1 
+      remark #15475: --- begin vector loop cost summary ---
+      remark #15476: scalar loop cost: 3 
+      remark #15477: vector loop cost: 1.500 
+      remark #15478: estimated potential speedup: 1.280 
+      remark #15479: lightweight vector operations: 3 
+      remark #15488: --- end vector loop cost summary ---
+   LOOP END
+
+   LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(562,5)
+   <Remainder>
+   LOOP END
+LOOP END
+===========================================================================
+
 Begin optimization report for: node_server::init_t0(node_server *)
 
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at ../src/node_server.cpp(479,2)
-   remark #15541: outer loop was not auto-vectorized: consider using SIMD directive   [ ../src/node_server.cpp(481,5) ]
+LOOP BEGIN at ../src/node_server.cpp(460,2)
+   remark #15541: outer loop was not auto-vectorized: consider using SIMD directive   [ ../src/node_server.cpp(462,5) ]
 
-   LOOP BEGIN at ../src/node_server.cpp(480,3)
+   LOOP BEGIN at ../src/node_server.cpp(461,3)
       remark #15398: loop was not vectorized: loop was transformed to memset or memcpy
    LOOP END
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(484,2)
+LOOP BEGIN at ../src/node_server.cpp(465,2)
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between this line 491 and F64 line 493
-   remark #15346: vector dependence: assumed FLOW dependence between F64 line 493 and this line 491
+   remark #15346: vector dependence: assumed ANTI dependence between this line 472 and F64 line 474
+   remark #15346: vector dependence: assumed FLOW dependence between F64 line 474 and this line 472
 
-   LOOP BEGIN at ../src/node_server.cpp(486,3)
+   LOOP BEGIN at ../src/node_server.cpp(467,3)
       remark #15344: loop was not vectorized: vector dependence prevents vectorization
-      remark #15346: vector dependence: assumed ANTI dependence between this line 491 and F64 line 493
-      remark #15346: vector dependence: assumed FLOW dependence between F64 line 493 and this line 491
+      remark #15346: vector dependence: assumed ANTI dependence between this line 472 and F64 line 474
+      remark #15346: vector dependence: assumed FLOW dependence between F64 line 474 and this line 472
 
-      LOOP BEGIN at ../src/node_server.cpp(488,4)
+      LOOP BEGIN at ../src/node_server.cpp(469,4)
          remark #15344: loop was not vectorized: vector dependence prevents vectorization
-         remark #15346: vector dependence: assumed ANTI dependence between this line 491 and F64 line 493
-         remark #15346: vector dependence: assumed FLOW dependence between F64 line 493 and this line 491
+         remark #15346: vector dependence: assumed ANTI dependence between this line 472 and F64 line 474
+         remark #15346: vector dependence: assumed FLOW dependence between F64 line 474 and this line 472
       LOOP END
    LOOP END
 LOOP END
@@ -3732,14 +3693,14 @@ Begin optimization report for: node_server::initialize(node_server *, node_clien
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at ../src/node_server.cpp(595,2)
+LOOP BEGIN at ../src/node_server.cpp(582,2)
    remark #15382: vectorization support: call to function __atomic_fetch_add_8 cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/atomic/detail/ops_gcc_atomic.hpp(91,16) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
    remark #15346: vector dependence: assumed ANTI dependence between this line 121 and this line 91
    remark #15346: vector dependence: assumed FLOW dependence between this line 91 and this line 121
 LOOP END
 
-LOOP BEGIN at ../src/node_server.cpp(595,2)
+LOOP BEGIN at ../src/node_server.cpp(582,2)
    remark #15382: vectorization support: call to function __atomic_fetch_add_8 cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/atomic/detail/ops_gcc_atomic.hpp(91,16) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
    remark #15346: vector dependence: assumed ANTI dependence between this line 121 and this line 91

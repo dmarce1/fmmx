@@ -33,8 +33,9 @@ real exafmm_kernel::Cnm_r[P * P * P * P];
 real exafmm_kernel::Cnm_i[P * P * P * P];
 
 void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
-		const std::array<std::vector<real>, NDIM>& d, integer N) {
-	std::vector<std::vector<real>> Ynm(P * P, std::vector<real>(N));
+		const std::array<std::vector<real>, NDIM>& d, integer N, std::vector<real>& L_r, std::vector<real>& L_i, std::vector<real>& Ynm) {
+	integer Nynm;
+	Nynm = (((N - 1) / 64) + 1) * 64;
 #pragma vector aligned
 #pragma simd
 	for (integer i = 0; i != N; ++i) {
@@ -53,9 +54,9 @@ void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 			real p = pn;                  //  Associated Legendre polynomial Pnm
 			int npn = m * m + 2 * m;                  //  Index of Ynm for m > 0
 			int nmn = m * m;                          //  Index of Ynm for m < 0
-			Ynm[npn][i] = rhom * p * prefactor[npn] * eim_r; //  rho^(-m-1) * Ynm for m > 0
+			Ynm[npn * Nynm + i] = rhom * p * prefactor[npn] * eim_r; //  rho^(-m-1) * Ynm for m > 0
 			if (npn != nmn) {
-				Ynm[nmn][i] = rhom * p * prefactor[npn] * eim_i; //  rho^(-m-1) * Ynm for m > 0
+				Ynm[nmn * Nynm + i] = rhom * p * prefactor[npn] * eim_i; //  rho^(-m-1) * Ynm for m > 0
 			}
 			real p1 = p;                                              //  Pnm-1
 			p = x * (2 * m + 1) * p1;          //  Pnm using recurrence relation
@@ -65,9 +66,9 @@ void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 			for (int n = m + 1; n != P; ++n) {            //  Loop over n in Ynm
 				int npm = n * n + n + m;             //   Index of Ynm for m > 0
 				int nmm = n * n + n - m;             //   Index of Ynm for m < 0
-				Ynm[npm][i] = rhon * p * prefactor[npm] * eim_r; //   rho^n * Ynm for m > 0
+				Ynm[npm * Nynm + i] = rhon * p * prefactor[npm] * eim_r; //   rho^n * Ynm for m > 0
 				if (npm != nmm) {
-					Ynm[nmm][i] = rhon * p * prefactor[npm] * eim_i; //   rho^n * Ynm for m > 0
+					Ynm[nmm * Nynm + i] = rhon * p * prefactor[npm] * eim_i; //   rho^n * Ynm for m > 0
 				}
 				real p2 = p1;                                         //   Pnm-2
 				p1 = p;                                               //   Pnm-1
@@ -79,8 +80,6 @@ void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 		}                                              // End loop over m in Ynm
 	}
 
-	std::vector<real> L_r(N);
-	std::vector<real> L_i(N);
 	for (integer j = 0; j != P; ++j) {
 		for (integer k = 0; k <= j; ++k) {
 			const integer jkp = j * j + j + k;
@@ -102,8 +101,8 @@ void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 					real tmp_r, tmp_i;
 					const real sgn = SGN(m-k);
 					COMPLEX_MULT(tmp_r, tmp_i, CjM[nmp], SGN(m) * CjM[nmm], Cnm_r[jknm], Cnm_i[jknm]);
-					const auto& Yp = Ynm[jnkmp];
-					const auto& Ym = Ynm[jnkmm];
+					const auto Yp = Ynm.data() + Nynm * jnkmp;
+					const auto Ym = Ynm.data() + Nynm * jnkmm;
 #pragma vector aligned
 #pragma simd
 					for (integer i = 0; i != N; ++i) {
@@ -113,7 +112,7 @@ void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 			}
 			auto Cp = CiL.data() + N * jkp;
 			auto Cm = CiL.data() + N * jkm;
-#pragma vector aligned
+//#pragma vector aligned
 #pragma simd
 			for (integer i = 0; i != N; ++i) {
 				Cp[i] = L_r[i];

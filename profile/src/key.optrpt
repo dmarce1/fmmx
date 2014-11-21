@@ -35,26 +35,16 @@ Begin optimization report for: location_to_key(integer, std::array<integer, 3UL>
     Report from: Vector optimizations [vec]
 
 
-LOOP BEGIN at ../src/key.cpp(30,2)
+LOOP BEGIN at ../src/key.cpp(21,2)
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between _M_elems line 33 and _M_elems line 34
-   remark #15346: vector dependence: assumed FLOW dependence between _M_elems line 34 and _M_elems line 33
+   remark #15346: vector dependence: assumed ANTI dependence between _M_elems line 24 and _M_elems line 25
+   remark #15346: vector dependence: assumed FLOW dependence between _M_elems line 25 and _M_elems line 24
 
-   LOOP BEGIN at ../src/key.cpp(31,3)
+   LOOP BEGIN at ../src/key.cpp(22,3)
       remark #15344: loop was not vectorized: vector dependence prevents vectorization
-      remark #15346: vector dependence: assumed ANTI dependence between key line 33 and key line 33
-      remark #15346: vector dependence: assumed FLOW dependence between key line 33 and key line 33
-      remark #15346: vector dependence: assumed ANTI dependence between key line 33 and key line 33
+      remark #15346: vector dependence: assumed ANTI dependence between key line 24 and key line 24
+      remark #15346: vector dependence: assumed FLOW dependence between key line 24 and key line 24
+      remark #15346: vector dependence: assumed ANTI dependence between key line 24 and key line 24
    LOOP END
-LOOP END
-===========================================================================
-
-Begin optimization report for: std::vector<hpx::naming::id_type, std::allocator<hpx::naming::id_type>>::~vector(std::vector<hpx::naming::id_type, std::allocator<hpx::naming::id_type>> *)
-
-    Report from: Vector optimizations [vec]
-
-
-LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(424,9)
-   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
 LOOP END
 ===========================================================================

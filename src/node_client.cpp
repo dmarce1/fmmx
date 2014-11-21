@@ -8,6 +8,14 @@
 #include "node_client.hpp"
 #include "node_server.hpp"
 
+hpx::future<void> node_client::execute() {
+	return hpx::async<typename node_server::execute_action>(id);
+}
+
+hpx::future<void> node_client::refine() {
+	return hpx::async<typename node_server::refine_action>(id);
+}
+
 node_client::operator hpx::id_type() const {
 	return id;
 }

@@ -15,7 +15,7 @@ using integer = std::int64_t;
 
 constexpr integer NX = 8;
 constexpr integer BW = 2;
-constexpr integer P = 3;
+constexpr integer P = 5;
 constexpr integer N3 = NX * NX * NX;
 constexpr integer PP = P * P;
 constexpr integer NDIM = 3;

@@ -16,6 +16,7 @@ class node_client {
 private:
 	hpx::id_type id;
 public:
+	hpx::future<void> refine();
 	operator hpx::id_type() const;
 	node_client();
 	node_client(const hpx::id_type&);
@@ -26,6 +27,7 @@ public:
 	hpx::future<std::vector<real>> get_data() const;
 	hpx::future<integer> get_node_count() const;
 	hpx::future<std::list<std::size_t>> get_leaf_list() const;
+	hpx::future<void> execute();
 	template<class Arc>
 	void serialize(Arc&, const unsigned);
 };

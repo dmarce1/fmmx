@@ -121,7 +121,7 @@ LOOP BEGIN at ../src/silo_output.cpp(168,2)
 LOOP END
 
 LOOP BEGIN at ../src/silo_output.cpp(105,14)
-   remark #15382: vectorization support: call to function _ZN44_INTERNAL_22____src_silo_output_cpp_00347c819__gnu_cxx27__exchange_and_add_dispatchEPii cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(245,12) ]
+   remark #15382: vectorization support: call to function _ZN44_INTERNAL_22____src_silo_output_cpp_1f24d5939__gnu_cxx27__exchange_and_add_dispatchEPii cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(245,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
    remark #15346: vector dependence: assumed ANTI dependence between _M_refcount line 547 and _M_refcount line 245
@@ -218,7 +218,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /us
    LOOP END
 
    LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(279,9)
-      remark #15388: vectorization support: reference __first_251071 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15388: vectorization support: reference __first_251069 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15399: vectorization support: unroll factor set to 2
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
@@ -270,7 +270,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /us
    LOOP END
 
    LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_vector.h(279,9)
-      remark #15389: vectorization support: reference __first_306750 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15389: vectorization support: reference __first_306748 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
@@ -381,7 +381,7 @@ LOOP BEGIN at ../src/silo_output.cpp(52,6)
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/silo_output.cpp(60,19)
-   remark #15389: vectorization support: reference __first_306750 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15389: vectorization support: reference __first_306748 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15427: loop was completely unrolled
    remark #15399: vectorization support: unroll factor set to 2
@@ -424,7 +424,7 @@ LOOP BEGIN at ../src/silo_output.cpp(62,9)
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into ../src/silo_output.cpp(68,17)
-   remark #15389: vectorization support: reference __first_251071 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15389: vectorization support: reference __first_251069 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
    remark #15451: unmasked unaligned unit stride stores: 1 
@@ -488,7 +488,7 @@ Begin optimization report for: std::list<silo_output::silo_zone, std::allocator<
 
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_list.h(514,32)
-   remark #15389: vectorization support: reference __first_306750 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15389: vectorization support: reference __first_306748 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15427: loop was completely unrolled
    remark #15399: vectorization support: unroll factor set to 2
@@ -510,7 +510,7 @@ Begin optimization report for: std::_Rb_tree<std::set<silo_output::vertex, silo_
 
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/stl_tree.h(421,8)
-   remark #15389: vectorization support: reference __first_251071 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+   remark #15389: vectorization support: reference __first_251069 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
    remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
    remark #15451: unmasked unaligned unit stride stores: 1 
@@ -805,7 +805,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /us
    LOOP END
 
    LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(545,8)
-      remark #15388: vectorization support: reference __first_251071 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15388: vectorization support: reference __first_251069 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15399: vectorization support: unroll factor set to 2
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
@@ -835,7 +835,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /us
    LOOP END
 
    LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(562,5)
-      remark #15388: vectorization support: reference __first_251071 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15388: vectorization support: reference __first_251069 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15399: vectorization support: unroll factor set to 2
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder

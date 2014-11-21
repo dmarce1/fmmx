@@ -10,6 +10,7 @@
 #include "silo_output.hpp"
 
 #include <hpx/lcos/wait_all.hpp>
+#include <hpx/lcos/when_all.hpp>
 #include <mutex>
 #include "key.hpp"
 #include "exafmm.hpp"
@@ -134,26 +135,6 @@ bool location_is_phys_bnd(integer level, const std::array<integer, NDIM>& loc, i
 	}
 }
 
-void node_server::reset_children() {
-	for (integer ci = 0; ci != NCHILD; ++ci) {
-		child_status[ci] = WAITING;
-	}
-}
-
-void node_server::reset_parent() {
-	parent_status = level == 0 ? COMPLETE : WAITING;
-}
-
-void node_server::reset_neighbors() {
-	for (integer d = 0; d != NNEIGHBOR; ++d) {
-		if (location_is_phys_bnd(level, location, d) || d == center_dir) {
-			neighbor_status[d] = COMPLETE;
-		} else {
-			neighbor_status[d] = WAITING;
-		}
-	}
-}
-
 hpx::future<std::vector<real>> node_server::get_expansions(integer c) const {
 	return hpx::async([=]() {
 		std::vector<real> lc(PP * N3 / NCHILD);
@@ -203,39 +184,54 @@ hpx::future<std::vector<real>> node_server::get_multipoles() const {
 	});
 }
 
-void node_server::refine() {
-	reset_children();
-	if (my_id == hpx::invalid_id) {
-		my_id = hpx::find_id_from_basename("fmmx_node", location_to_key(level, location)).get();
-	}
-	std::vector<hpx::future<hpx::id_type>> cids(NCHILD);
-	for (integer ci = 0; ci != NCHILD; ++ci) {
-		std::array<integer, NDIM> cloc(location);
-		for (integer d = 0; d != NDIM; ++d) {
-			cloc[d] <<= 1;
-			cloc[d] += (ci >> d) & integer(1);
+hpx::future<void> node_server::refine() {
+	hpx::future<void> fut;
+	std::vector<hpx::future<void>> cfut(NCHILD);
+	if (level < MAXLEVEL) {
+		if (my_id == hpx::invalid_id) {
+			my_id = hpx::find_id_from_basename("fmmx_node", location_to_key(level, location)).get();
 		}
-		cids[ci] = hpx::new_ < node_server > (hpx::find_here(), get_gid(), level + 1, cloc);
+		std::vector<hpx::future<hpx::id_type>> cids(NCHILD);
+		for (integer ci = 0; ci != NCHILD; ++ci) {
+			std::array<integer, NDIM> cloc(location);
+			for (integer d = 0; d != NDIM; ++d) {
+				cloc[d] <<= 1;
+				cloc[d] += (ci >> d) & integer(1);
+			}
+			auto locality = key_to_locality(location_to_key(level + 1, cloc));
+			cids[ci] = hpx::new_ < node_server > (locality, get_gid(), level + 1, cloc);
 
-	}
-	is_leaf = false;
-	hpx::wait_all(cids);
-	std::vector<hpx::future<bool>> id_test(NCHILD);
-	for (integer ci = 0; ci != NCHILD; ++ci) {
-		std::array<integer, NDIM> cloc(location);
-		for (integer d = 0; d != NDIM; ++d) {
-			cloc[d] <<= 1;
-			cloc[d] += (ci >> d) & integer(1);
 		}
-		child_id[ci] = cids[ci].get();
-		id_test[ci] = hpx::register_id_with_basename("fmmx_node", child_id[ci], location_to_key(level + 1, cloc));
-	}
-	for (integer ci = 0; ci != NCHILD; ++ci) {
-		if (!id_test[ci].get()) {
-			printf("Failed to register id_with_basename\n");
-			abort();
+		is_leaf = false;
+		hpx::wait_all(cids);
+		std::vector<hpx::future<bool>> id_test(NCHILD);
+		for (integer ci = 0; ci != NCHILD; ++ci) {
+			std::array<integer, NDIM> cloc(location);
+			for (integer d = 0; d != NDIM; ++d) {
+				cloc[d] <<= 1;
+				cloc[d] += (ci >> d) & integer(1);
+			}
+			child_id[ci] = cids[ci].get();
+			id_test[ci] = hpx::register_id_with_basename("fmmx_node", child_id[ci], location_to_key(level + 1, cloc));
+		}
+		for (integer ci = 0; ci != NCHILD; ++ci) {
+			if (!id_test[ci].get()) {
+				printf("Failed to register id_with_basename\n");
+				abort();
+			}
+		}
+		for (integer ci = 0; ci != NCHILD; ++ci) {
+			cfut[ci] = child_id[ci].refine();
 		}
 	}
+	get_tree();
+	init_t0();
+	if (level < MAXLEVEL) {
+		fut = hpx::when_all(cfut).then([](hpx::future<std::vector<hpx::future<void>>>) {});
+	} else {
+		fut = hpx::make_ready_future();
+	}
+	return fut;
 }
 
 hpx::future<std::vector<real>> node_server::get_boundary(integer d) const {
@@ -258,37 +254,33 @@ hpx::future<std::vector<real>> node_server::get_boundary(integer d) const {
 }
 
 void node_server::set_boundary(hpx::future<std::vector<real>> f, integer d) {
-	integer tmp = neighbor_status[d];
-	if (tmp != WAITING) {
-		assert(false);
+	M2L(f.get(), d);
+	integer cnt = neighbor_done_cnt;
+//	printf("%li %li\n", level, cnt);
+	if (++neighbor_done_cnt == NNEIGHBOR + 1) {
+		send_expansions();
 	}
-	neighbor_futures[d] = std::move(f);
-	neighbor_status[d] = READY;
-	input_condition.signal(1);
-}
-
-void node_server::set_multipoles(hpx::future<std::vector<real>> f, integer ci) {
-	integer tmp = child_status[ci];
-	if (tmp != WAITING) {
-		assert(false);
-	}
-	child_futures[ci] = std::move(f);
-	child_status[ci] = READY;
-	input_condition.signal(1);
 }
 
 void node_server::set_expansions(hpx::future<std::vector<real>> f) {
-	integer tmp = parent_status;
-	if (tmp != WAITING) {
-		assert(false);
+	L2L(f.get());
+	integer cnt = neighbor_done_cnt;
+//	printf("%li %li\n", level, cnt);
+
+	if (++neighbor_done_cnt == NNEIGHBOR + 1) {
+		send_expansions();
 	}
-	parent_future = std::move(f);
-	parent_status = READY;
-	input_condition.signal(1);
 }
 
-void node_server::wait_for_signal() const {
-	input_condition.wait();
+void node_server::set_multipoles(hpx::future<std::vector<real>> f, integer ci) {
+	M2M(f.get(), ci);
+	if (++child_done_cnt == NCHILD) {
+		send_multipoles();
+	}
+	integer cnt = neighbor_done_cnt;
+	if (neighbor_done_cnt == NNEIGHBOR + 1) {
+		send_expansions();
+	}
 }
 
 void node_server::M2M(const std::vector<real>& mptr, integer c) {
@@ -298,7 +290,6 @@ void node_server::M2M(const std::vector<real>& mptr, integer c) {
 			for (integer k = oct_ylb[c]; k <= oct_yub[c]; ++k) {
 				for (integer l = oct_zlb[c]; l <= oct_zub[c]; ++l) {
 					M[ind4d(p, j, k, l)] = *i;
-					L[ind4d(p, j, k, l)] = 0.0;
 					++i;
 				}
 			}
@@ -333,6 +324,36 @@ void node_server::L2L(const std::vector<real>& l_in) {
 	}
 }
 
+void node_server::send_multipoles() {
+	auto mul_fut = get_multipoles();
+	integer j = 0;
+	for (integer i = 0; i != NDIM; ++i) {
+		j |= ((location[i] & 1) << i);
+	}
+	parent_id.set_multipoles(mul_fut, j);
+	for (integer d = 0; d != NNEIGHBOR; ++d) {
+		if (d == center_dir) {
+			continue;
+		}
+		auto bnd_fut = get_boundary(d);
+		neighbor_id[d].set_boundary(bnd_fut, NNEIGHBOR - 1 - d);
+	}
+	M2L(M, center_dir);
+	neighbor_done_cnt++;
+	child_done_cnt = 0;
+
+}
+
+void node_server::send_expansions() {
+	if (!is_leaf) {
+		for (integer ci = 0; ci != NCHILD; ++ci) {
+			auto f = get_expansions(ci);
+			child_id[ci].set_expansions(f);
+		}
+	}
+	exe_promise.set_value();
+}
+
 void node_server::M2L(const std::vector<real>& m, integer d) {
 	//printf( "------------%li %li %li %li - %li %li %li\n", level,location[0], location[1], location[2], d % 3, (d/3)%3, d/9);
 	auto ub = [=](integer ia) {
@@ -364,6 +385,13 @@ void node_server::M2L(const std::vector<real>& m, integer d) {
 		dist[i].resize(level == 0 ? N3 : 216);
 	}
 	const real delta = 1.0 / real(std::pow(integer(2), level));
+
+	integer max_list_size = level == 0 ? N3 : 216;
+
+	max_list_size = ((max_list_size - 1) / 64 + 1) * 64;
+	std::vector<real> L_r(max_list_size), L_i(max_list_size);
+	std::vector<real> Ynm(PP * max_list_size);
+
 	for (integer j1 = xlb[d] + x_off[d]; j1 <= xub[d] + x_off[d]; ++j1) {
 		const integer jlb = lb(j1);
 		const integer jub = ub(j1);
@@ -401,10 +429,13 @@ void node_server::M2L(const std::vector<real>& m, integer d) {
 				}
 				m_in[PP - 1] = *i_m;
 				l_out.resize(PP * cnt);
-				exafmm.M2L(l_out, m_in, dist, cnt);
-				for (integer p = 0; p != PP; ++p) {
-					for (integer i = 0; i != cnt; ++i) {
-						L[p * N3 + list[i]] += l_out[p * cnt + i];
+				exafmm.M2L(l_out, m_in, dist, cnt, L_r, L_i, Ynm);
+				{
+					boost::unique_lock < hpx::lcos::local::spinlock > tmp(L_lock);
+					for (integer p = 0; p != PP; ++p) {
+						for (integer i = 0; i != cnt; ++i) {
+							L[p * N3 + list[i]] += l_out[p * cnt + i];
+						}
 					}
 				}
 				++is;
@@ -466,92 +497,25 @@ void node_server::init_t0() {
 	}
 }
 
-void node_server::execute() {
+hpx::future<void> node_server::execute() {
 	bool done, all_poles, poles_sent;
+	std::vector<hpx::future<void>> child_exe(NCHILD + 1);
 	printf("Begin at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
-	if (level < MAXLEVEL) {
-		refine();
-	}
-	init_t0();
-	get_tree();
-
-	poles_sent = false;
-	neighbor_status[center_dir] = COMPLETE;
-	do {
-		done = true;
-		all_poles = true;
-		wait_for_signal();
-		if (!is_leaf) {
-			for (integer c = 0; c != NCHILD; ++c) {
-				switch (child_status[c]) {
-				case WAITING:
-					done = false;
-					all_poles = false;
-					break;
-				case READY:
-					M2M(child_futures[c].get(), c);
-					child_status[c] = COMPLETE;
-				default:
-					break;
-				}
-			}
-		}
-		if( all_poles && !poles_sent)  {
-			auto mul_fut = get_multipoles();
-			integer j = 0;
-			for (integer i = 0; i != NDIM; ++i) {
-				j |= ((location[i] & 1) << i);
-			}
-			parent_id.set_multipoles(mul_fut, j);
-			for (integer d = 0; d != NNEIGHBOR; ++d) {
-				if (d == center_dir) {
-					continue;
-				}
-				auto bnd_fut = get_boundary(d);
-				neighbor_id[d].set_boundary(bnd_fut, NNEIGHBOR - 1 - d);
-			}
-			M2L(M, center_dir);
-			poles_sent = true;
-		}
-		if (level > 0) {
-			for (integer d = 0; d != NNEIGHBOR; ++d) {
-				switch (neighbor_status[d]) {
-				case WAITING:
-					done = false;
-					break;
-				case READY:
-					M2L(neighbor_futures[d].get(), d);
-					neighbor_status[d] = COMPLETE;
-				default:
-					break;
-				}
-			}
-			switch (parent_status) {
-			case WAITING:
-				done = false;
-				break;
-			case READY:
-				L2L(parent_future.get());
-				parent_status = COMPLETE;
-			default:
-				break;
-			}
-		}
-	} while (!done);
 	if (!is_leaf) {
-		for (integer ci = 0; ci != NCHILD; ++ci) {
-			auto f = get_expansions(ci);
-			child_id[ci].set_expansions(f);
+		for (integer i = 0; i != NCHILD; ++i) {
+			child_exe[i] = child_id[i].execute();
 		}
+	} else {
+		for (integer i = 0; i != NCHILD; ++i) {
+			child_exe[i] = hpx::make_ready_future();
+		}
+		send_multipoles();
 	}
-	printf("End at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
-	data_ready.signal();
-	if (level == 0) {
-		std::list<std::size_t> leaf_list = get_leaf_list();
-		printf("%li leaves detected by root\n", leaf_list.size());
-		auto f = hpx::async<typename silo_output::do_output_action>(output, std::move(leaf_list));
-		f.get();
-	}
+	child_exe[NCHILD] = exe_promise.get_future();
+	auto exit_fut = when_all(child_exe).then([=](hpx::future<std::vector<hpx::future<void>>>) {
+		printf("End at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
+	});
+	return exit_fut;
 }
 
 node_server::node_server() {
@@ -559,7 +523,6 @@ node_server::node_server() {
 }
 
 std::vector<real> node_server::get_data() const {
-	data_ready.wait();
 //	printf("Getting data\n");
 	std::vector<real> v((2 * PP) * N3);
 	auto l = v.begin();
@@ -574,8 +537,7 @@ std::vector<real> node_server::get_data() const {
 	return std::move(v);
 }
 
-node_server::node_server(hpx::id_type sid) :
-		input_condition(8) {
+node_server::node_server(hpx::id_type sid) {
 	output = std::move(sid);
 	node_client pid = hpx::naming::invalid_id;
 	integer lev = 0;
@@ -583,8 +545,7 @@ node_server::node_server(hpx::id_type sid) :
 	initialize(std::move(pid), std::move(lev), std::move(loc));
 }
 
-node_server::node_server(node_client pid, integer lev, std::array<integer, NDIM> loc) :
-		input_condition(8) {
+node_server::node_server(node_client pid, integer lev, std::array<integer, NDIM> loc) {
 	initialize(std::move(pid), std::move(lev), std::move(loc));
 }
 
@@ -621,20 +582,26 @@ std::list<std::size_t> node_server::get_leaf_list() const {
 }
 
 void node_server::initialize(node_client pid, integer lev, std::array<integer, NDIM> loc) {
-	M.resize(PP * N3);
-	L.resize(PP * N3);
+	neighbor_done_cnt = 0;
+	child_done_cnt = 0;
+	M.resize(PP * N3, 0.0);
+	L.resize(PP * N3, 0.0);
 	location = loc;
 	level = lev;
 	parent_id = node_client(pid);
 	is_leaf = true;
-	reset_children();
-	reset_parent();
-	reset_neighbors();
 	key = location_to_key(level, std::move(loc));
 	dx = 1.0 / real(std::pow(2, level) * NX);
-	my_thread = hpx::thread([=]() {
-		execute();
-	});
+	for (integer d = 0; d != NNEIGHBOR; ++d) {
+		if (d != center_dir) {
+			if (location_is_phys_bnd(level, location, d)) {
+				++neighbor_done_cnt;
+			}
+		}
+	}
+	if (level == 0) {
+		++neighbor_done_cnt;
+	}
 }
 
 node_server::~node_server() {

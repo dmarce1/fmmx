@@ -1,10 +1,9 @@
-//#if defined(__ICC) || defined(__INTEL_COMPILER)
+#if defined(__ICC) || defined(__INTEL_COMPILER)
 
 #include <new>
 #include <cstdlib>
 #include <cstdio>
 #include <unistd.h>
-
 
 #include "tbb/cache_aligned_allocator.h"
 #include "tbb/scalable_allocator.h"
@@ -14,7 +13,7 @@ static tbb::cache_aligned_allocator<char> big_alloc;
 static const std::size_t cache_line_size = sysconf(_SC_LEVEL1_DCACHE_LINESIZE);
 
 static void* allocate(std::size_t n) {
-	if (n >= cache_line_size) {
+	if (2 * n - 1 >= cache_line_size) {
 		return big_alloc.allocate(n);
 	} else {
 		return small_alloc.allocate(n);
@@ -64,13 +63,13 @@ void operator delete[](void* ptr) {
 	deallocate(ptr);
 }
 
-void operator delete(void* ptr, const std::nothrow_t& ) noexcept {
+void operator delete(void* ptr, const std::nothrow_t&) noexcept {
 	deallocate(ptr);
 
 }
 
-void operator delete[](void* ptr, const std::nothrow_t& ) noexcept {
+void operator delete[](void* ptr, const std::nothrow_t&) noexcept {
 	deallocate(ptr);
 }
 
-//#endif
+#endif

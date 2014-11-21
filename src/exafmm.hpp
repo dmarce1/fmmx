@@ -45,7 +45,7 @@ class exafmm_kernel {
 public:
 
 	static void M2L(std::vector<real>& CiL, const std::vector<real> CjM,
-			const std::array<std::vector<real>,NDIM>& dist, integer N);
+			const std::array<std::vector<real>,NDIM>& dist, integer N, std::vector<real>& L_r, std::vector<real>& L_i, std::vector<real>& Ynm);
 
 	static void cart2sph(real& r, real& theta, real& phi, std::array<real, NDIM> dist);
 	static void M2M(std::vector<real>& CiM, const std::vector<real>& CjM, const std::array<real, NDIM>& dist,

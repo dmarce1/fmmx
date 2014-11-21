@@ -1,114 +1,22 @@
 
-Begin optimization report for: hpx::async<node_server::refine_action>..0(hpx::lcos::future<void> *, hpx::launch::enum_type, const hpx::naming::id_type &)
+Begin optimization report for: hpx::apply_p<node_server::set_boundary_action, std::remove_reference<hpx::lcos::future<std::vector<double, std::allocator<double>>> &>::type, integer &>(const hpx::naming::id_type &, hpx::threads::thread_priority, std::remove_reference<hpx::lcos::future<std::vector<double, std::allocator<double>>> &>::type &&, integer &)
 
     Report from: Vector optimizations [vec]
 
 
-
-Non-optimizable loops:
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(144,38) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/async.hpp(99,19)
-   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
-LOOP END
-===========================================================================
-
-Begin optimization report for: hpx::lcos::packaged_action<hpx::actions::extract_action<node_server::refine_action, void>::type, boost::mpl::identity<void>::type, hpx::actions::result_action0<struct <unnamed>, {(void (*)())node_server::refine, 0L}, hpx::actions::detail::this_type>::direct_execution>::apply(hpx::lcos::packaged_action<hpx::actions::extract_action<node_server::refine_action, void>::type, boost::mpl::identity<void>::type, hpx::actions::result_action0<struct <unnamed>, {(void (*)())node_server::refine, 0L}, hpx::actions::detail::this_type>::direct_execution> *, hpx::launch::enum_type, const hpx::naming::id_type &)
-
-    Report from: Vector optimizations [vec]
-
-
-
-Non-optimizable loops:
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(144,38) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/packaged_action.hpp(107,48)
-   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
-LOOP END
-===========================================================================
-
-Begin optimization report for: boost::unique_lock<hpx::naming::gid_type>::~unique_lock(boost::unique_lock<hpx::naming::gid_type> *)
-
-    Report from: Vector optimizations [vec]
-
-
-
-Non-optimizable loops:
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(144,38) inlined into /home/dmarce1/packages/intel64/include/boost/thread/lock_types.hpp(331,12)
-   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
-LOOP END
-===========================================================================
-
-Begin optimization report for: boost::unique_lock<hpx::naming::gid_type>::lock(boost::unique_lock<hpx::naming::gid_type> *)
-
-    Report from: Vector optimizations [vec]
-
-
-
-Non-optimizable loops:
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(144,38) inlined into /home/dmarce1/packages/intel64/include/boost/thread/lock_types.hpp(346,10)
-   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
-LOOP END
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/runtime/naming/name.hpp(278,38) inlined into /home/dmarce1/packages/intel64/include/boost/thread/lock_types.hpp(346,10)
-   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
-
-   LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(144,38) inlined into /home/dmarce1/packages/intel64/include/boost/thread/lock_types.hpp(346,10)
-      remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
-   LOOP END
-LOOP END
-===========================================================================
-
-Begin optimization report for: hpx::components::managed_component<hpx::lcos::detail::promise<void, hpx::util::unused_type>, hpx::components::detail::this_type>::get_checked(hpx::components::managed_component<hpx::lcos::detail::promise<void, hpx::util::unused_type>, hpx::components::detail::this_type> *)
-
-    Report from: Vector optimizations [vec]
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/event.hpp(79,17) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/components/server/managed_component_base.hpp(503,37)
-   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
-LOOP END
-
-
-Non-optimizable loops:
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(50,9) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/components/server/managed_component_base.hpp(503,37)
-   remark #15341: loop was not vectorized: nonstandard loop is not a vectorization candidate
-LOOP END
-===========================================================================
-
-Begin optimization report for: hpx::lcos::local::detail::event<hpx::lcos::local::spinlock>::set(hpx::lcos::local::detail::event<hpx::lcos::local::spinlock> *)
-
-    Report from: Vector optimizations [vec]
-
-
-
-Non-optimizable loops:
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(144,38) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/event.hpp(64,52)
-   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
-LOOP END
-===========================================================================
-
-Begin optimization report for: hpx::apply_p_cb<hpx::lcos::packaged_action<hpx::actions::extract_action<node_server::refine_action, void>::type, boost::mpl::identity<void>::type, hpx::actions::result_action0<struct <unnamed>, {(void (*)())node_server::refine, 0L}, hpx::actions::detail::this_type>::direct_execution>::action_type, boost::disable_if_c<false, hpx::util::detail::bound<void (*)(boost::intrusive_ptr<hpx::lcos::promise<void, hpx::util::unused_type>::wrapping_type> *, const boost::system::error_code &, const hpx::parcelset::parcel &), hpx::util::tuple<boost::intrusive_ptr<hpx::lcos::promise<void, hpx::util::unused_type>::wrapping_type>, hpx::util::detail::placeholder<1UL>, hpx::util::detail::placeholder<2UL>>>>::type>(hpx::actions::continuation *, hpx::naming::address &&, const hpx::naming::id_type &, hpx::threads::thread_priority, boost::disable_if_c<false, hpx::util::detail::bound<void (*)(boost::intrusive_ptr<hpx::lcos::promise<void, hpx::util::unused_type>::wrapping_type> *, const boost::system::error_code &, const hpx::parcelset::parcel &), hpx::util::tuple<boost::intrusive_ptr<hpx::lcos::promise<void, hpx::util::unused_type>::wrapping_type>, hpx::util::detail::placeholder<1UL>, hpx::util::detail::placeholder<2UL>>>>::type &&)
-
-    Report from: Vector optimizations [vec]
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/format_implementation.hpp(137,41) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/applier/apply_callback.hpp(126,13)
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/format_implementation.hpp(137,41) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/applier/preprocessed/apply_implementations_5.hpp(350,13)
    remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
 LOOP END
 
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/format_implementation.hpp(145,30) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/applier/apply_callback.hpp(126,13)
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/format_implementation.hpp(145,30) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/applier/preprocessed/apply_implementations_5.hpp(350,13)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/feed_args.hpp(298,17) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/applier/apply_callback.hpp(126,13)
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/feed_args.hpp(283,48) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/applier/preprocessed/apply_implementations_5.hpp(350,13)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP END
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/feed_args.hpp(298,17) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/applier/preprocessed/apply_implementations_5.hpp(350,13)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 ===========================================================================
@@ -147,8 +55,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /h
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U5e line 327 and U5e line 249
-   remark #15346: vector dependence: assumed FLOW dependence between __first_378200 line 249 and __first_378200 line 327
+   remark #15346: vector dependence: assumed ANTI dependence between U5b line 327 and U5b line 249
+   remark #15346: vector dependence: assumed FLOW dependence between __first_377626 line 249 and __first_377626 line 327
 LOOP END
 ===========================================================================
 
@@ -204,8 +112,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /h
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U5e line 327 and U5e line 249
-   remark #15346: vector dependence: assumed FLOW dependence between __first_378200 line 249 and __first_378200 line 327
+   remark #15346: vector dependence: assumed ANTI dependence between U5b line 327 and U5b line 249
+   remark #15346: vector dependence: assumed FLOW dependence between __first_377626 line 249 and __first_377626 line 327
 LOOP END
 
 LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/format_implementation.hpp(123,13)
@@ -232,7 +140,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(703,7) inlined into /us
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(703,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(718,4)
-   remark #15389: vectorization support: reference __first_251047 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
+   remark #15389: vectorization support: reference __first_250473 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
    remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
    remark #15399: vectorization support: unroll factor set to 4
    remark #15300: LOOP WAS VECTORIZED
@@ -274,7 +182,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(703,7) inlined into /us
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(703,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(728,4)
-   remark #15389: vectorization support: reference __first_251047 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
+   remark #15389: vectorization support: reference __first_250473 has unaligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
    remark #15381: vectorization support: unaligned access used inside loop body   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(704,3) ]
    remark #15399: vectorization support: unroll factor set to 4
    remark #15300: LOOP WAS VECTORIZED
@@ -344,8 +252,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /u
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U5e line 327 and U5e line 249
-   remark #15346: vector dependence: assumed FLOW dependence between __first_378200 line 249 and __first_378200 line 327
+   remark #15346: vector dependence: assumed ANTI dependence between U5b line 327 and U5b line 249
+   remark #15346: vector dependence: assumed FLOW dependence between __first_377626 line 249 and __first_377626 line 327
 LOOP END
 ===========================================================================
 
@@ -361,8 +269,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4)
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between __first line 327 and U5e line 249
-   remark #15346: vector dependence: assumed FLOW dependence between U5e line 249 and __first line 327
+   remark #15346: vector dependence: assumed ANTI dependence between __first line 327 and U5b line 249
+   remark #15346: vector dependence: assumed FLOW dependence between U5b line 249 and __first line 327
 LOOP END
 ===========================================================================
 
@@ -378,8 +286,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /u
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U5e line 327 and U5e line 249
-   remark #15346: vector dependence: assumed FLOW dependence between __first_378200 line 249 and __first_378200 line 327
+   remark #15346: vector dependence: assumed ANTI dependence between U5b line 327 and U5b line 249
+   remark #15346: vector dependence: assumed FLOW dependence between __first_377626 line 249 and __first_377626 line 327
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(692,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(232,4)
@@ -389,8 +297,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(692,7) inlined into /us
    remark #15382: vectorization support: call to function _ZNSt6localeD1Ev cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/optional/optional.hpp(722,66) ]
    remark #15382: vectorization support: call to function _ZNSt6localeC1ERKS_ cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/optional/optional.hpp(465,50) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed OUTPUT dependence between this_382632 line 64 and this_382632 line 466
-   remark #15346: vector dependence: assumed OUTPUT dependence between __first_382623 line 466 and __first_382623 line 64
+   remark #15346: vector dependence: assumed OUTPUT dependence between this_382058 line 64 and this_382058 line 466
+   remark #15346: vector dependence: assumed OUTPUT dependence between __first_382049 line 466 and __first_382049 line 64
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_uninitialized.h(200,8) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(233,4)
@@ -404,8 +312,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(748,7) inlined into /us
    remark #15382: vectorization support: call to function _ZNSt6localeD1Ev cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/optional/optional.hpp(722,66) ]
    remark #15382: vectorization support: call to function _ZNSt6localeC1ERKS_ cannot be vectorized   [ /home/dmarce1/packages/intel64/include/boost/optional/optional.hpp(465,50) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed OUTPUT dependence between this_382632 line 64 and this_382632 line 466
-   remark #15346: vector dependence: assumed OUTPUT dependence between __first_382726 line 466 and __first_382726 line 64
+   remark #15346: vector dependence: assumed OUTPUT dependence between this_382058 line 64 and this_382058 line 466
+   remark #15346: vector dependence: assumed OUTPUT dependence between __first_382152 line 466 and __first_382152 line 64
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(239,9)
@@ -415,8 +323,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /u
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U5e line 327 and U5e line 249
-   remark #15346: vector dependence: assumed FLOW dependence between __first_378200 line 249 and __first_378200 line 327
+   remark #15346: vector dependence: assumed ANTI dependence between U5b line 327 and U5b line 249
+   remark #15346: vector dependence: assumed FLOW dependence between __first_377626 line 249 and __first_377626 line 327
 LOOP END
 ===========================================================================
 
@@ -442,8 +350,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /u
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U5e line 327 and U5e line 249
-   remark #15346: vector dependence: assumed FLOW dependence between __first_378200 line 249 and __first_378200 line 327
+   remark #15346: vector dependence: assumed ANTI dependence between U5b line 327 and U5b line 249
+   remark #15346: vector dependence: assumed FLOW dependence between __first_377626 line 249 and __first_377626 line 327
 LOOP END
 ===========================================================================
 
@@ -459,8 +367,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /h
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U5e line 327 and U5e line 249
-   remark #15346: vector dependence: assumed FLOW dependence between __first_378200 line 249 and __first_378200 line 327
+   remark #15346: vector dependence: assumed ANTI dependence between U5b line 327 and U5b line 249
+   remark #15346: vector dependence: assumed FLOW dependence between __first_377626 line 249 and __first_377626 line 327
 LOOP END
 ===========================================================================
 
@@ -471,106 +379,12 @@ Begin optimization report for: boost::basic_format<char, std::char_traits<char>,
 
 LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/format_implementation.hpp(257,29) inlined into /home/dmarce1/packages/intel64/include/boost/format/format_implementation.hpp(228,21)
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed FLOW dependence between sz.392297 line 263 and sz.392297 line 259
-   remark #15346: vector dependence: assumed ANTI dependence between sz.392297 line 259 and sz.392297 line 263
+   remark #15346: vector dependence: assumed FLOW dependence between sz.391723 line 263 and sz.391723 line 259
+   remark #15346: vector dependence: assumed ANTI dependence between sz.391723 line 259 and sz.391723 line 263
 LOOP END
 
 LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/format_implementation.hpp(230,29)
    remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
-LOOP END
-===========================================================================
-
-Begin optimization report for: boost::io::detail::distribute<boost::basic_format<char, std::char_traits<char>, std::allocator<char>>::CharT, std::char_traits<char>, std::allocator<char>, const boost::io::detail::put_holder<boost::basic_format<char, std::char_traits<char>, std::allocator<char>>::CharT, std::char_traits<char>> &>(boost::basic_format<char, std::char_traits<char>, std::allocator<char>> &, const boost::io::detail::put_holder<boost::basic_format<char, std::char_traits<char>, std::allocator<char>>::CharT, std::char_traits<char>> &)
-
-    Report from: Vector optimizations [vec]
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/feed_args.hpp(283,48)
-   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
-LOOP END
-===========================================================================
-
-Begin optimization report for: boost::io::detail::put<boost::basic_format<char, std::char_traits<char>, std::allocator<char>>::CharT, std::char_traits<char>, std::allocator<char>, const boost::io::detail::put_holder<boost::basic_format<char, std::char_traits<char>, std::allocator<char>>::CharT, std::char_traits<char>> &>(const boost::io::detail::put_holder<boost::basic_format<char, std::char_traits<char>, std::allocator<char>>::CharT, std::char_traits<char>> &, const boost::io::detail::format_item<char, std::char_traits<char>, std::allocator<char>> &, boost::basic_format<char, std::char_traits<char>, std::allocator<char>>::string_type &, boost::basic_format<char, std::char_traits<char>, std::allocator<char>>::internal_streambuf_t &, boost::io::detail::locale_t *)
-
-    Report from: Vector optimizations [vec]
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/feed_args.hpp(255,29)
-   remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
-LOOP END
-===========================================================================
-
-Begin optimization report for: hpx::lcos::local::call_once<void (*)()>(hpx::lcos::local::once_flag &, void (*)())
-
-    Report from: Vector optimizations [vec]
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/event.hpp(79,17) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(82,25)
-   remark #15541: outer loop was not auto-vectorized: consider using SIMD directive
-
-   LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/intrusive/detail/common_slist_algorithms.hpp(37,26) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(82,25)
-      remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
-   LOOP END
-
-   LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/intrusive/detail/common_slist_algorithms.hpp(37,26) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(82,25)
-      remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
-   LOOP END
-LOOP END
-
-
-Non-optimizable loops:
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(50,9)
-   remark #15341: loop was not vectorized: nonstandard loop is not a vectorization candidate
-LOOP END
-===========================================================================
-
-Begin optimization report for: hpx::components::managed_component<hpx::lcos::detail::promise<void, hpx::util::unused_type>, hpx::components::detail::this_type>::operator delete(void *, std::size_t)
-
-    Report from: Vector optimizations [vec]
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/event.hpp(79,17) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/components/server/managed_component_base.hpp(555,13)
-   remark #15541: outer loop was not auto-vectorized: consider using SIMD directive
-
-   LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/intrusive/detail/common_slist_algorithms.hpp(37,26) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/components/server/managed_component_base.hpp(555,13)
-      remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
-   LOOP END
-
-   LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/intrusive/detail/common_slist_algorithms.hpp(37,26) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/components/server/managed_component_base.hpp(555,13)
-      remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
-   LOOP END
-LOOP END
-
-
-Non-optimizable loops:
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(50,9) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/components/server/managed_component_base.hpp(555,13)
-   remark #15341: loop was not vectorized: nonstandard loop is not a vectorization candidate
-LOOP END
-===========================================================================
-
-Begin optimization report for: hpx::apply_p<node_server::set_boundary_action, std::remove_reference<hpx::lcos::future<std::vector<double, std::allocator<double>>> &>::type, integer &>(const hpx::naming::id_type &, hpx::threads::thread_priority, std::remove_reference<hpx::lcos::future<std::vector<double, std::allocator<double>>> &>::type &&, integer &)
-
-    Report from: Vector optimizations [vec]
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/format_implementation.hpp(137,41) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/applier/preprocessed/apply_implementations_5.hpp(350,13)
-   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
-LOOP END
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/format_implementation.hpp(145,30) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/applier/preprocessed/apply_implementations_5.hpp(350,13)
-   remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
-LOOP END
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/feed_args.hpp(283,48) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/applier/preprocessed/apply_implementations_5.hpp(350,13)
-   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
-LOOP END
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/feed_args.hpp(298,17) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/applier/preprocessed/apply_implementations_5.hpp(350,13)
-   remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
 LOOP END
 ===========================================================================
 
@@ -646,6 +460,42 @@ LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp
 LOOP END
 ===========================================================================
 
+Begin optimization report for: boost::unique_lock<hpx::naming::gid_type>::~unique_lock(boost::unique_lock<hpx::naming::gid_type> *)
+
+    Report from: Vector optimizations [vec]
+
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(144,38) inlined into /home/dmarce1/packages/intel64/include/boost/thread/lock_types.hpp(331,12)
+   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
+LOOP END
+===========================================================================
+
+Begin optimization report for: boost::unique_lock<hpx::naming::gid_type>::lock(boost::unique_lock<hpx::naming::gid_type> *)
+
+    Report from: Vector optimizations [vec]
+
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(144,38) inlined into /home/dmarce1/packages/intel64/include/boost/thread/lock_types.hpp(346,10)
+   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
+LOOP END
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/runtime/naming/name.hpp(278,38) inlined into /home/dmarce1/packages/intel64/include/boost/thread/lock_types.hpp(346,10)
+   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
+
+   LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(144,38) inlined into /home/dmarce1/packages/intel64/include/boost/thread/lock_types.hpp(346,10)
+      remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
+   LOOP END
+LOOP END
+===========================================================================
+
 Begin optimization report for: hpx::components::managed_component<hpx::lcos::promise<boost::mpl::identity<std::vector<double, std::allocator<double>>>::type, hpx::actions::extract_action<node_server::get_data_action, void>::remote_result_type>::wrapped_type, hpx::components::detail::this_type>::get_checked(hpx::components::managed_component<hpx::lcos::promise<boost::mpl::identity<std::vector<double, std::allocator<double>>>::type, hpx::actions::extract_action<node_server::get_data_action, void>::remote_result_type>::wrapped_type, hpx::components::detail::this_type> *)
 
     Report from: Vector optimizations [vec]
@@ -664,6 +514,20 @@ LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(50,
 LOOP END
 ===========================================================================
 
+Begin optimization report for: hpx::lcos::local::detail::event<hpx::lcos::local::spinlock>::set(hpx::lcos::local::detail::event<hpx::lcos::local::spinlock> *)
+
+    Report from: Vector optimizations [vec]
+
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(144,38) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/event.hpp(64,52)
+   remark #15526: loop was not vectorized: ASM code cannot be vectorized   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(59,0) ]
+LOOP END
+===========================================================================
+
 Begin optimization report for: hpx::apply_p_cb<hpx::lcos::packaged_action<hpx::actions::extract_action<node_server::get_data_action, void>::type, boost::mpl::identity<std::vector<double, std::allocator<double>>>::type, hpx::actions::result_action0<struct <unnamed>, {(void (*)())node_server::get_data, 0L}, hpx::actions::detail::this_type>::direct_execution>::action_type, boost::disable_if_c<false, hpx::util::detail::bound<void (*)(boost::intrusive_ptr<hpx::lcos::promise<boost::mpl::identity<std::vector<double, std::allocator<double>>>::type, hpx::actions::extract_action<node_server::get_data_action, void>::remote_result_type>::wrapping_type> *, const boost::system::error_code &, const hpx::parcelset::parcel &), hpx::util::tuple<boost::intrusive_ptr<hpx::lcos::promise<boost::mpl::identity<std::vector<double, std::allocator<double>>>::type, hpx::actions::extract_action<node_server::get_data_action, void>::remote_result_type>::wrapping_type>, hpx::util::detail::placeholder<1UL>, hpx::util::detail::placeholder<2UL>>>>::type>(hpx::actions::continuation *, hpx::naming::address &&, const hpx::naming::id_type &, hpx::threads::thread_priority, boost::disable_if_c<false, hpx::util::detail::bound<void (*)(boost::intrusive_ptr<hpx::lcos::promise<boost::mpl::identity<std::vector<double, std::allocator<double>>>::type, hpx::actions::extract_action<node_server::get_data_action, void>::remote_result_type>::wrapping_type> *, const boost::system::error_code &, const hpx::parcelset::parcel &), hpx::util::tuple<boost::intrusive_ptr<hpx::lcos::promise<boost::mpl::identity<std::vector<double, std::allocator<double>>>::type, hpx::actions::extract_action<node_server::get_data_action, void>::remote_result_type>::wrapping_type>, hpx::util::detail::placeholder<1UL>, hpx::util::detail::placeholder<2UL>>>>::type &&)
 
     Report from: Vector optimizations [vec]
@@ -679,6 +543,52 @@ LOOP END
 
 LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/feed_args.hpp(298,17) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/applier/apply_callback.hpp(126,13)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
+LOOP END
+===========================================================================
+
+Begin optimization report for: boost::io::detail::distribute<boost::basic_format<char, std::char_traits<char>, std::allocator<char>>::CharT, std::char_traits<char>, std::allocator<char>, const boost::io::detail::put_holder<boost::basic_format<char, std::char_traits<char>, std::allocator<char>>::CharT, std::char_traits<char>> &>(boost::basic_format<char, std::char_traits<char>, std::allocator<char>> &, const boost::io::detail::put_holder<boost::basic_format<char, std::char_traits<char>, std::allocator<char>>::CharT, std::char_traits<char>> &)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/feed_args.hpp(283,48)
+   remark #15523: loop was not vectorized: cannot compute loop iteration count before executing the loop.
+LOOP END
+===========================================================================
+
+Begin optimization report for: boost::io::detail::put<boost::basic_format<char, std::char_traits<char>, std::allocator<char>>::CharT, std::char_traits<char>, std::allocator<char>, const boost::io::detail::put_holder<boost::basic_format<char, std::char_traits<char>, std::allocator<char>>::CharT, std::char_traits<char>> &>(const boost::io::detail::put_holder<boost::basic_format<char, std::char_traits<char>, std::allocator<char>>::CharT, std::char_traits<char>> &, const boost::io::detail::format_item<char, std::char_traits<char>, std::allocator<char>> &, boost::basic_format<char, std::char_traits<char>, std::allocator<char>>::string_type &, boost::basic_format<char, std::char_traits<char>, std::allocator<char>>::internal_streambuf_t &, boost::io::detail::locale_t *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/feed_args.hpp(255,29)
+   remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
+LOOP END
+===========================================================================
+
+Begin optimization report for: hpx::lcos::local::call_once<void (*)()>(hpx::lcos::local::once_flag &, void (*)())
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/event.hpp(79,17) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(82,25)
+   remark #15541: outer loop was not auto-vectorized: consider using SIMD directive
+
+   LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/intrusive/detail/common_slist_algorithms.hpp(37,26) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(82,25)
+      remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+   LOOP END
+
+   LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/intrusive/detail/common_slist_algorithms.hpp(37,26) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(82,25)
+      remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+   LOOP END
+LOOP END
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(50,9)
+   remark #15341: loop was not vectorized: nonstandard loop is not a vectorization candidate
 LOOP END
 ===========================================================================
 
@@ -916,6 +826,24 @@ LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp
 LOOP END
 ===========================================================================
 
+Begin optimization report for: hpx::components::managed_component<hpx::lcos::detail::promise<void, hpx::util::unused_type>, hpx::components::detail::this_type>::get_checked(hpx::components::managed_component<hpx::lcos::detail::promise<void, hpx::util::unused_type>, hpx::components::detail::this_type> *)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/event.hpp(79,17) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/components/server/managed_component_base.hpp(503,37)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(50,9) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/components/server/managed_component_base.hpp(503,37)
+   remark #15341: loop was not vectorized: nonstandard loop is not a vectorization candidate
+LOOP END
+===========================================================================
+
 Begin optimization report for: hpx::apply_p_cb<hpx::lcos::packaged_action<hpx::actions::extract_action<node_server::execute_action, void>::type, boost::mpl::identity<void>::type, hpx::actions::result_action0<struct <unnamed>, {(void (*)())node_server::execute, 0L}, hpx::actions::detail::this_type>::direct_execution>::action_type, boost::disable_if_c<false, hpx::util::detail::bound<void (*)(boost::intrusive_ptr<hpx::lcos::promise<void, hpx::util::unused_type>::wrapping_type> *, const boost::system::error_code &, const hpx::parcelset::parcel &), hpx::util::tuple<boost::intrusive_ptr<hpx::lcos::promise<void, hpx::util::unused_type>::wrapping_type>, hpx::util::detail::placeholder<1UL>, hpx::util::detail::placeholder<2UL>>>>::type>(hpx::actions::continuation *, hpx::naming::address &&, const hpx::naming::id_type &, hpx::threads::thread_priority, boost::disable_if_c<false, hpx::util::detail::bound<void (*)(boost::intrusive_ptr<hpx::lcos::promise<void, hpx::util::unused_type>::wrapping_type> *, const boost::system::error_code &, const hpx::parcelset::parcel &), hpx::util::tuple<boost::intrusive_ptr<hpx::lcos::promise<void, hpx::util::unused_type>::wrapping_type>, hpx::util::detail::placeholder<1UL>, hpx::util::detail::placeholder<2UL>>>>::type &&)
 
     Report from: Vector optimizations [vec]
@@ -931,6 +859,32 @@ LOOP END
 
 LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/format/feed_args.hpp(298,17) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/applier/apply_callback.hpp(126,13)
    remark #15520: loop was not vectorized: loop with early exits cannot be vectorized unless it meets search loop idiom criteria
+LOOP END
+===========================================================================
+
+Begin optimization report for: hpx::components::managed_component<hpx::lcos::detail::promise<void, hpx::util::unused_type>, hpx::components::detail::this_type>::operator delete(void *, std::size_t)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/event.hpp(79,17) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/components/server/managed_component_base.hpp(555,13)
+   remark #15541: outer loop was not auto-vectorized: consider using SIMD directive
+
+   LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/intrusive/detail/common_slist_algorithms.hpp(37,26) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/components/server/managed_component_base.hpp(555,13)
+      remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+   LOOP END
+
+   LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/intrusive/detail/common_slist_algorithms.hpp(37,26) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/components/server/managed_component_base.hpp(555,13)
+      remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+   LOOP END
+LOOP END
+
+
+Non-optimizable loops:
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/once.hpp(50,9) inlined into /home/dmarce1/packages/intel64/include/hpx/runtime/components/server/managed_component_base.hpp(555,13)
+   remark #15341: loop was not vectorized: nonstandard loop is not a vectorization candidate
 LOOP END
 ===========================================================================
 
@@ -1040,7 +994,7 @@ Begin optimization report for: boost::basic_format<char, std::char_traits<char>,
 
 
 LOOP BEGIN at /usr/include/c++/4.9.0/streambuf(463,7) inlined into /home/dmarce1/packages/intel64/include/boost/format/format_implementation.hpp(28,35)
-   remark #15389: vectorization support: reference this_380742 has unaligned access
+   remark #15389: vectorization support: reference this_380168 has unaligned access
    remark #15381: vectorization support: unaligned access used inside loop body
    remark #15427: loop was completely unrolled
    remark #15399: vectorization support: unroll factor set to 3
@@ -1916,7 +1870,7 @@ LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock_poo
 LOOP END
 
 LOOP BEGIN at /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock_pool.hpp(88,47) inlined into /home/dmarce1/packages/intel64/include/boost/system/error_code.hpp(221,53)
-   remark #15389: vectorization support: reference U11c5 has unaligned access   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(108,9) ]
+   remark #15389: vectorization support: reference U1144 has unaligned access   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(108,9) ]
    remark #15381: vectorization support: unaligned access used inside loop body   [ /home/dmarce1/packages/intel64/include/hpx/lcos/local/spinlock.hpp(108,9) ]
    remark #15300: LOOP WAS VECTORIZED
    remark #15449: unmasked aligned unit stride stores: 1 
@@ -2066,20 +2020,6 @@ LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/exception/detail/obje
 LOOP END
 ===========================================================================
 
-Begin optimization report for: hpx::lcos::detail::future_data<std::vector<double, std::allocator<double>>>::wait(hpx::lcos::detail::future_data<std::vector<double, std::allocator<double>>> *, hpx::error_code &)
-
-    Report from: Vector optimizations [vec]
-
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/intrusive/detail/common_slist_algorithms.hpp(37,26) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/detail/future_data.hpp(342,23)
-   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
-LOOP END
-
-LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/intrusive/detail/common_slist_algorithms.hpp(37,26) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/detail/future_data.hpp(342,23)
-   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
-LOOP END
-===========================================================================
-
 Begin optimization report for: hpx::lcos::detail::future_data<std::list<std::size_t, std::allocator<std::_Bit_type>>>::set_result<boost::exception_ptr>(hpx::lcos::detail::future_data<std::list<std::size_t, std::allocator<std::_Bit_type>>> *, boost::exception_ptr &&, hpx::error_code &)
 
     Report from: Vector optimizations [vec]
@@ -2091,6 +2031,20 @@ LOOP END
 ===========================================================================
 
 Begin optimization report for: hpx::lcos::detail::future_data<std::list<std::size_t, std::allocator<std::_Bit_type>>>::wait(hpx::lcos::detail::future_data<std::list<std::size_t, std::allocator<std::_Bit_type>>> *, hpx::error_code &)
+
+    Report from: Vector optimizations [vec]
+
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/intrusive/detail/common_slist_algorithms.hpp(37,26) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/detail/future_data.hpp(342,23)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+
+LOOP BEGIN at /home/dmarce1/packages/intel64/include/boost/intrusive/detail/common_slist_algorithms.hpp(37,26) inlined into /home/dmarce1/packages/intel64/include/hpx/lcos/detail/future_data.hpp(342,23)
+   remark #15521: loop was not vectorized: explicitly compute the iteration count before executing the loop or try using canonical loop form
+LOOP END
+===========================================================================
+
+Begin optimization report for: hpx::lcos::detail::future_data<std::vector<double, std::allocator<double>>>::wait(hpx::lcos::detail::future_data<std::vector<double, std::allocator<double>>> *, hpx::error_code &)
 
     Report from: Vector optimizations [vec]
 
@@ -2203,8 +2157,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4) inlined into /h
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U5e line 245 and U5e line 249
-   remark #15346: vector dependence: assumed FLOW dependence between U53 line 249 and U53 line 245
+   remark #15346: vector dependence: assumed ANTI dependence between U5b line 245 and U5b line 249
+   remark #15346: vector dependence: assumed FLOW dependence between U50 line 249 and U50 line 245
 LOOP END
 ===========================================================================
 
@@ -2214,7 +2168,7 @@ Begin optimization report for: hpx::util::logging::gather_holder<hpx::util::logg
 
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/basic_ios.h(454,7) inlined into /home/dmarce1/packages/intel64/include/hpx/util/logging/detail/logger.hpp(34,9)
-   remark #15389: vectorization support: reference this_253302 has unaligned access
+   remark #15389: vectorization support: reference this_252728 has unaligned access
    remark #15381: vectorization support: unaligned access used inside loop body
    remark #15427: loop was completely unrolled
    remark #15399: vectorization support: unroll factor set to 2
@@ -2230,7 +2184,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/basic_ios.h(454,7) inlined into /home/
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/bits/basic_ios.h(454,7) inlined into /home/dmarce1/packages/intel64/include/hpx/util/logging/detail/logger.hpp(34,9)
-   remark #15389: vectorization support: reference this_253302 has unaligned access
+   remark #15389: vectorization support: reference this_252728 has unaligned access
    remark #15381: vectorization support: unaligned access used inside loop body
    remark #15427: loop was completely unrolled
    remark #15399: vectorization support: unroll factor set to 2
@@ -2246,7 +2200,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/basic_ios.h(454,7) inlined into /home/
 LOOP END
 
 LOOP BEGIN at /usr/include/c++/4.9.0/streambuf(463,7) inlined into /home/dmarce1/packages/intel64/include/hpx/util/logging/detail/logger.hpp(34,9)
-   remark #15389: vectorization support: reference this_253321 has unaligned access
+   remark #15389: vectorization support: reference this_252747 has unaligned access
    remark #15381: vectorization support: unaligned access used inside loop body
    remark #15427: loop was completely unrolled
    remark #15399: vectorization support: unroll factor set to 3
@@ -2373,8 +2327,8 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_construct.h(102,4)
    remark #15382: vectorization support: call to function __atomic_fetch_add_4 cannot be vectorized   [ /usr/include/c++/4.9.0/ext/atomicity.h(49,12) ]
    remark #15382: vectorization support: call to function _ZNSs4_Rep10_M_destroyERKSaIcE cannot be vectorized   [ /usr/include/c++/4.9.0/bits/basic_string.h(249,5) ]
    remark #15344: loop was not vectorized: vector dependence prevents vectorization
-   remark #15346: vector dependence: assumed ANTI dependence between U5e line 245 and U5e line 249
-   remark #15346: vector dependence: assumed FLOW dependence between U53 line 249 and U53 line 245
+   remark #15346: vector dependence: assumed ANTI dependence between U5b line 245 and U5b line 249
+   remark #15346: vector dependence: assumed FLOW dependence between U50 line 249 and U50 line 245
 LOOP END
 ===========================================================================
 
@@ -2455,7 +2409,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /us
    LOOP END
 
    LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(545,8)
-      remark #15388: vectorization support: reference __first_556548 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15388: vectorization support: reference __first_550699 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15399: vectorization support: unroll factor set to 2
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
@@ -2485,7 +2439,7 @@ LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /us
    LOOP END
 
    LOOP BEGIN at /usr/include/c++/4.9.0/bits/stl_algobase.h(760,7) inlined into /usr/include/c++/4.9.0/bits/vector.tcc(562,5)
-      remark #15388: vectorization support: reference __first_556548 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
+      remark #15388: vectorization support: reference __first_550699 has aligned access   [ /usr/include/c++/4.9.0/bits/stl_algobase.h(762,3) ]
       remark #15399: vectorization support: unroll factor set to 2
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
