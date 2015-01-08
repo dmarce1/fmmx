@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -lsilo -ltbbmalloc -ltbbmalloc_proxy
+LIBS := -ltbbmalloc -ltbbmalloc_proxy
 
