@@ -36,7 +36,6 @@
 
 #define EPS2 0.0
 
-using real = double;
 using complex = std::complex<real>;
 
 #define EPS (1.0e-12)
@@ -53,13 +52,6 @@ public:
 	static void L2L(std::vector<real>& CiL, const std::vector<real>& CjL, const std::array<real, NDIM>& dist,
 			const integer N);
 	static void evalMultipole(real rho, real theta, real phi, std::vector<real>& Ynm);
-private:
-
-	static real factorial[P];
-	static real prefactor[P * P];
-	static real Anm[P * P];
-	static real Cnm_r[P * P * P * P];
-	static real Cnm_i[P * P * P * P];
 
 public:
 	exafmm_kernel();

@@ -53,7 +53,7 @@ public:
 	void get_tree();
 	void init_t0();
 	integer get_node_count() const;
-	std::vector<real> get_data() const;
+	std::vector<double> get_data() const;
 	std::list<std::size_t> get_leaf_list() const;
 	void send_multipoles();
 	void send_expansions();

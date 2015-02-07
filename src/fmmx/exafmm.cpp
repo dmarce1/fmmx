@@ -22,15 +22,15 @@
 
 #define SGN(i) real((i) > 0 ? 1 : ((i)<0 ? -1 : 0))
 
-real exafmm_kernel::factorial[P];
+std::array<real,P> factorial;
 
-real exafmm_kernel::prefactor[P * P];
+std::array<real,P*P> prefactor;
 
-real exafmm_kernel::Anm[P * P];
+std::array<real,P*P> Anm;
 
-real exafmm_kernel::Cnm_r[P * P * P * P];
+std::array<real,P*P*P*P> Cnm_r;
 
-real exafmm_kernel::Cnm_i[P * P * P * P];
+std::array<real,P*P*P*P> Cnm_i;
 
 void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 		const std::array<std::vector<real>, NDIM>& d, integer N, std::vector<real>& L_r, std::vector<real>& L_i, std::vector<real>& Ynm) {
@@ -46,7 +46,7 @@ void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 		real y = std::sin(theta);                              // y = sin(theta)
 		real fact = 1;                                   // Initialize 2 * m + 1
 		real pn = 1;                        // Initialize Legendre polynomial Pn
-		real rhom = 1.0 / rho;                          // Initialize rho^(-m-1)
+		real rhom = real(1.0) / rho;                          // Initialize rho^(-m-1)
 #pragma novector
 		for (int m = 0; m != P; ++m) {                     // Loop over m in Ynm
 			real eim_r = std::cos(real(m) * phi);
@@ -59,7 +59,7 @@ void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 				Ynm[nmn * Nynm + i] = rhom * p * prefactor[npn] * eim_i; //  rho^(-m-1) * Ynm for m > 0
 			}
 			real p1 = p;                                              //  Pnm-1
-			p = x * (2 * m + 1) * p1;          //  Pnm using recurrence relation
+			p = x * real(2 * m + 1) * p1;          //  Pnm using recurrence relation
 			rhom /= rho;                                          //  rho^(-m-1)
 			real rhon = rhom;                                     //  rho^(-n-1)
 #pragma novector
@@ -72,11 +72,11 @@ void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 				}
 				real p2 = p1;                                         //   Pnm-2
 				p1 = p;                                               //   Pnm-1
-				p = (x * (2 * n + 1) * p1 - (n + m) * p2) / (n - m + 1); //   Pnm using recurrence relation
+				p = (x * real(2 * n + 1) * p1 - real(n + m) * p2) / real(n - m + 1); //   Pnm using recurrence relation
 				rhon /= rho;                                     //   rho^(-n-1)
 			}                                         //  End loop over n in Ynm
 			pn = -pn * fact * y;                                      //  Pn
-			fact += 2;                                             //  2 * m + 1
+			fact += real(2);                                             //  2 * m + 1
 		}                                              // End loop over m in Ynm
 	}
 
@@ -126,7 +126,7 @@ void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 void exafmm_kernel::cart2sph(real& r, real& theta, real& phi, std::array<real, NDIM> dist) {
 	r = std::sqrt(dist[0] * dist[0] + dist[1] * dist[1] + dist[2] * dist[2]);      // r = sqrt(x^2 + y^2 + z^2)
 	if (r < EPS) {                                             // If r == 0
-		theta = 0;               //  theta can be anything so we set it to 0
+		theta = real(0);               //  theta can be anything so we set it to 0
 	} else {                                                    // If r != 0
 		theta = std::acos(dist[2] / r);                   //  theta = acos(z / r)
 	}                                                   // End if for r == 0
@@ -211,7 +211,7 @@ void exafmm_kernel::L2L(std::vector<real>& CiL, const std::vector<real>& CjL, co
 					const auto Lj_r = CjL.data() + N * npm;
 					const auto Lj_i = CjL.data() + N * nmm;
 					const real sgn = SGN(m);
-					real tmp = std::pow(-1.0, (std::abs(m) - std::abs(k) - std::abs(m - k)) / 2) * Anm[jnpkm] * Anm[jkp]
+					real tmp = std::pow(-real(1.0), real(std::abs(m) - std::abs(k) - std::abs(m - k)) / 2) * Anm[jnpkm] * Anm[jkp]
 							/ Anm[npm];
 					const real Y_r = Ynm[jnpkm] * tmp;
 					const real Y_i = SGN(m-k) * Ynm[jnmkm] * tmp;
@@ -251,7 +251,7 @@ void exafmm_kernel::evalMultipole(real rho, real theta, real phi, std::vector<re
 			Ynm[nmn] = rhom * p * prefactor[npn] * eim_i; //  rho^m * Ynm for m > 0
 		}
 		real p1 = p;                                              //  Pnm-1
-		p = x * (2 * m + 1) * p1;          //  Pnm using recurrence relation
+		p = x *real(2 * m + 1) * p1;          //  Pnm using recurrence relation
 		rhom *= rho;                                              //  rho^m
 		real rhon = rhom;                                         //  rho^n
 		for (int n = m + 1; n != P; ++n) {            //  Loop over n in Ynm
@@ -263,11 +263,11 @@ void exafmm_kernel::evalMultipole(real rho, real theta, real phi, std::vector<re
 			}
 			real p2 = p1;                                         //   Pnm-2
 			p1 = p;                                               //   Pnm-1
-			p = (x * (2 * n + 1) * p1 - (n + m) * p2) / (n - m + 1); //   Pnm using recurrence relation
+			p = (x * real(2 * n + 1) * p1 - (n + m) * p2) / real(n - m + 1); //   Pnm using recurrence relation
 			rhon *= rho;                                   //   Update rho^n
 		}                                         //  End loop over n in Ynm
 		pn = -pn * fact * y;                                      //  Pn
-		fact += 2;                                             //  2 * m + 1
+		fact += real(2);                                             //  2 * m + 1
 	}                                              // End loop over m in Ynm
 }
 
@@ -283,16 +283,16 @@ exafmm_kernel::exafmm_kernel() {
 		for (int m = -n; m <= n; ++m) {               //  Loop over m in Anm
 			int nm = n * n + n + m;                        //   Index of Anm
 			int nabsm = abs(m);                                     //   |m|
-			real fnmm = 1.0;                        //   Initialize (n - m)!
+			real fnmm = real(1.0);                        //   Initialize (n - m)!
 			for (int i = 1; i <= n - m; ++i)
 				fnmm *= i;                  //   (n - m)!
-			real fnpm = 1.0;                        //   Initialize (n + m)!
+			real fnpm = real(1.0);                        //   Initialize (n + m)!
 			for (int i = 1; i <= n + m; ++i)
 				fnpm *= i;                  //   (n + m)!
-			real fnma = 1.0;                      //   Initialize (n - |m|)!
+			real fnma = real(1.0);                      //   Initialize (n - |m|)!
 			for (int i = 1; i <= n - nabsm; ++i)
 				fnma *= i;              //   (n - |m|)!
-			real fnpa = 1.0;                      //   Initialize (n + |m|)!
+			real fnpa = real(1.0);                      //   Initialize (n + |m|)!
 			for (int i = 1; i <= n + nabsm; ++i)
 				fnpa *= i;              //   (n + |m|)!
 			prefactor[nm] = std::sqrt(fnma / fnpa); //   sqrt( (n - |m|)! / (n + |m|)! )

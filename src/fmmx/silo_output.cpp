@@ -18,6 +18,9 @@
 #include "key.hpp"
 #include <thread>
 
+silo_output::silo_output() {
+}
+
 template<class R, class ...Args1, class ...Args2>
 R exec_on_separate_thread(R (*fptr)(Args1...), Args2 ...args) {
 	R data;
@@ -36,20 +39,20 @@ void silo_output::do_output(std::list<std::size_t> node_list, integer filenum) {
 	std::vector<hpx::future<void>> data_futs(node_futs.size());
 	for (integer i0 = 0; i0 != node_futs.size(); ++i0) {
 		data_futs[i0] = (node_client(node_futs[i0].get()).get_data()).then(
-				hpx::util::unwrapped([=](std::vector<real> data) {
+				hpx::util::unwrapped([=](std::vector<double> data) {
 					auto iter = data.begin();
 					auto key = (*id_list_ptr)[i0];
 					constexpr integer vertex_order[8] = {0, 1, 3, 2, 4, 5, 7, 6};
 					std::array<integer, NDIM> loc;
-					std::array<real, NDIM> corner;
+					std::array<double, NDIM> corner;
 					integer lev;
-					real span;
+					double span;
 					key_to_location(key, &lev, &loc);
 					for( integer a = 0; a != NDIM; ++a) {
-						corner[a] = real(loc[a]) / real(std::pow(2,lev));
+						corner[a] = double(loc[a]) / double(std::pow(2,lev));
 					}
 					integer cnt = 0;
-					span = 1.0 / real(NX*std::pow(2,lev));
+					span = 1.0 / double(NX*std::pow(2,lev));
 					for (integer j0 = 0; j0 != NX; ++j0) {
 						for (integer k0 = 0; k0 != NX; ++k0) {
 							for (integer l0 = 0; l0 != NX; ++l0) {
@@ -63,9 +66,9 @@ void silo_output::do_output(std::list<std::size_t> node_list, integer filenum) {
 								for (int ci0 = 0; ci0 < Nchild; ci0++) {
 									vertex v;
 									int ci = vertex_order[ci0];
-									v[0] = (real(j0) + (0.5 * real(2 * ((ci >> 0) & 1) - 1))+0.5)*span + corner[0];
-									v[1] = (real(k0) + (0.5 * real(2 * ((ci >> 1) & 1) - 1))+0.5)*span + corner[1];
-									v[2] = (real(l0) + (0.5 * real(2 * ((ci >> 2) & 1) - 1))+0.5)*span + corner[2];
+									v[0] = (double(j0) + (0.5 * double(2 * ((ci >> 0) & 1) - 1))+0.5)*span + corner[0];
+									v[1] = (double(k0) + (0.5 * double(2 * ((ci >> 1) & 1) - 1))+0.5)*span + corner[1];
+									v[2] = (double(l0) + (0.5 * double(2 * ((ci >> 2) & 1) - 1))+0.5)*span + corner[2];
 									mutex0.lock();
 									auto iter = nodedir.find(v);
 									if (iter == nodedir.end()) {

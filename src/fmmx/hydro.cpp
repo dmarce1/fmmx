@@ -18,19 +18,19 @@ void hydro_vars::store() {
 	U0 = U;
 }
 
-const std::array<real, N3>& hydro_vars::den_array() const {
-	return U[d0_i];
+real hydro_vars::cell_mass(integer i) const {
+	return U[d0_i][i] * dx * dx * dx;
 }
 
 real hydro_vars::compute_du() {
 	real amax = real(0);
-	std::vector<std::array<real, N3F>> F(nf_hydro);
+	std::vector<std::vector<real>> F(nf_hydro, std::vector<real>(N3F, real(0)));
 	for (integer f = 0; f != nf_hydro; ++f) {
 		for (integer i = 0; i != N3; ++i) {
 			dU[f][i] = real(0);
 		}
 	}
-	std::vector<std::array<real, N3F>> flx(nf_hydro);
+	std::vector<std::vector<real>> flx(nf_hydro, std::vector<real>(N3F, real(0)));
 	for (integer d = 0; d != NDIM; ++d) {
 		const integer dn[3] = { d == 0 ? 1 : 0, d == 1 ? 1 : 0, d == 2 ? 1 : 0 };
 		for (integer j = 0; j != NX + dn[0]; ++j) {
@@ -85,16 +85,25 @@ real hydro_vars::compute_du() {
 	return cfl_factor * dx / amax;
 }
 
-hydro_vars::hydro_vars() :
-		U(nf_hydro), x(N3), y(N3), z(N3), r(N3), dU(nf_hydro), U0(nf_hydro) {
+hydro_vars::hydro_vars() {
+
+
+	U = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3, real(0.0)));
+	dU = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3, real(0.0)));
+	U0 = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3, real(0.0)));
+	x = std::vector<real>(N3);
+	y = std::vector<real>(N3);
+	z = std::vector<real>(N3);
+	r = std::vector<real>(N3);
 	for (integer d = 0; d != NDIM; ++d) {
-		VR[d] = std::vector<std::array<real, N3F>>(nf_hydro);
-		VL[d] = std::vector<std::array<real, N3F>>(nf_hydro);
+		VR[d] = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3F, real(0.0)));
+		VL[d] = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3F, real(0.0)));
 	}
+
 }
-void hydro_vars::dump_data(std::vector<real>::iterator& l, integer index) const {
+void hydro_vars::dump_data(std::vector<double>::iterator& l, integer index) const {
 	for (integer f = 0; f != nf_hydro; ++f) {
-		*l++ = U[f][index];
+		*l++ = double(U[f][index]);
 	}
 }
 void hydro_vars::initialize(real xcorner, real ycorner, real zcorner, real _dx) {
@@ -202,8 +211,8 @@ void hydro_vars::set_boundary(integer d, std::vector<real>::iterator* iter) {
 	constexpr integer bzub[2 * NDIM] = { NX, NX, NX, NX, bw, NX / 2 + 2 * bw };
 	constexpr auto this_n3 = (NX / 2 + 2 * bw) * NX * NX;
 	constexpr auto slope_n3 = (NX + 2) * (NX + 2) * (NX + 2);
-	std::vector<std::array<real, this_n3>> V(nf_hydro);
-	std::vector<std::array<real, this_n3>> this_U(nf_hydro);
+	std::vector<std::vector<real>> V(nf_hydro, std::vector<real>(this_n3, real(0)));
+	std::vector<std::vector<real>> this_U(nf_hydro, std::vector<real>(this_n3, real(0)));
 	const integer dn[3] = { d / 2 == 0 ? 1 : 0, d / 2 == 1 ? 1 : 0, d / 2 == 2 ? 1 : 0 };
 	auto this_ind3d = [&](integer j, integer k, integer l) {
 		return l + zbdim[d] * (k + ybdim[d] * j);

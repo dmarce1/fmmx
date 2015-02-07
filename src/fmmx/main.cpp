@@ -42,13 +42,20 @@ HPX_REGISTER_ACTION(do_output_t);
 
 int hpx_main() {
 	std::chrono::time_point<std::chrono::system_clock> start, end;
+
 	node_client root_client;
+
 	auto silo = hpx::new_<silo_output>(hpx::find_here());
+
 	auto sout = silo.get();
+
 	auto root = hpx::new_<node_server>(hpx::find_here(), sout);
+
 	root_client = root.get();
+
 	auto f = hpx::register_id_with_basename("fmmx_node", root_client, location_to_key(0, std::array<integer, NDIM> { {
 			0, 0, 0 } }));
+
 	if (!f.get()) {
 		printf("Failed to register id_with_basename\n");
 		abort();
@@ -68,15 +75,15 @@ int hpx_main() {
 	integer fnum = 0;
 	printf( "Executing...\n");
 	real dt = root_client.execute(0.0,0).get();
-//	root_client.execute(dt,1).get();
+	root_client.execute(dt,1).get();
 	real t = 0.0;
-	for( integer z = 0; z != 0; z++) {
+//	for( integer z = 0; z != 10; z++) {
 	//while (t < tmax) {
 		t += dt;
 		printf("%e %e\n", double(t), double(dt));
-	//	dt = root_client.execute(dt,0).get();
-	//			root_client.execute(dt,1).get();
-	}
+//		dt = root_client.execute(dt,0).get();
+//				root_client.execute(dt,1).get();
+//	}
 //	root_client.execute(dt,0).get();
 	end = std::chrono::system_clock::now();
 

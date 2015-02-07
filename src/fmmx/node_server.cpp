@@ -149,7 +149,9 @@ hpx::future<std::vector<real>> node_server::get_expansions(integer c) const {
 hpx::future<std::vector<real>> node_server::get_multipoles() {
 	if (is_leaf) {
 		M = std::vector<real>(N3 * PP, real(0));
-		std::copy(hydro_state.den_array().begin(), hydro_state.den_array().end(), M.begin());
+		for (integer i = 0; i != N3; ++i) {
+			M[i] = hydro_state.cell_mass(i);
+		}
 	}
 	return hpx::async(hpx::launch::deferred, [=]() {
 		std::vector<real> m_out(PP * N3 / NCHILD, 0.0);
@@ -264,8 +266,8 @@ void node_server::refine() {
 	} else {
 		fut = hpx::make_ready_future();
 	}
-	get_tree();
 	fut.get();
+	get_tree();
 }
 
 hpx::future<std::vector<real>> node_server::get_boundary(integer d) const {
@@ -601,21 +603,22 @@ node_server::node_server() {
 	assert(false);
 }
 
-std::vector<real> node_server::get_data() const {
+std::vector<double> node_server::get_data() const {
 //	printf("Getting data\n");
-	std::vector<real> v((4 + hydro_vars::nf_hydro) * N3);
+	std::vector<double> v((4 + hydro_vars::nf_hydro) * N3);
 	auto l = v.begin();
 	for (integer i = 0; i != N3; ++i) {
-		*l++ = phi[i];
-		*l++ = gx[i];
-		*l++ = gy[i];
-		*l++ = gz[i];
+		*l++ = double(phi[i]);
+		*l++ = double(gx[i]);
+		*l++ = double(gy[i]);
+		*l++ = double(gz[i]);
 		hydro_state.dump_data(l, i);
 	}
 	return std::move(v);
 }
 
 node_server::node_server(hpx::id_type sid) {
+
 	output = std::move(sid);
 	node_client pid = hpx::naming::invalid_id;
 	integer lev = 0;
@@ -662,9 +665,9 @@ std::list<std::size_t> node_server::get_leaf_list() const {
 void node_server::reset() {
 	for (integer i = 0; i != N3; ++i) {
 		phi[i] = -L[i];
-		gz[i] = 0.5 * L[i + N3 * 2];
-		gx[i] = 0.5 * (L[i + N3 * 3] + L[i + N3 * 1]);
-		gy[i] = 0.5 * (L[i + N3 * 3] - L[i + N3 * 1]);
+		gz[i] = -L[i + N3 * 2];
+		gx[i] = L[i + N3 * 3] * std::sqrt(real(2));
+		gy[i] = -L[i + N3 * 1] * std::sqrt(real(2));
 	}
 	L = std::vector<real>(PP * N3, 0.0);
 	hydro_updated = false;

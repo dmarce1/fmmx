@@ -31,19 +31,19 @@ public:
 	static constexpr real ro_floor = 1.0e-5;
 	static constexpr real fgamma = 7.0 / 4.0;
 private:
-	std::vector<std::array<real, N3>> dU;
-	std::vector<std::array<real, N3>> U0;
-	std::vector<std::array<real, N3>> U;
-	std::array<std::vector<std::array<real, N3F>>, NDIM> VR;
-	std::array<std::vector<std::array<real, N3F>>, NDIM> VL;
+	std::vector<std::vector<real>> dU;
+	std::vector<std::vector<real>> U0;
+	std::vector<std::vector<real>> U;
+	std::array<std::vector<std::vector<real>>, NDIM> VR;
+	std::array<std::vector<std::vector<real>>, NDIM> VL;
 	std::vector<real> x, y, z, r;
 	real dx;
 
 	static integer ind3d(integer j, integer k, integer l, integer stride = NX);
 public:
-	const std::array<real, N3>& den_array() const;
+	real cell_mass(integer) const;
 	hydro_vars();
-	void dump_data(std::vector<real>::iterator& l, integer index) const;
+	void dump_data(std::vector<double>::iterator& l, integer index) const;
 	void initialize(real xcorner, real ycorner, real zcorner, real dx);
 	void get_boundary(std::vector<real>::iterator i, integer d) const;
 	void set_boundary(integer d, std::vector<real>::iterator*iptr = nullptr);

@@ -47,7 +47,7 @@ hpx::future<std::list<std::size_t>> node_client::get_leaf_list() const {
 	return hpx::async<typename node_server::get_leaf_list_action>(id);
 }
 
-hpx::future<std::vector<real>> node_client::get_data() const {
+hpx::future<std::vector<double>> node_client::get_data() const {
 	return hpx::async<typename node_server::get_data_action>(id);
 }
 

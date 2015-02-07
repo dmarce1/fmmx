@@ -24,9 +24,9 @@ public:
 	static constexpr double precision = 1.0e-10;
 	static constexpr int Nchild = 1 << NDIM;
 	struct zone {
-		std::array<real, 4 + hydro_vars::nf_hydro> fields;
-		std::array<real, NDIM> position;
-		std::array<real, NDIM> span;
+		std::array<double, 4 + hydro_vars::nf_hydro> fields;
+		std::array<double, NDIM> position;
+		std::array<double, NDIM> span;
 		zone() {
 		}
 		zone(const zone& z) {
@@ -55,7 +55,7 @@ public:
 		}
 	};
 	struct silo_zone {
-		std::array<real, 4 + hydro_vars::nf_hydro> fields;
+		std::array<double, 4 + hydro_vars::nf_hydro> fields;
 		std::vector<int> vertices;
 		silo_zone() :
 				vertices(Nchild) {
@@ -109,7 +109,7 @@ private:
 	silo_zone_dir_type zonedir;
 	mutable hpx::lcos::local::spinlock mutex0;
 public:
-	silo_output() = default;
+	silo_output();
 	virtual ~silo_output() = default;
 	void do_output(std::list<std::size_t> leaves, integer); //
 	HPX_DEFINE_COMPONENT_ACTION( silo_output, do_output, do_output_action );
