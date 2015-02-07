@@ -14,11 +14,11 @@
 
 #include "silo_output.hpp"
 #include "node_client.hpp"
+#include "hydro.hpp"
 #include "key.hpp"
 #include <thread>
 
-
-template<class R, class ...Args1, class...Args2>
+template<class R, class ...Args1, class ...Args2>
 R exec_on_separate_thread(R (*fptr)(Args1...), Args2 ...args) {
 	R data;
 	std::thread([&](Args2*...args) {
@@ -28,14 +28,11 @@ R exec_on_separate_thread(R (*fptr)(Args1...), Args2 ...args) {
 
 }
 
-void silo_output::do_output(std::list<std::size_t> node_list) {
+void silo_output::do_output(std::list<std::size_t> node_list, integer filenum) {
 #ifndef NO_OUTPUT
-	std::vector<hpx::future<hpx::id_type> >
-	find_ids_from_basename(char const * base_name, std::vector<std::size_t> const & ids);
-
-	std::vector < std::size_t > id_list(node_list.begin(), node_list.end());
+	std::vector<std::size_t> id_list(node_list.begin(), node_list.end());
 	auto id_list_ptr = &id_list;
-	std::vector < hpx::future<hpx::id_type> > node_futs = hpx::find_ids_from_basename("fmmx_node", std::move(id_list));
+	std::vector<hpx::future<hpx::id_type> > node_futs = hpx::find_ids_from_basename("fmmx_node", std::move(id_list));
 	std::vector<hpx::future<void>> data_futs(node_futs.size());
 	for (integer i0 = 0; i0 != node_futs.size(); ++i0) {
 		data_futs[i0] = (node_client(node_futs[i0].get()).get_data()).then(
@@ -58,7 +55,7 @@ void silo_output::do_output(std::list<std::size_t> node_list) {
 							for (integer l0 = 0; l0 != NX; ++l0) {
 								silo_zone s;
 								int j;
-								for( integer k = 0; k != NF; ++k) {
+								for( integer k = 0; k != 4+hydro_vars::nf_hydro; ++k) {
 									s.fields[k] = *iter;
 									iter++;
 									cnt++;
@@ -121,7 +118,8 @@ void silo_output::do_output(std::list<std::size_t> node_list) {
 	}
 	nodedir.clear();
 
-	std::vector<int> zone_nodes(zonedir.size() * Nchild);
+	auto this_sz = zonedir.size();
+	std::vector<int> zone_nodes(this_sz * Nchild);
 	int zni = 0;
 	for (auto zi = zonedir.begin(); zi != zonedir.end(); zi++) {
 		for (int ci0 = 0; ci0 < Nchild; ci0++) {
@@ -131,7 +129,9 @@ void silo_output::do_output(std::list<std::size_t> node_list) {
 	}
 
 	olist = exec_on_separate_thread(&DBMakeOptlist, 1);
-	db = exec_on_separate_thread(&DBCreateReal, "X.silo", DB_CLOBBER, DB_LOCAL, "Euler Mesh", DB_PDB);
+	char* fname;
+	asprintf(&fname, "X.%i.silo", filenum);
+	db = exec_on_separate_thread(&DBCreateReal, fname, DB_CLOBBER, DB_LOCAL, "Euler Mesh", DB_PDB);
 	exec_on_separate_thread(&DBPutZonelist2, db, "zones", nzones, int(NDIM), zone_nodes.data(), Nchild * nzones, 0, 0,
 			0, shapetype, shapesize, shapecnt, nshapes, olist);
 	exec_on_separate_thread(&DBPutUcdmesh, db, "mesh", int(NDIM), const_cast<char**>(coordnames),
@@ -139,19 +139,17 @@ void silo_output::do_output(std::list<std::size_t> node_list) {
 			(int) DB_DOUBLE, olist);
 
 	std::vector<double> data(nzones);
-	std::array<char[32], NF> field_names;
-	for (integer j = 0; j != P; ++j) {
-		integer l;
-		for (integer m = 0; m <= j; ++m) {
-			l = j * j + j - m;
-			sprintf(field_names[l], "M_imag_j%li_m%li", j, m);
-			sprintf(field_names[l + NF / 2], "L_imag_j%li_m%li", j, m);
-			l = j * j + j + m;
-			sprintf(field_names[l], "M_real_j%li_m%li", j, m);
-			sprintf(field_names[l + NF / 2], "L_real_j%li_m%li", j, m);
-		}
-	}
-	for (int fi = 0; fi != NF; ++fi) {
+	std::array<char[32], 4 + hydro_vars::nf_hydro> field_names;
+	sprintf(field_names[0], "phi");
+	sprintf(field_names[1], "gx");
+	sprintf(field_names[2], "gy");
+	sprintf(field_names[3], "gz");
+	sprintf(field_names[4 + hydro_vars::ro_i], "rho");
+	sprintf(field_names[4 + hydro_vars::et_i], "et");
+	sprintf(field_names[4 + hydro_vars::sx_i], "sx");
+	sprintf(field_names[4 + hydro_vars::sy_i], "sy");
+	sprintf(field_names[4 + hydro_vars::sz_i], "sz");
+	for (int fi = 0; fi != 4 + hydro_vars::nf_hydro; ++fi) {
 		int i = 0;
 		for (auto zi = zonedir.begin(); zi != zonedir.end(); zi++) {
 			data[i] = zi->fields[fi];
@@ -164,6 +162,7 @@ void silo_output::do_output(std::list<std::size_t> node_list) {
 	zonedir.clear();
 
 	exec_on_separate_thread(DBClose, db);
-	printf( "Output Done\n");
+	free(fname);
+	printf("Output Done\n");
 #endif
 }

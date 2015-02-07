@@ -8,8 +8,8 @@
 #include "node_client.hpp"
 #include "node_server.hpp"
 
-hpx::future<void> node_client::execute() {
-	return hpx::async<typename node_server::execute_action>(id);
+hpx::future<real> node_client::execute(real dt, integer rk) {
+	return hpx::async<typename node_server::execute_action>(id, dt, rk);
 }
 
 hpx::future<void> node_client::refine() {

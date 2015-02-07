@@ -17,13 +17,14 @@
 class node_client;
 
 #include <vector>
+#include "hydro.hpp"
 
 class silo_output: public hpx::components::managed_component_base<silo_output> {
 public:
 	static constexpr double precision = 1.0e-10;
 	static constexpr int Nchild = 1 << NDIM;
 	struct zone {
-		std::array<real, NF> fields;
+		std::array<real, 4 + hydro_vars::nf_hydro> fields;
 		std::array<real, NDIM> position;
 		std::array<real, NDIM> span;
 		zone() {
@@ -54,7 +55,7 @@ public:
 		}
 	};
 	struct silo_zone {
-		std::array<real,NF> fields;
+		std::array<real, 4 + hydro_vars::nf_hydro> fields;
 		std::vector<int> vertices;
 		silo_zone() :
 				vertices(Nchild) {
@@ -74,6 +75,8 @@ public:
 		int index;
 		vertex() :
 				std::vector<double>(NDIM) {
+		}
+		~vertex() {
 		}
 		vertex(const vertex& v) :
 				std::vector<double>(v) {
@@ -108,7 +111,7 @@ private:
 public:
 	silo_output() = default;
 	virtual ~silo_output() = default;
-	void do_output(std::list<std::size_t> leaves);//
+	void do_output(std::list<std::size_t> leaves, integer); //
 	HPX_DEFINE_COMPONENT_ACTION( silo_output, do_output, do_output_action );
 }
 ;

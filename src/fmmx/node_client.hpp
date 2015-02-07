@@ -29,7 +29,7 @@ public:
 	hpx::future<std::vector<real>> get_data() const;
 	hpx::future<integer> get_node_count() const;
 	hpx::future<std::list<std::size_t>> get_leaf_list() const;
-	hpx::future<void> execute();
+	hpx::future<real> execute(real, integer);
 	template<class Arc>
 	void serialize(Arc&, const unsigned);
 };

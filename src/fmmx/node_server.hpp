@@ -9,6 +9,7 @@
 #define __NODE_SERVER__HPP
 
 #include "defs.hpp"
+#include "hydro.hpp"
 #include <boost/serialization/list.hpp>
 #include <boost/atomic.hpp>
 
@@ -17,23 +18,33 @@ private:
 	static hpx::id_type output;
 	std::vector<real> M;
 	std::vector<real> L;
+	std::vector<real> phi;
+	std::vector<real> gx ,gy, gz;
 	node_client parent_id;
 	std::array<node_client, NCHILD> child_id;
 	std::array<node_client, NNEIGHBOR> neighbor_id;
-	boost::atomic<integer> child_done_cnt;
-	boost::atomic<integer> neighbor_done_cnt;
-	hpx::promise<void> exe_promise;
 	mutable hpx::lcos::local::spinlock L_lock;
 	mutable hpx::lcos::local::spinlock M_lock;
 	std::array<integer, NDIM> location;
-	hpx::future<void> expansions_future;
-	hpx::future<void> multipoles_future;
 	hpx::id_type my_id;
 	real dx;
 	integer level;
 	bool is_leaf;
 	std::uint64_t key;
 	void initialize(node_client, integer, std::array<integer, NDIM>);
+	void reset();
+
+	boost::atomic<integer> child_done_cnt;
+	boost::atomic<integer> neighbor_done_cnt;
+	integer step_cnt;
+	std::pair<hpx::promise<void>,hpx::promise<void>> exe_pair;
+	hpx::promise<void>* exe_promise;
+
+	hydro_vars hydro_state;
+	real this_dt;
+	bool hydro_updated;
+
+
 public:
 	node_server();
 	node_server(hpx::id_type);
@@ -46,7 +57,7 @@ public:
 	std::list<std::size_t> get_leaf_list() const;
 	void send_multipoles();
 	void send_expansions();
-	hpx::future<std::vector<real>> get_multipoles() const;
+	hpx::future<std::vector<real>> get_multipoles();
 	hpx::future<std::vector<real>> get_expansions(integer ci) const;
 	hpx::future<std::vector<real>> get_boundary(integer d) const;
 	void set_boundary(hpx::future<std::vector<real>> f, integer d);
@@ -54,10 +65,10 @@ public:
 	void set_expansions(hpx::future<std::vector<real>>);
 	void wait_for_signal() const;
 	void M2M(const std::vector<real>&, integer);
-	void M2L(const std::vector<real>&, integer);
+	void M2L(const std::vector<real>&, integer, integer);
 	void L2L(const std::vector<real>&);
 	void reset_parent();
-	hpx::future<void> execute();
+	real execute(real, integer);
 	void derefine(bool);
 	void refine();
 	//

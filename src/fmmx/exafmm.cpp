@@ -275,7 +275,7 @@ exafmm_kernel::exafmm_kernel() {
 	const complex I(0., 1.);                               // Imaginary unit
 
 	factorial[0] = 1;                                // Initialize factorial
-	for (int n = 1; n != P; ++n) {                              // Loop to P
+	for (int n = 1; n < P; ++n) {                              // Loop to P
 		factorial[n] = factorial[n - 1] * n;                        //  n!
 	}                                                       // End loop to P
 
