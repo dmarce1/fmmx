@@ -147,7 +147,7 @@ hpx::future<std::vector<real>> node_server::get_expansions(integer c) const {
 }
 
 hpx::future<std::vector<real>> node_server::get_multipoles() {
-	if (is_leaf) {
+	if (is_leaf && P != 0) {
 		M = std::vector<real>(N3 * PP, real(0));
 		for (integer i = 0; i != N3; ++i) {
 			M[i] = hydro_state.cell_mass(i);
@@ -182,6 +182,10 @@ hpx::future<std::vector<real>> node_server::get_multipoles() {
 		}
 		return std::move(m_out);
 	});
+}
+
+bool node_server::refine_me() const {
+	return level < MAXLEVEL && hydro_state.needs_refinement();
 }
 
 void node_server::derefine(bool self) {
@@ -220,13 +224,15 @@ void node_server::derefine(bool self) {
 	}
 }
 
-void node_server::refine() {
-	if (my_id == hpx::invalid_id) {
-		my_id = hpx::find_id_from_basename("fmmx_node", location_to_key(level, location)).get();
-	}
-	hpx::future<void> fut;
+void node_server::refine(hpx::id_type me) {
+	my_id = std::move(me);
+	//if (my_id == hpx::invalid_id) {
+	//	my_id = hpx::find_id_from_basename("fmmx_node", location_to_key(level, location)).get();
+//	}
+	const auto refine_this = refine_me();
 	std::vector<hpx::future<void>> cfut(NCHILD);
-	if (level < MAXLEVEL) {
+	if (refine_this) {
+		printf("Refining tree at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
 		std::vector<hpx::future<hpx::id_type>> cids(NCHILD);
 		for (integer ci = 0; ci != NCHILD; ++ci) {
 			std::array<integer, NDIM> cloc(location);
@@ -257,17 +263,14 @@ void node_server::refine() {
 			}
 		}
 		for (integer ci = 0; ci != NCHILD; ++ci) {
-			cfut[ci] = child_id[ci].refine();
+			cfut[ci] = child_id[ci].refine(child_id[ci]);
 		}
-	}
-	init_t0();
-	if (level < MAXLEVEL) {
-		fut = hpx::when_all(cfut).then([](hpx::future<std::vector<hpx::future<void>>>) {});
+		hpx::when_all(cfut).then([](hpx::future<std::vector<hpx::future<void>>>) {}).get();
 	} else {
-		fut = hpx::make_ready_future();
+		is_leaf = true;
 	}
-	fut.get();
-	get_tree();
+//	init_t0();
+//	get_tree();
 }
 
 hpx::future<std::vector<real>> node_server::get_boundary(integer d) const {
@@ -308,8 +311,6 @@ void node_server::set_boundary(hpx::future<std::vector<real>> f, integer d) {
 		auto iter = data.begin() + PP * bnd_size[d];
 		hydro_state.set_boundary(which_face[d], &iter);
 	}
-	integer cnt = neighbor_done_cnt;
-//	printf("%li %li\n", level, cnt);
 	if (++neighbor_done_cnt == NNEIGHBOR + 1) {
 		send_expansions();
 	}
@@ -317,9 +318,6 @@ void node_server::set_boundary(hpx::future<std::vector<real>> f, integer d) {
 
 void node_server::set_expansions(hpx::future<std::vector<real>> f) {
 	L2L(f.get());
-	integer cnt = neighbor_done_cnt;
-//	printf("%li %li\n", level, cnt);
-
 	if (++neighbor_done_cnt == NNEIGHBOR + 1) {
 		send_expansions();
 	}
@@ -330,10 +328,10 @@ void node_server::set_multipoles(hpx::future<std::vector<real>> f, integer ci) {
 	if (++child_done_cnt == NCHILD) {
 		send_multipoles();
 	}
-	integer cnt = neighbor_done_cnt;
-	if (neighbor_done_cnt == NNEIGHBOR + 1) {
-		send_expansions();
-	}
+//	integer cnt = neighbor_done_cnt;
+//	if (neighbor_done_cnt == NNEIGHBOR + 1) {
+//		send_expansions();
+//	}
 }
 
 void node_server::M2M(const std::vector<real>& mptr, integer c) {
@@ -392,7 +390,9 @@ void node_server::send_multipoles() {
 		neighbor_id[d].set_boundary(bnd_fut, NNEIGHBOR - 1 - d);
 	}
 	M2L(M, center_dir, N3);
-	neighbor_done_cnt++;
+	if (++neighbor_done_cnt == NNEIGHBOR + 1) {
+		send_expansions();
+	}
 	child_done_cnt = 0;
 
 }
@@ -430,7 +430,7 @@ void node_server::M2L(const std::vector<real>& m, integer d, integer N) {
 		}
 	};
 
-	const integer max_d0 = is_leaf ? 0 : 1;
+	const integer max_d0 = (is_leaf || neighbor_is_leaf[d]) ? 0 : 1;
 	integer is = 0;
 	std::vector<integer> list(level == 0 ? N3 : 216);
 	std::vector<real> l_out;
@@ -501,29 +501,58 @@ void node_server::M2L(const std::vector<real>& m, integer d, integer N) {
 //	assert(is == N);
 }
 
-void node_server::get_tree() {
-	std::vector<std::size_t> ids(NNEIGHBOR);
-	auto i = ids.begin();
+std::vector<node_client> node_server::get_children() const {
+	std::vector<node_client> rc(NCHILD);
+	std::copy(child_id.begin(), child_id.end(), rc.begin());
+	return rc;
+}
+
+void node_server::get_tree(std::vector<node_client> my_neighbors) {
+	for (integer i = 0; i != NNEIGHBOR; ++i) {
+		neighbor_id[i] = my_neighbors[i];
+	}
+	neighbor_id[13] = my_id;
+	integer cnt = 0;
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
-		if (!location_is_phys_bnd(level, location, d)) {
-			auto this_loc = location;
-			this_loc[0] += dir_x[d];
-			this_loc[1] += dir_y[d];
-			this_loc[2] += dir_z[d];
-			*i = location_to_key(level, std::move(this_loc));
-			++i;
+		if (neighbor_id[d] != hpx::invalid_id) {
+			++cnt;
 		}
 	}
-	auto f = hpx::find_ids_from_basename("fmmx_node", std::vector<std::size_t>(ids.begin(), i));
-//	hpx::wait_all(f);
-	auto j = f.begin();
-	for (integer d = 0; d != NNEIGHBOR; ++d) {
-		if (!location_is_phys_bnd(level, location, d)) {
-			neighbor_id[d] = j->get();
-			++j;
+	printf("Getting tree at grid %li - %li %li %li - %li\n", level, location[2], location[1], location[0], cnt);
+	std::vector<hpx::future<std::vector<node_client>>>futs(NNEIGHBOR);
+	std::vector<node_client> neighborhood(NNEIGHBOR * NCHILD);
+	for (integer dir = 0; dir != NNEIGHBOR; dir++) {
+		futs[dir] = neighbor_id[dir].get_children();
+	}
+	for (integer dir = 0; dir != NNEIGHBOR; dir++) {
+		auto tmp = futs[dir].get();
+		if (tmp[0] != hpx::invalid_id) {
+			neighbor_is_leaf[dir] = false;
+			for (integer ci = 0; ci != NCHILD; ++ci) {
+				const auto xi = 2 * (dir_x[dir] + 1) + ((ci >> 0) & 1);
+				const auto yi = 2 * (dir_y[dir] + 1) + ((ci >> 1) & 1);
+				const auto zi = 2 * (dir_z[dir] + 1) + ((ci >> 2) & 1);
+				neighborhood[xi * 36 + yi * 6 + zi] = tmp[ci];
+			}
+		} else {
+			neighbor_is_leaf[dir] = true;
 		}
 	}
-	printf("Tree at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
+	if (!is_leaf) {
+		std::vector<hpx::future<void>> child_futs(NCHILD);
+		for (integer ci = 0; ci != NCHILD; ci++) {
+			std::vector<node_client> child_neighbors(NNEIGHBOR);
+			for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
+				const auto xi = (dir_x[dir] + 2) + ((ci >> 0) & 1);
+				const auto yi = (dir_y[dir] + 2) + ((ci >> 1) & 1);
+				const auto zi = (dir_z[dir] + 2) + ((ci >> 2) & 1);
+				child_neighbors[dir] = neighborhood[xi * 36 + yi * 6 + zi];
+			}
+			child_futs[ci] = child_id[ci].get_tree(child_neighbors);
+		}
+		hpx::wait_all(child_futs);
+	}
+	reset();
 
 }
 
@@ -559,14 +588,12 @@ void node_server::init_t0() {
 real node_server::execute(real global_dt, integer rk) {
 	bool done, all_poles, poles_sent;
 	std::vector<hpx::future<real>> child_exe(NCHILD);
-//	printf("Begin at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
+	//	printf("Begin at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
 	if (!is_leaf) {
 		for (integer i = 0; i != NCHILD; ++i) {
 			child_exe[i] = child_id[i].execute(global_dt, rk);
 		}
 	} else {
-		auto fiter = L.begin();
-		fiter += N3;
 		hydro_state.update(global_dt, rk, phi, gx, gy, gz);
 		hydro_updated = true;
 		for (integer i = 0; i != NCHILD; ++i) {
@@ -579,7 +606,7 @@ real node_server::execute(real global_dt, integer rk) {
 	if (is_leaf) {
 		for (integer d = 0; d != NNEIGHBOR; ++d) {
 			if (d != center_dir) {
-				if (location_is_phys_bnd(level, location, d) && is_face[d]) {
+				if (neighbor_id[d] == hpx::invalid_id && is_face[d]) {
 					hydro_state.set_boundary(which_face[d]);
 				}
 			}
@@ -663,11 +690,13 @@ std::list<std::size_t> node_server::get_leaf_list() const {
 }
 
 void node_server::reset() {
-	for (integer i = 0; i != N3; ++i) {
-		phi[i] = -L[i];
-		gz[i] = -L[i + N3 * 2];
-		gx[i] = L[i + N3 * 3] * std::sqrt(real(2));
-		gy[i] = -L[i + N3 * 1] * std::sqrt(real(2));
+	if (P != 0) {
+		for (integer i = 0; i != N3; ++i) {
+			phi[i] = -L[i];
+			gz[i] = -L[i + N3 * 2];
+			gx[i] = L[i + N3 * 3] * std::sqrt(real(2));
+			gy[i] = -L[i + N3 * 1] * std::sqrt(real(2));
+		}
 	}
 	L = std::vector<real>(PP * N3, 0.0);
 	hydro_updated = false;
@@ -675,7 +704,7 @@ void node_server::reset() {
 	child_done_cnt = 0;
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
 		if (d != center_dir) {
-			if (location_is_phys_bnd(level, location, d)) {
+			if (neighbor_id[d] == hpx::invalid_id) {
 				++neighbor_done_cnt;
 			}
 		}
@@ -695,6 +724,7 @@ void node_server::reset() {
 }
 
 void node_server::initialize(node_client pid, integer lev, std::array<integer, NDIM> loc) {
+	amr_bnd = false;
 	step_cnt = 0;
 	phi = gx = gy = gz = std::vector<real>(N3);
 	M.resize(PP * N3, 0.0);

@@ -23,7 +23,7 @@ static real fz(real y, real z, real r) {
 }
 
 real lane_emden(real r0) {
-	real dr = 0.005;
+	real dr = 0.01;
 	int N;
 	real dy1, dz1, y, z, r, dy2, dz2, dy3, dz3, dy4, dz4, y0, z0;
 	int done = 0;

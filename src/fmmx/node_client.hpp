@@ -16,13 +16,19 @@ class node_client {
 private:
 	hpx::id_type id;
 public:
-	hpx::future<void> refine();
+	hpx::future<void> get_tree(
+			std::vector<node_client> my_neighbors = std::vector<node_client>(NNEIGHBOR, node_client(hpx::invalid_id)));
+
+	hpx::future<void> refine(hpx::id_type id);
 	hpx::future<void> derefine();
 	hpx::future<void> destroy();
 	operator hpx::id_type() const;
 	node_client();
+	hpx::future<std::vector<node_client>> get_children() const;
 	node_client(const hpx::id_type&);
 	node_client& operator=(const hpx::id_type&);
+	bool operator==(const hpx::id_type&) const;
+	bool operator!=(const hpx::id_type&) const;
 	void set_boundary(hpx::future<std::vector<real>>& f, integer d);
 	void set_multipoles(hpx::future<std::vector<real>>& f, integer ci);
 	void set_expansions(hpx::future<std::vector<real>>&);

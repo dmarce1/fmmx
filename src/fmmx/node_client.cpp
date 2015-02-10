@@ -8,12 +8,32 @@
 #include "node_client.hpp"
 #include "node_server.hpp"
 
+hpx::future<void> node_client::get_tree(std::vector<node_client> my_neighbors) {
+	return hpx::async<typename node_server::get_tree_action>(id, std::move(my_neighbors));
+}
+
+
+bool node_client::operator==(const hpx::id_type& other) const {
+	return id == other;
+}
+bool node_client::operator!=(const hpx::id_type& other) const {
+	return id != other;
+}
+
+hpx::future<std::vector<node_client>> node_client::get_children() const {
+	if (id != hpx::invalid_id) {
+		return hpx::async<typename node_server::get_children_action>(id);
+	} else {
+		return hpx::make_ready_future(std::vector<node_client>(NCHILD, hpx::invalid_id));
+	}
+}
+
 hpx::future<real> node_client::execute(real dt, integer rk) {
 	return hpx::async<typename node_server::execute_action>(id, dt, rk);
 }
 
-hpx::future<void> node_client::refine() {
-	return hpx::async<typename node_server::refine_action>(id);
+hpx::future<void> node_client::refine(hpx::id_type myid) {
+	return hpx::async<typename node_server::refine_action>(id, myid);
 }
 
 hpx::future<void> node_client::derefine() {

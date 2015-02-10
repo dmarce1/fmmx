@@ -273,7 +273,9 @@ void exafmm_kernel::evalMultipole(real rho, real theta, real phi, std::vector<re
 
 exafmm_kernel::exafmm_kernel() {
 	const complex I(0., 1.);                               // Imaginary unit
-
+	if( P == 0 ) {
+		return;
+	}
 	factorial[0] = 1;                                // Initialize factorial
 	for (int n = 1; n < P; ++n) {                              // Loop to P
 		factorial[n] = factorial[n - 1] * n;                        //  n!

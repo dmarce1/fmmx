@@ -51,6 +51,7 @@ public:
 	real compute_du();
 	void update(real, integer, const std::vector<real>& phi, const std::vector<real>& gx, const std::vector<real>& gy,
 			const std::vector<real>& gz);
+	bool needs_refinement() const;
 
 };
 

@@ -87,7 +87,6 @@ real hydro_vars::compute_du() {
 
 hydro_vars::hydro_vars() {
 
-
 	U = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3, real(0.0)));
 	dU = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3, real(0.0)));
 	U0 = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3, real(0.0)));
@@ -118,30 +117,31 @@ void hydro_vars::initialize(real xcorner, real ycorner, real zcorner, real _dx) 
 		r[i] = std::sqrt(x[i] * x[i] + y[i] * y[i] + z[i] * z[i]);
 
 	}
-	for (integer i = 0; i != N3; ++i) {
-		for (integer f = 0; f != nf_hydro; ++f) {
-			U[f][i] = 0.0;
-		}
-		real ro;
-		ro = lane_emden(8.0 * r[i]) / 8.0 / 8.0 / 8.0;
-		U[d0_i][i] = std::max(ro, ro_floor);
-
-		U[et_i][i] = real(4.0) * real(M_PI) / real(2.5) / (fgamma - real(1.0)) * std::pow(ro, real(5.0 / 3.0));
-
-	}
 	/*
 	 for (integer i = 0; i != N3; ++i) {
 	 for (integer f = 0; f != nf_hydro; ++f) {
 	 U[f][i] = 0.0;
 	 }
-	 if (x[i] < 0.49) {
-	 U[d0_i][i] = 1.0;
-	 U[et_i][i] = 2.5;
-	 } else {
-	 U[d0_i][i] = 1.0e-1;
-	 U[et_i][i] = 0.125;
+	 real ro;
+	 ro = lane_emden(8.0 * r[i]) / 8.0 / 8.0 / 8.0;
+	 U[d0_i][i] = std::max(ro, ro_floor);
+
+	 U[et_i][i] = real(4.0) * real(M_PI) / real(2.5) / (fgamma - real(1.0)) * std::pow(ro, real(5.0 / 3.0));
+
 	 }
-	 }*/
+	 */
+	for (integer i = 0; i != N3; ++i) {
+		for (integer f = 0; f != nf_hydro; ++f) {
+			U[f][i] = 0.0;
+		}
+		if (x[i] < 0.0) {
+			U[d0_i][i] = 1.0;
+			U[et_i][i] = 2.5;
+		} else {
+			U[d0_i][i] = 1.0e-1;
+			U[et_i][i] = 0.125;
+		}
+	}
 }
 
 void hydro_vars::get_boundary(std::vector<real>::iterator i, integer d) const {
@@ -164,19 +164,25 @@ void hydro_vars::get_boundary(std::vector<real>::iterator i, integer d) const {
 
 }
 
+bool hydro_vars::needs_refinement() const {
+	return true;
+}
+
 void hydro_vars::update(real dt, integer rk, const std::vector<real>& phi, const std::vector<real>& gx,
 		const std::vector<real>& gy, const std::vector<real>& gz) {
 	real beta[2] = { 1.0, 0.5 };
 	if (rk == 0) {
 		U0 = U;
 	}
-	for (integer i = 0; i != N3; ++i) {
-		dU[sx_i][i] += gx[i] * U[d0_i][i];
-		dU[sy_i][i] += gy[i] * U[d0_i][i];
-		dU[sz_i][i] += gz[i] * U[d0_i][i];
-		dU[et_i][i] += gx[i] * U[sx_i][i];
-		dU[et_i][i] += gy[i] * U[sy_i][i];
-		dU[et_i][i] += gz[i] * U[sz_i][i];
+	if (P != 0) {
+		for (integer i = 0; i != N3; ++i) {
+			dU[sx_i][i] += gx[i] * U[d0_i][i];
+			dU[sy_i][i] += gy[i] * U[d0_i][i];
+			dU[sz_i][i] += gz[i] * U[d0_i][i];
+			dU[et_i][i] += gx[i] * U[sx_i][i];
+			dU[et_i][i] += gy[i] * U[sy_i][i];
+			dU[et_i][i] += gz[i] * U[sz_i][i];
+		}
 	}
 	for (integer f = 0; f != nf_hydro; ++f) {
 		for (integer i = 0; i != N3; ++i) {

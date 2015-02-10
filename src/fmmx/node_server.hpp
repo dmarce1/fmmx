@@ -19,10 +19,11 @@ private:
 	std::vector<real> M;
 	std::vector<real> L;
 	std::vector<real> phi;
-	std::vector<real> gx ,gy, gz;
+	std::vector<real> gx, gy, gz;
 	node_client parent_id;
 	std::array<node_client, NCHILD> child_id;
 	std::array<node_client, NNEIGHBOR> neighbor_id;
+	std::array<bool,NNEIGHBOR> neighbor_is_leaf;
 	mutable hpx::lcos::local::spinlock L_lock;
 	mutable hpx::lcos::local::spinlock M_lock;
 	std::array<integer, NDIM> location;
@@ -34,29 +35,33 @@ private:
 	void initialize(node_client, integer, std::array<integer, NDIM>);
 	void reset();
 
+	bool amr_bnd;
+
 	boost::atomic<integer> child_done_cnt;
 	boost::atomic<integer> neighbor_done_cnt;
 	integer step_cnt;
-	std::pair<hpx::promise<void>,hpx::promise<void>> exe_pair;
+	std::pair<hpx::promise<void>, hpx::promise<void>> exe_pair;
 	hpx::promise<void>* exe_promise;
 
 	hydro_vars hydro_state;
 	real this_dt;
 	bool hydro_updated;
 
-
 public:
+	bool refine_me() const;
 	node_server();
 	node_server(hpx::id_type);
 	node_server(node_client, integer, std::array<integer, NDIM>);
 	~node_server();
-	void get_tree();
+	void get_tree(
+			std::vector<node_client> my_neighbors = std::vector<node_client>(NNEIGHBOR, node_client(hpx::invalid_id)));
 	void init_t0();
 	integer get_node_count() const;
 	std::vector<double> get_data() const;
 	std::list<std::size_t> get_leaf_list() const;
 	void send_multipoles();
 	void send_expansions();
+	std::vector<node_client> get_children() const;
 	hpx::future<std::vector<real>> get_multipoles();
 	hpx::future<std::vector<real>> get_expansions(integer ci) const;
 	hpx::future<std::vector<real>> get_boundary(integer d) const;
@@ -70,8 +75,10 @@ public:
 	void reset_parent();
 	real execute(real, integer);
 	void derefine(bool);
-	void refine();
+	void refine(hpx::id_type id);
 	//
+	HPX_DEFINE_COMPONENT_ACTION(node_server, get_tree, get_tree_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, get_children, get_children_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, derefine, derefine_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, refine, refine_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, execute, execute_action); //
