@@ -22,8 +22,180 @@ real hydro_vars::cell_mass(integer i) const {
 	return U[d0_i][i] * dx * dx * dx;
 }
 
+
+
+void hydro_vars::pack_child_amr_data(integer face, integer child, std::vector<real>::iterator i) const {
+	integer lb[NDIM], ub[NDIM];
+	lb[0] = ((child >> 0) & 1) * NX / 2;
+	lb[1] = ((child >> 1) & 1) * NX / 2;
+	lb[2] = ((child >> 2) & 1) * NX / 2;
+	ub[0] = lb[0] + NX / 2;
+	ub[1] = lb[1] + NX / 2;
+	ub[2] = lb[2] + NX / 2;
+	lb[face / 2] += (face % 2) * (NX / 2 - 1);
+	ub[face / 2] = lb[face / 2] + 1;
+	for (integer f = 0; f != nf_hydro; ++f) {
+		for (integer j = lb[0]; j != ub[0]; ++j) {
+			for (integer k = lb[1]; k != ub[1]; ++k) {
+				for (integer l = lb[2]; l != ub[2]; ++l) {
+					*i++ = U[f][ind3d(j, k, l)];
+				}
+			}
+		}
+	}
+}
+
+void hydro_vars::unpack_child_amr_data(integer face, std::vector<real>::iterator i) {
+	integer lb[NDIM] = { 0, 0, 0 };
+	integer ub[NDIM] = { NX / 2, NX / 2, NX / 2 };
+	lb[face / 2] = (face % 2) * (NX / 2 - 1);
+	ub[face / 2] = lb[face / 2] + 1;
+	for (integer f = 0; f != nf_hydro; ++f) {
+		for (integer j = lb[0]; j != ub[0]; ++j) {
+			for (integer k = lb[1]; k != ub[1]; ++k) {
+				for (integer l = lb[2]; l != ub[2]; ++l) {
+					real v = *i++;
+					U[f][ind3d(2 * j + 0, 2 * k + 0, 2 * l + 0)] = v;
+					U[f][ind3d(2 * j + 0, 2 * k + 0, 2 * l + 1)] = v;
+					U[f][ind3d(2 * j + 0, 2 * k + 1, 2 * l + 0)] = v;
+					U[f][ind3d(2 * j + 0, 2 * k + 1, 2 * l + 1)] = v;
+					U[f][ind3d(2 * j + 1, 2 * k + 0, 2 * l + 0)] = v;
+					U[f][ind3d(2 * j + 1, 2 * k + 0, 2 * l + 1)] = v;
+					U[f][ind3d(2 * j + 1, 2 * k + 1, 2 * l + 0)] = v;
+					U[f][ind3d(2 * j + 1, 2 * k + 1, 2 * l + 1)] = v;
+				}
+			}
+		}
+	}
+}
+
+std::vector<real> hydro_vars::pack_parent_data(std::vector<bool> amr_dirs) const {
+	std::vector<real> data(nf_hydro * NX * NX * NX / 8, real(0));
+	for (integer f = 0; f != nf_hydro; ++f) {
+		for (integer j = 0; j != NX; ++j) {
+			for (integer k = 0; k != NX; ++k) {
+				for (integer l = 0; l != NX; ++l) {
+					data[f * (N3 / 8) + ind3d(j / 2, k / 2, l / 2, NX / 2)] += dU[f][ind3d(j, k, l)] * real(1.0 / 8.0);
+				}
+			}
+		}
+	}
+	integer lb[NDIM], ub[NDIM], off[NDIM];
+	for (integer d = 0; d != 2 * NDIM; ++d) {
+		if (amr_dirs[d]) {
+			off[0] = off[1] = off[2] = 0;
+			lb[0] = lb[1] = lb[2] = 0;
+			ub[0] = ub[1] = ub[2] = NX;
+			if (d % 2 == 0) {
+				lb[d / 2] = 2;
+				off[d / 2] = 2;
+			} else {
+				lb[d / 2] = NX - 2;
+			}
+			ub[d / 2] = lb[d / 2] + 1;
+			for (integer f = 0; f != nf_hydro; ++f) {
+				for (integer j = lb[0]; j != ub[0]; j += 2) {
+					for (integer k = lb[1]; k != ub[1]; k += 2) {
+						for (integer l = lb[2]; l != ub[2]; l += 2) {
+							data[f * (N3 / 8) + ind3d((j - off[0]) / 2, (k - off[1]) / 2, (l - off[2]) / 2, NX / 2)] =
+									real(0);
+						}
+					}
+				}
+				for (integer j = lb[0]; j != ub[0]; ++j) {
+					for (integer k = lb[1]; k != ub[1]; ++k) {
+						for (integer l = lb[2]; l != ub[2]; ++l) {
+							data[f * (N3 / 8) + ind3d((j - off[0]) / 2, (k - off[1]) / 2, (l - off[2]) / 2, NX / 2)] +=
+									Flux[d / 2][f][ind3d(j, k, l, NX + 1)] * real(1.0 / 4.0);
+						}
+					}
+				}
+			}
+		}
+	}
+	return data;
+}
+
+void hydro_vars::unpack_data_from_child(std::vector<real> data, integer child, std::vector<bool> amr_directions) {
+
+	integer lb[NDIM], ub[NDIM], off[NDIM], off2[NDIM];
+
+	for (integer d = 0; d != 2 * NDIM; ++d) {
+		if (amr_directions[d]) {
+			real sign;
+			lb[0] = ((child >> 0) & 1) * NX / 2;
+			lb[1] = ((child >> 1) & 1) * NX / 2;
+			lb[2] = ((child >> 2) & 1) * NX / 2;
+			off2[0] = off2[1] = off2[2] = 0;
+			off[0] = lb[0];
+			off[1] = lb[1];
+			off[2] = lb[2];
+			ub[0] = lb[0] + NX / 2;
+			ub[1] = lb[1] + NX / 2;
+			ub[2] = lb[2] + NX / 2;
+			for (integer e = 0; e != 2 * NDIM; e += 2) {
+				if (amr_directions[e]) {
+					lb[e / 2]++;
+				}
+				if (amr_directions[e + 1]) {
+					ub[e / 2]--;
+				}
+			}
+			if (d % 2 == 0) {
+				sign = real(1);
+				lb[d / 2] = 1;
+				off[d / 2] = 1;
+				off2[d / 2]--;
+			} else {
+				off[d / 2] = NX / 2;
+				sign = real(-1);
+				lb[d / 2] = NX - 1;
+			}
+			ub[d / 2] = lb[d / 2] + 1;
+			for (integer f = 0; f != nf_hydro; ++f) {
+				for (integer j = lb[0]; j != ub[0]; ++j) {
+					for (integer k = lb[1]; k != ub[1]; ++k) {
+						for (integer l = lb[2]; l != ub[2]; ++l) {
+							const auto fine_flux =
+									data[f * (N3 / 8) + ind3d(j - off[0], k - off[1], l - off[2], NX / 2)];
+							const auto crse_flux = Flux[d / 2][f][ind3d(j, k, l, NX + 1)];
+							const auto dif = fine_flux - crse_flux;
+		//					if (fine_flux != 0.0 || crse_flux != 0.0)
+		//						printf("%e %e\n", fine_flux, crse_flux);
+							dU[f][ind3d(j + off2[0], k + off2[1], l + off2[2])] -= sign * dif / dx;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	off[0] = lb[0] = ((child >> 0) & 1) * NX / 2;
+	off[1] = lb[1] = ((child >> 1) & 1) * NX / 2;
+	off[2] = lb[2] = ((child >> 2) & 1) * NX / 2;
+	ub[0] = lb[0] + NX / 2;
+	ub[1] = lb[1] + NX / 2;
+	ub[2] = lb[2] + NX / 2;
+	for (integer i = 0; i != 2 * NDIM; i += 2) {
+		if (amr_directions[i]) {
+			lb[i / 2]++;
+		}
+		if (amr_directions[i + 1]) {
+			ub[i / 2]--;
+		}
+	}
+	for (integer f = 0; f != nf_hydro; ++f) {
+		for (integer j = lb[0]; j != ub[0]; ++j) {
+			for (integer k = lb[1]; k != ub[1]; ++k) {
+				for (integer l = lb[2]; l != ub[2]; ++l) {
+					dU[f][ind3d(j, k, l)] = data[f * (N3 / 8) + ind3d(j - off[0], k - off[1], l - off[2], NX / 2)];
+				}
+			}
+		}
+	}
+}
+
 real hydro_vars::compute_du() {
-	real amax = real(0);
 	std::vector<std::vector<real>> F(nf_hydro, std::vector<real>(N3F, real(0)));
 	for (integer f = 0; f != nf_hydro; ++f) {
 		for (integer i = 0; i != N3; ++i) {
@@ -33,42 +205,6 @@ real hydro_vars::compute_du() {
 	std::vector<std::vector<real>> flx(nf_hydro, std::vector<real>(N3F, real(0)));
 	for (integer d = 0; d != NDIM; ++d) {
 		const integer dn[3] = { d == 0 ? 1 : 0, d == 1 ? 1 : 0, d == 2 ? 1 : 0 };
-		for (integer j = 0; j != NX + dn[0]; ++j) {
-			for (integer k = 0; k != NX + dn[1]; ++k) {
-				for (integer l = 0; l != NX + dn[2]; ++l) {
-					const auto vi = ind3d(j, k, l, NX + 1);
-					const real rho_r = VR[d][ro_i][vi];
-					const real rho_l = VL[d][ro_i][vi];
-					const real v_r = VR[d][v0_i + d][vi];
-					const real v_l = VL[d][v0_i + d][vi];
-					const real vx_r = VR[d][vx_i][vi];
-					const real vx_l = VL[d][vx_i][vi];
-					const real vy_r = VR[d][vy_i][vi];
-					const real vy_l = VL[d][vy_i][vi];
-					const real vz_r = VR[d][vz_i][vi];
-					const real vz_l = VL[d][vz_i][vi];
-					const real pr_r = VR[d][pr_i][vi];
-					const real pr_l = VL[d][pr_i][vi];
-					const real et_r = pr_r / (fgamma - 1.0) + 0.5 * (vx_r * vx_r + vy_r * vy_r + vz_r * vz_r) * rho_r;
-					const real et_l = pr_l / (fgamma - 1.0) + 0.5 * (vx_l * vx_l + vy_l * vy_l + vz_l * vz_l) * rho_l;
-					const real a_r = std::sqrt(fgamma * std::max(pr_r, real(0)) / rho_r) + std::abs(v_r);
-					const real a_l = std::sqrt(fgamma * std::max(pr_l, real(0)) / rho_l) + std::abs(v_l);
-					const real a = std::max(a_r, a_l);
-					amax = std::max(amax, a);
-					flx[d0_i][vi] = real(0.5) * (rho_r * v_r + rho_l * v_l);
-					flx[sx_i][vi] = real(0.5) * (rho_r * vx_r * v_r + rho_l * vx_l * v_l);
-					flx[sy_i][vi] = real(0.5) * (rho_r * vy_r * v_r + rho_l * vy_l * v_l);
-					flx[sz_i][vi] = real(0.5) * (rho_r * vz_r * v_r + rho_l * vz_l * v_l);
-					flx[s0_i + d][vi] += real(0.5) * (pr_r + pr_l);
-					flx[et_i][vi] = real(0.5) * ((et_r + pr_r) * v_r + (et_l + pr_l) * v_l);
-					flx[d0_i][vi] -= real(0.5) * (rho_r - rho_l) * a;
-					flx[sx_i][vi] -= real(0.5) * (vx_r * rho_r - vx_l * rho_l) * a;
-					flx[sy_i][vi] -= real(0.5) * (vy_r * rho_r - vy_l * rho_l) * a;
-					flx[sx_i][vi] -= real(0.5) * (vz_r * rho_r - vz_l * rho_l) * a;
-					flx[et_i][vi] -= real(0.5) * (vz_r * et_r - vz_l * et_l) * a;
-				}
-			}
-		}
 		for (integer f = 0; f != nf_hydro; ++f) {
 			for (integer j = 0; j != NX; ++j) {
 				for (integer k = 0; k != NX; ++k) {
@@ -76,7 +212,7 @@ real hydro_vars::compute_du() {
 						const auto iu0 = ind3d(j, k, l);
 						const auto if0 = ind3d(j, k, l, NX + 1);
 						const auto ifp = ind3d(j + dn[0], k + dn[1], l + dn[2], NX + 1);
-						dU[f][iu0] -= (flx[f][ifp] - flx[f][if0]) / dx;
+						dU[f][iu0] -= (Flux[d][f][ifp] - Flux[d][f][if0]) / dx;
 					}
 				}
 			}
@@ -86,7 +222,7 @@ real hydro_vars::compute_du() {
 }
 
 hydro_vars::hydro_vars() {
-
+	amax = real(0);
 	U = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3, real(0.0)));
 	dU = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3, real(0.0)));
 	U0 = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3, real(0.0)));
@@ -95,8 +231,7 @@ hydro_vars::hydro_vars() {
 	z = std::vector<real>(N3);
 	r = std::vector<real>(N3);
 	for (integer d = 0; d != NDIM; ++d) {
-		VR[d] = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3F, real(0.0)));
-		VL[d] = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3F, real(0.0)));
+		Flux[d] = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3F, real(0.0)));
 	}
 
 }
@@ -134,7 +269,7 @@ void hydro_vars::initialize(real xcorner, real ycorner, real zcorner, real _dx) 
 		for (integer f = 0; f != nf_hydro; ++f) {
 			U[f][i] = 0.0;
 		}
-		if (x[i] < 0.0) {
+		if (z[i] > 0.1) {
 			U[d0_i][i] = 1.0;
 			U[et_i][i] = 2.5;
 		} else {
@@ -165,12 +300,18 @@ void hydro_vars::get_boundary(std::vector<real>::iterator i, integer d) const {
 }
 
 bool hydro_vars::needs_refinement() const {
-	return true;
+	for (integer i = 0; i != N3; ++i) {
+		if (std::abs(r[i]) < 0.125) {
+			return true;
+		}
+	}
+	return false;
 }
 
 void hydro_vars::update(real dt, integer rk, const std::vector<real>& phi, const std::vector<real>& gx,
 		const std::vector<real>& gy, const std::vector<real>& gz) {
 	real beta[2] = { 1.0, 0.5 };
+	amax = real(0);
 	if (rk == 0) {
 		U0 = U;
 	}
@@ -280,23 +421,47 @@ void hydro_vars::set_boundary(integer d, std::vector<real>::iterator* iter) {
 		V[vz_i][i] = sz / ro;
 		V[pr_i][i] = (fgamma - 1.0) * (et - real(0.5) * (sx * sx + sy * sy + sz * sz) / ro);
 	}
-	for (integer f = 0; f != nf_hydro; ++f) {
-		for (integer j = dn[0]; j != xbdim[d] - 2 * dn[0]; ++j) {
-			for (integer k = dn[1]; k != ybdim[d] - 2 * dn[1]; ++k) {
-				for (integer l = dn[2]; l != zbdim[d] - 2 * dn[2]; ++l) {
-					const auto ri = ind3d(j + dn[0] + xoff[d], k + dn[1] + yoff[d], l + dn[2] + zoff[d], NX + 1);
-					const auto vi = this_ind3d(j, k, l);
-					VL[d / 2][f][ri] = V[f][vi];
-				}
-			}
-		}
-		for (integer j = 2 * dn[0]; j != xbdim[d] - dn[0]; ++j) {
-			for (integer k = 2 * dn[1]; k != ybdim[d] - dn[1]; ++k) {
-				for (integer l = 2 * dn[2]; l != zbdim[d] - dn[2]; ++l) {
+	std::vector<real> vr(nf_hydro), vl(nf_hydro);
+	for (integer j = 2 * dn[0]; j != xbdim[d] - dn[0]; ++j) {
+		for (integer k = 2 * dn[1]; k != ybdim[d] - dn[1]; ++k) {
+			for (integer l = 2 * dn[2]; l != zbdim[d] - dn[2]; ++l) {
+				for (integer f = 0; f != nf_hydro; ++f) {
 					const auto ri = ind3d(j + xoff[d], k + yoff[d], l + zoff[d], NX + 1);
-					const auto vi = this_ind3d(j, k, l);
-					VR[d / 2][f][ri] = V[f][vi];
+					const auto vi0 = this_ind3d(j, k, l);
+					const auto vim = this_ind3d(j - dn[0], k - dn[1], l - dn[2]);
+					vr[f] = V[f][vi0];
+					vl[f] = V[f][vim];
 				}
+				const auto fi = ind3d(j + xoff[d], k + yoff[d], l + zoff[d], NX + 1);
+				const real rho_r = vr[ro_i];
+				const real rho_l = vl[ro_i];
+				const real v_r = vr[v0_i + d / 2];
+				const real v_l = vl[v0_i + d / 2];
+				const real vx_r = vr[vx_i];
+				const real vx_l = vl[vx_i];
+				const real vy_r = vr[vy_i];
+				const real vy_l = vl[vy_i];
+				const real vz_r = vr[vz_i];
+				const real vz_l = vl[vz_i];
+				const real pr_r = vr[pr_i];
+				const real pr_l = vl[pr_i];
+				const real et_r = pr_r / (fgamma - 1.0) + 0.5 * (vx_r * vx_r + vy_r * vy_r + vz_r * vz_r) * rho_r;
+				const real et_l = pr_l / (fgamma - 1.0) + 0.5 * (vx_l * vx_l + vy_l * vy_l + vz_l * vz_l) * rho_l;
+				const real a_r = std::sqrt(fgamma * std::max(pr_r, real(0)) / rho_r) + std::abs(v_r);
+				const real a_l = std::sqrt(fgamma * std::max(pr_l, real(0)) / rho_l) + std::abs(v_l);
+				const real a = std::max(a_r, a_l);
+				amax = std::max(amax, a);
+				Flux[d / 2][d0_i][fi] = real(0.5) * (rho_r * v_r + rho_l * v_l);
+				Flux[d / 2][sx_i][fi] = real(0.5) * (rho_r * vx_r * v_r + rho_l * vx_l * v_l);
+				Flux[d / 2][sy_i][fi] = real(0.5) * (rho_r * vy_r * v_r + rho_l * vy_l * v_l);
+				Flux[d / 2][sz_i][fi] = real(0.5) * (rho_r * vz_r * v_r + rho_l * vz_l * v_l);
+				Flux[d / 2][s0_i + d / 2][fi] += real(0.5) * (pr_r + pr_l);
+				Flux[d / 2][et_i][fi] = real(0.5) * ((et_r + pr_r) * v_r + (et_l + pr_l) * v_l);
+				Flux[d / 2][d0_i][fi] -= real(0.5) * (rho_r - rho_l) * a;
+				Flux[d / 2][sx_i][fi] -= real(0.5) * (vx_r * rho_r - vx_l * rho_l) * a;
+				Flux[d / 2][sy_i][fi] -= real(0.5) * (vy_r * rho_r - vy_l * rho_l) * a;
+				Flux[d / 2][sz_i][fi] -= real(0.5) * (vz_r * rho_r - vz_l * rho_l) * a;
+				Flux[d / 2][et_i][fi] -= real(0.5) * (et_r - et_l) * a;
 			}
 		}
 	}

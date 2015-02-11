@@ -80,27 +80,26 @@ int hpx_main() {
 	real tmax = 0.1;
 	start = std::chrono::system_clock::now();
 	integer fnum = 0;
-	printf( "Executing...\n");
-	real dt = root_client.execute(0.0,0).get();
+	printf("Executing...\n");
+	real dt = root_client.execute(0.0, 0).get().first;
 	end = std::chrono::system_clock::now();
 	elapsed_seconds = end - start;
 	std::cout << "finished computation in " << elapsed_seconds.count() << "s\n";
-	root_client.execute(dt,1).get();
+	root_client.execute(dt, 1).get();
 	real t = 0.0;
-	for( integer z = 0; z != 25; z++) {
-	//while (t < tmax) {
+	for (integer z = 0; z != 25; z++) {
+		//while (t < tmax) {
 		t += dt;
 		printf("%e %e\n", double(t), double(dt));
-		dt = root_client.execute(dt,0).get();
-				root_client.execute(dt,1).get();
+		dt = root_client.execute(dt, 0).get().first;
+		root_client.execute(dt, 1).get();
 	}
-	root_client.execute(dt,0).get();
+	root_client.execute(dt, 0).get();
 
 	std::list<std::size_t> leaf_list = root_client.get_leaf_list().get();
 	printf("%li leaves detected by root\n", leaf_list.size());
 	auto f1 = hpx::async<typename silo_output::do_output_action>(sout, std::move(leaf_list), 0);
 	f1.get();
-
 
 	auto f0 = root_client.destroy();
 	f0.get();

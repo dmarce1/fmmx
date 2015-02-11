@@ -28,9 +28,10 @@ hpx::future<std::vector<node_client>> node_client::get_children() const {
 	}
 }
 
-hpx::future<real> node_client::execute(real dt, integer rk) {
-	return hpx::async<typename node_server::execute_action>(id, dt, rk);
+hpx::future<std::pair<real,std::vector<real>>> node_client::execute(real dt, integer rk, std::vector<real> amr_data) {
+	return hpx::async<typename node_server::execute_action>(id, dt, rk, amr_data);
 }
+
 
 hpx::future<void> node_client::refine(hpx::id_type myid) {
 	return hpx::async<typename node_server::refine_action>(id, myid);

@@ -129,6 +129,10 @@ bool location_is_phys_bnd(integer level, const std::array<integer, NDIM>& loc, i
 	}
 }
 
+bool node_server::is_phys_bound(integer dir) const {
+	return location_is_phys_bnd(level, location, dir);
+}
+
 hpx::future<std::vector<real>> node_server::get_expansions(integer c) const {
 	return hpx::async([=]() {
 		std::vector<real> lc(PP * N3 / NCHILD);
@@ -303,10 +307,8 @@ void node_server::set_boundary(hpx::future<std::vector<real>> f, integer d) {
 	auto data = f.get();
 	M2L(data, d, bnd_size[d]);
 	if (is_face[d]) {
-		if (is_leaf) {
-			while (!hydro_updated) {
-				hpx::this_thread::yield();
-			}
+		while (!hydro_updated) {
+			hpx::this_thread::yield();
 		}
 		auto iter = data.begin() + PP * bnd_size[d];
 		hydro_state.set_boundary(which_face[d], &iter);
@@ -585,45 +587,110 @@ void node_server::init_t0() {
 	}
 }
 
-real node_server::execute(real global_dt, integer rk) {
+bool node_server::is_amr(integer dir) const {
+	if (!is_face[dir]) {
+		return false;
+	} else if (neighbor_id[dir] == hpx::invalid_id) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool node_server::child_is_amr(integer ci, integer dir) const {
+	if (!is_face[dir]) {
+		return false;
+	} else if (2 * ((ci >> 0) & 1) - 1 == -dir_x[dir]) {
+		return false;
+	} else if (2 * ((ci >> 1) & 1) - 1 == -dir_y[dir]) {
+		return false;
+	} else if (2 * ((ci >> 2) & 1) - 1 == -dir_z[dir]) {
+		return false;
+	} else if (neighbor_id[dir] == hpx::invalid_id) {
+		return true;
+	} else if (neighbor_is_leaf[dir]) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+std::pair<real, std::vector<real>> node_server::execute(real global_dt, integer rk, std::vector<real> amr_data) {
 	bool done, all_poles, poles_sent;
-	std::vector<hpx::future<real>> child_exe(NCHILD);
+	std::vector<hpx::future<std::pair<real, std::vector<real>>> >child_exe(NCHILD);
 	//	printf("Begin at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
+	hydro_state.update(global_dt, rk, phi, gx, gy, gz);
+	if (level != 0) {
+		auto iter = amr_data.begin();
+		for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
+			if (is_amr(dir)) {
+				if (!is_phys_bound(dir)) {
+					hydro_state.unpack_child_amr_data(which_face[dir], iter);
+				}
+				integer inc = NX * NX / 4 * hydro_vars::nf_hydro;
+				iter += inc;
+			}
+		}
+		assert(iter - amr_data.begin() == amr_data.size());
+	}
+	hydro_updated = true;
 	if (!is_leaf) {
 		for (integer i = 0; i != NCHILD; ++i) {
-			child_exe[i] = child_id[i].execute(global_dt, rk);
+			std::vector<real> amr_data(2 * NDIM * (NX * NX / 4) * hydro_vars::nf_hydro);
+			integer actual_size = 0;
+			auto iter = amr_data.begin();
+			for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
+				if (child_is_amr(i, dir)) {
+					hydro_state.pack_child_amr_data(which_face[dir], i, iter);
+					integer inc = NX * NX / 4 * hydro_vars::nf_hydro;
+					iter += inc;
+					actual_size += inc;
+				}
+			}
+			amr_data.resize(actual_size);
+			child_exe[i] = child_id[i].execute(global_dt, rk, std::move(amr_data));
 		}
 	} else {
-		hydro_state.update(global_dt, rk, phi, gx, gy, gz);
-		hydro_updated = true;
 		for (integer i = 0; i != NCHILD; ++i) {
-			child_exe[i] = hpx::make_ready_future(real(0));
+			child_exe[i] = hpx::make_ready_future(std::make_pair(real(0), std::vector<real>()));
 		}
 		send_multipoles();
 	}
 	wait_all(child_exe);
 	exe_promise->get_future().wait();
-	if (is_leaf) {
-		for (integer d = 0; d != NNEIGHBOR; ++d) {
-			if (d != center_dir) {
-				if (neighbor_id[d] == hpx::invalid_id && is_face[d]) {
-					hydro_state.set_boundary(which_face[d]);
-				}
-			}
-		}
-		assert(neighbor_done_cnt == NNEIGHBOR + 1);
-		this_dt = hydro_state.compute_du();
-	} else {
-		if (!is_leaf) {
-			this_dt = std::numeric_limits<real>::max();
-			for (integer i = 0; i != NCHILD; ++i) {
-				this_dt = std::min(this_dt, child_exe[i].get());
+	for (integer d = 0; d != NNEIGHBOR; ++d) {
+		if (d != center_dir) {
+			if (neighbor_id[d] == hpx::invalid_id && is_face[d]) {
+				hydro_state.set_boundary(which_face[d]);
 			}
 		}
 	}
+	assert(neighbor_done_cnt == NNEIGHBOR + 1);
+	this_dt = hydro_state.compute_du();
+	if (!is_leaf) {
+		for (integer i = 0; i != NCHILD; ++i) {
+			auto pr = child_exe[i].get();
+			std::vector<bool> amr_dirs( 2 * NDIM,false);
+			for (integer d = 0; d != NNEIGHBOR; ++d) {
+				if (child_is_amr(i, d)) {
+					auto fc = which_face[d];
+					amr_dirs[fc] = true;
+				}
+			}
+			hydro_state.unpack_data_from_child(std::move(pr.second), i, std::move(amr_dirs));
+			this_dt = std::min(this_dt, pr.first);
+		}
+	}
 	reset();
+	std::vector<bool> amr_dirs( 2 * NDIM,false);
+	for (integer d = 0; d != NNEIGHBOR; ++d) {
+		if (is_amr(d)) {
+			auto fc = which_face[d];
+			amr_dirs[fc] = true;
+		}
+	}
 //	printf("End at grid %li - %li %li %li - dt = %e\n", level, location[2], location[1], location[0], this_dt);
-	return this_dt;
+	return std::make_pair(real(this_dt), hydro_state.pack_parent_data(amr_dirs));
 }
 
 node_server::node_server() {
@@ -724,7 +791,6 @@ void node_server::reset() {
 }
 
 void node_server::initialize(node_client pid, integer lev, std::array<integer, NDIM> loc) {
-	amr_bnd = false;
 	step_cnt = 0;
 	phi = gx = gy = gz = std::vector<real>(N3);
 	M.resize(PP * N3, 0.0);

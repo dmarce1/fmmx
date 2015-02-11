@@ -25,6 +25,7 @@
 #include <hpx/runtime/components/server/managed_component_base.hpp>
 
 #endif
+#include <boost/serialization/utility.hpp>
 
 using real = double;
 using integer = std::int64_t;
@@ -37,7 +38,7 @@ constexpr integer PP = P * P;
 constexpr integer NDIM = 3;
 constexpr integer NCHILD = 8;
 constexpr integer NNEIGHBOR = 27;
-constexpr integer MAXLEVEL = 2;
+constexpr integer MAXLEVEL = 3;
 
 
 

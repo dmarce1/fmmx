@@ -16,8 +16,8 @@ public:
 	static constexpr integer N3F = (NX + 1) * (NX + 1) * (NX + 1);
 	static constexpr integer nf_hydro = 5;
 	static constexpr integer bw = 2;
-	static constexpr integer d0_i = 0;
-	static constexpr integer et_i = 1;
+	static constexpr integer d0_i = 1;
+	static constexpr integer et_i = 0;
 	static constexpr integer s0_i = 2;
 	static constexpr integer sx_i = s0_i + 0;
 	static constexpr integer sy_i = s0_i + 1;
@@ -34,10 +34,9 @@ private:
 	std::vector<std::vector<real>> dU;
 	std::vector<std::vector<real>> U0;
 	std::vector<std::vector<real>> U;
-	std::array<std::vector<std::vector<real>>, NDIM> VR;
-	std::array<std::vector<std::vector<real>>, NDIM> VL;
+	std::array<std::vector<std::vector<real>>, NDIM> Flux;
 	std::vector<real> x, y, z, r;
-	real dx;
+	real dx, amax;
 
 	static integer ind3d(integer j, integer k, integer l, integer stride = NX);
 public:
@@ -52,6 +51,10 @@ public:
 	void update(real, integer, const std::vector<real>& phi, const std::vector<real>& gx, const std::vector<real>& gy,
 			const std::vector<real>& gz);
 	bool needs_refinement() const;
+	std::vector<real> pack_parent_data(std::vector<bool> amr_dirs) const;
+	void unpack_data_from_child(std::vector<real>, integer ci, std::vector<bool> amr_directions);
+	void pack_child_amr_data(integer dir, integer child, std::vector<real>::iterator i) const;
+	void unpack_child_amr_data(integer dir, std::vector<real>::iterator);
 
 };
 

@@ -35,7 +35,6 @@ private:
 	void initialize(node_client, integer, std::array<integer, NDIM>);
 	void reset();
 
-	bool amr_bnd;
 
 	boost::atomic<integer> child_done_cnt;
 	boost::atomic<integer> neighbor_done_cnt;
@@ -73,9 +72,12 @@ public:
 	void M2L(const std::vector<real>&, integer, integer);
 	void L2L(const std::vector<real>&);
 	void reset_parent();
-	real execute(real, integer);
+	std::pair<real,std::vector<real>> execute(real, integer, std::vector<real> amr_data);
 	void derefine(bool);
+	bool child_is_amr(integer ci, integer dir) const;
+	bool is_amr(integer dir) const;
 	void refine(hpx::id_type id);
+	bool is_phys_bound(integer dir) const;
 	//
 	HPX_DEFINE_COMPONENT_ACTION(node_server, get_tree, get_tree_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, get_children, get_children_action); //

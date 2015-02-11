@@ -35,7 +35,7 @@ public:
 	hpx::future<std::vector<double>> get_data() const;
 	hpx::future<integer> get_node_count() const;
 	hpx::future<std::list<std::size_t>> get_leaf_list() const;
-	hpx::future<real> execute(real, integer);
+	hpx::future<std::pair<real,std::vector<real>>> execute(real, integer, std::vector<real> amr_data = std::vector<real>());
 	template<class Arc>
 	void serialize(Arc&, const unsigned);
 };
