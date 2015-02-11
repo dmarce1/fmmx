@@ -51,8 +51,8 @@ public:
 	void update(real, integer, const std::vector<real>& phi, const std::vector<real>& gx, const std::vector<real>& gy,
 			const std::vector<real>& gz);
 	bool needs_refinement() const;
-	std::vector<real> pack_parent_data(std::vector<bool> amr_dirs) const;
-	void unpack_data_from_child(std::vector<real>, integer ci, std::vector<bool> amr_directions);
+	void pack_parent_data(std::vector<real>&, std::vector<bool> amr_dirs) const;
+	void unpack_data_from_child(std::vector<real>&, integer ci, std::vector<bool> amr_directions);
 	void pack_child_amr_data(integer dir, integer child, std::vector<real>::iterator i) const;
 	void unpack_child_amr_data(integer dir, std::vector<real>::iterator);
 

@@ -77,6 +77,8 @@ public:
 	bool child_is_amr(integer ci, integer dir) const;
 	bool is_amr(integer dir) const;
 	void refine(hpx::id_type id);
+	void unpack_from_child(std::vector<real>::iterator iter, integer ci);
+	void pack_for_parent(std::vector<real>::iterator iter);
 	bool is_phys_bound(integer dir) const;
 	//
 	HPX_DEFINE_COMPONENT_ACTION(node_server, get_tree, get_tree_action); //

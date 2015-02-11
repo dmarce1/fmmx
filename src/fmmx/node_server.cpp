@@ -670,27 +670,101 @@ std::pair<real, std::vector<real>> node_server::execute(real global_dt, integer 
 	if (!is_leaf) {
 		for (integer i = 0; i != NCHILD; ++i) {
 			auto pr = child_exe[i].get();
-			std::vector<bool> amr_dirs( 2 * NDIM,false);
+			std::vector<bool> amr_dirs(2 * NDIM, false);
 			for (integer d = 0; d != NNEIGHBOR; ++d) {
 				if (child_is_amr(i, d)) {
 					auto fc = which_face[d];
 					amr_dirs[fc] = true;
 				}
 			}
-			hydro_state.unpack_data_from_child(std::move(pr.second), i, std::move(amr_dirs));
+			hydro_state.unpack_data_from_child(pr.second, i, std::move(amr_dirs));
+			unpack_from_child(pr.second.begin() + hydro_vars::nf_hydro * NX * NX * NX / 8, i);
 			this_dt = std::min(this_dt, pr.first);
 		}
 	}
 	reset();
-	std::vector<bool> amr_dirs( 2 * NDIM,false);
+	std::vector<bool> amr_dirs(2 * NDIM, false);
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
 		if (is_amr(d)) {
 			auto fc = which_face[d];
 			amr_dirs[fc] = true;
 		}
 	}
+
+	std::vector<real> parent_data((hydro_vars::nf_hydro + 4) * NX * NX * NX / 8, real(0));
+	hydro_state.pack_parent_data(parent_data, amr_dirs);
+	pack_for_parent(parent_data.begin() + hydro_vars::nf_hydro * NX * NX * NX / 8);
+
 //	printf("End at grid %li - %li %li %li - dt = %e\n", level, location[2], location[1], location[0], this_dt);
-	return std::make_pair(real(this_dt), hydro_state.pack_parent_data(amr_dirs));
+	return std::make_pair(real(this_dt), parent_data);
+}
+
+void node_server::pack_for_parent(std::vector<real>::iterator iter) {
+	if (P == 0) {
+		return;
+	}
+	const auto phi_iter = iter;
+	const auto gx_iter = iter + (1) * NX * NX * NX / 8;
+	const auto gy_iter = iter + (2) * NX * NX * NX / 8;
+	const auto gz_iter = iter + (3) * NX * NX * NX / 8;
+	for (integer j = 0; j != NX / 2; ++j) {
+		for (integer k = 0; k != NX / 2; ++k) {
+			for (integer l = 0; l != NX / 2; ++l) {
+				const auto index = ind4d(0, j, k, l, NX / 2);
+				real m0 = 0.0;
+				*(phi_iter + index) = 0.0;
+				*(gx_iter + index) = 0.0;
+				*(gy_iter + index) = 0.0;
+				*(gz_iter + index) = 0.0;
+				for (integer j0 = 0; j0 != 2; ++j0) {
+					for (integer k0 = 0; k0 != 2; ++k0) {
+						for (integer l0 = 0; l0 != 2; ++l0) {
+							const auto ii = ind4d(0, 2 * j + j0, 2 * k + k0, 2 * l + l0);
+							*(phi_iter + index) += M[ii] * phi[ii];
+							*(gx_iter + index) += M[ii] * gx[ii];
+							*(gy_iter + index) += M[ii] * gy[ii];
+							*(gz_iter + index) += M[ii] * gz[ii];
+							m0 += M[ii];
+						}
+					}
+				}
+				*(gx_iter + index) /= m0;
+				*(gy_iter + index) /= m0;
+				*(gx_iter + index) /= m0;
+				*(phi_iter + index) /= m0;
+			}
+		}
+
+	}
+}
+
+void node_server::unpack_from_child(std::vector<real>::iterator iter, integer ci) {
+	if (P == 0) {
+		return;
+	}
+	const auto phi_iter = iter;
+	const auto gx_iter = iter + (1) * NX * NX * NX / 8;
+	const auto gy_iter = iter + (2) * NX * NX * NX / 8;
+	const auto gz_iter = iter + (3) * NX * NX * NX / 8;
+	const auto xlb = ((ci >> 0) & 1) * NX / 2;
+	const auto ylb = ((ci >> 1) & 1) * NX / 2;
+	const auto zlb = ((ci >> 2) & 1) * NX / 2;
+	const auto xub = xlb + NX / 2;
+	const auto yub = xlb + NX / 2;
+	const auto zub = xlb + NX / 2;
+	for (integer j = xlb; j != xub; ++j) {
+		for (integer k = ylb; k != yub; ++k) {
+			for (integer l = zlb; l != zub; ++l) {
+				const auto ii = ind4d(0, j, k, l);
+				const auto jj = ind4d(0, j - xlb, k - ylb, l - zlb, NX / 2);
+				phi[ii] = *(phi_iter + jj);
+				gx[ii] = *(gx_iter + jj);
+				gy[ii] = *(gy_iter + jj);
+				gz[ii] = *(gz_iter + jj);
+			}
+		}
+
+	}
 }
 
 node_server::node_server() {

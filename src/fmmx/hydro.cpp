@@ -69,8 +69,7 @@ void hydro_vars::unpack_child_amr_data(integer face, std::vector<real>::iterator
 	}
 }
 
-std::vector<real> hydro_vars::pack_parent_data(std::vector<bool> amr_dirs) const {
-	std::vector<real> data(nf_hydro * NX * NX * NX / 8, real(0));
+void hydro_vars::pack_parent_data(std::vector<real>& data, std::vector<bool> amr_dirs) const {
 	for (integer f = 0; f != nf_hydro; ++f) {
 		for (integer j = 0; j != NX; ++j) {
 			for (integer k = 0; k != NX; ++k) {
@@ -94,9 +93,9 @@ std::vector<real> hydro_vars::pack_parent_data(std::vector<bool> amr_dirs) const
 			}
 			ub[d / 2] = lb[d / 2] + 1;
 			for (integer f = 0; f != nf_hydro; ++f) {
-				for (integer j = lb[0]; j != ub[0]; j += 2) {
-					for (integer k = lb[1]; k != ub[1]; k += 2) {
-						for (integer l = lb[2]; l != ub[2]; l += 2) {
+				for (integer j = lb[0]; j < ub[0]; j += 2) {
+					for (integer k = lb[1]; k < ub[1]; k += 2) {
+						for (integer l = lb[2]; l < ub[2]; l += 2) {
 							data[f * (N3 / 8) + ind3d((j - off[0]) / 2, (k - off[1]) / 2, (l - off[2]) / 2, NX / 2)] =
 									real(0);
 						}
@@ -113,10 +112,9 @@ std::vector<real> hydro_vars::pack_parent_data(std::vector<bool> amr_dirs) const
 			}
 		}
 	}
-	return data;
 }
 
-void hydro_vars::unpack_data_from_child(std::vector<real> data, integer child, std::vector<bool> amr_directions) {
+void hydro_vars::unpack_data_from_child(std::vector<real>& data, integer child, std::vector<bool> amr_directions) {
 
 	integer lb[NDIM], ub[NDIM], off[NDIM], off2[NDIM];
 
