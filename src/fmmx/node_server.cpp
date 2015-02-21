@@ -228,53 +228,92 @@ void node_server::derefine(bool self) {
 	}
 }
 
-void node_server::refine(hpx::id_type me) {
+void node_server::set_me(hpx::id_type me) {
 	my_id = std::move(me);
-	//if (my_id == hpx::invalid_id) {
-	//	my_id = hpx::find_id_from_basename("fmmx_node", location_to_key(level, location)).get();
-//	}
-	const auto refine_this = refine_me();
-	std::vector<hpx::future<void>> cfut(NCHILD);
-	if (refine_this) {
-		printf("Refining tree at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
-		std::vector<hpx::future<hpx::id_type>> cids(NCHILD);
-		for (integer ci = 0; ci != NCHILD; ++ci) {
-			std::array<integer, NDIM> cloc(location);
-			for (integer d = 0; d != NDIM; ++d) {
-				cloc[d] <<= 1;
-				cloc[d] += (ci >> d) & integer(1);
-			}
-			auto locality = key_to_locality(location_to_key(level + 1, cloc));
-			cids[ci] = hpx::new_<node_server>(locality, my_id, level + 1, cloc);
+}
 
-		}
-		is_leaf = false;
-		hpx::wait_all(cids);
-		std::vector<hpx::future<bool>> id_test(NCHILD);
-		for (integer ci = 0; ci != NCHILD; ++ci) {
-			std::array<integer, NDIM> cloc(location);
-			for (integer d = 0; d != NDIM; ++d) {
-				cloc[d] <<= 1;
-				cloc[d] += (ci >> d) & integer(1);
-			}
-			child_id[ci] = cids[ci].get();
-			id_test[ci] = hpx::register_id_with_basename("fmmx_node", child_id[ci], location_to_key(level + 1, cloc));
-		}
-		for (integer ci = 0; ci != NCHILD; ++ci) {
-			if (!id_test[ci].get()) {
-				printf("Failed to register id_with_basename\n");
-				abort();
-			}
-		}
-		for (integer ci = 0; ci != NCHILD; ++ci) {
-			cfut[ci] = child_id[ci].refine(child_id[ci]);
-		}
-		hpx::when_all(cfut).then([](hpx::future<std::vector<hpx::future<void>>>) {}).get();
-	} else {
-		is_leaf = true;
+void node_server::refine_proper() {
+	boost::lock_guard<hpx::lcos::local::spinlock> lock(R_lock);
+	if (!is_leaf) {
+		return;
 	}
-//	init_t0();
-//	get_tree();
+	std::vector<hpx::future<void>> cfut(NCHILD);
+	printf("Refining tree at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
+	std::vector<hpx::future<hpx::id_type>> cids(NCHILD);
+	for (integer ci = 0; ci != NCHILD; ++ci) {
+		std::array<integer, NDIM> cloc(location);
+		for (integer d = 0; d != NDIM; ++d) {
+			cloc[d] <<= 1;
+			cloc[d] += (ci >> d) & integer(1);
+		}
+		auto locality = key_to_locality(location_to_key(level + 1, cloc));
+		cids[ci] = hpx::new_<node_server>(locality, my_id, level + 1, cloc);
+	}
+	is_leaf = false;
+	hpx::wait_all(cids);
+	std::vector<hpx::future<bool>> id_test(NCHILD);
+	for (integer ci = 0; ci != NCHILD; ++ci) {
+		std::array<integer, NDIM> cloc(location);
+		for (integer d = 0; d != NDIM; ++d) {
+			cloc[d] <<= 1;
+			cloc[d] += (ci >> d) & integer(1);
+		}
+		child_id[ci] = cids[ci].get();
+		id_test[ci] = hpx::register_id_with_basename("fmmx_node", child_id[ci], location_to_key(level + 1, cloc));
+	}
+	for (integer ci = 0; ci != NCHILD; ++ci) {
+		if (!id_test[ci].get()) {
+			printf("Failed to register id_with_basename\n");
+			abort();
+		}
+	}
+	for (integer ci = 0; ci != NCHILD; ++ci) {
+		cfut[ci] = child_id[ci].set_me(child_id[ci]);
+	}
+	for (integer ci = 0; ci != NCHILD; ++ci) {
+		cfut[ci].get();
+	}
+
+}
+
+bool node_server::refine() {
+	const auto refine_this = refine_me();
+	if (is_leaf) {
+		if (refine_this) {
+			refine_proper();
+		}
+	} else {
+		std::vector<hpx::future<bool>> cfut(NCHILD);
+		for (integer ci = 0; ci != NCHILD; ++ci) {
+			cfut[ci] = child_id[ci].refine();
+		}
+		std::vector<bool> refine_neighbor(NNEIGHBOR, false);
+		for (integer ci = 0; ci != NCHILD; ++ci) {
+			if (cfut[ci].get()) {
+				for (integer ni = 0; ni != NNEIGHBOR; ++ni) {
+					if (ni == 13 || neighbor_id[ni] == hpx::invalid_id) {
+						continue;
+					}
+					if ((2 * ((ci >> 0) & 1) - 1 == dir_x[ni]) || (2 * ((ci >> 1) & 1) - 1 == dir_y[ni])
+							|| (2 * ((ci >> 2) & 1) - 1 == dir_z[ni])) {
+						refine_neighbor[ni] = true;
+					}
+				}
+			}
+		}
+		std::vector<hpx::future<void>> nfuts(NNEIGHBOR);
+		for (integer ni = 0; ni != NNEIGHBOR; ++ni) {
+			if (refine_neighbor[ni]) {
+				nfuts[ni] = neighbor_id[ni].refine_proper();
+			} else {
+				nfuts[ni] = hpx::make_ready_future();
+			}
+		}
+		for (integer ni = 0; ni != NNEIGHBOR; ++ni) {
+			nfuts[ni].get();
+		}
+	}
+	return !is_leaf;
 }
 
 hpx::future<std::vector<real>> node_server::get_boundary(integer d) const {
@@ -555,7 +594,6 @@ void node_server::get_tree(std::vector<node_client> my_neighbors) {
 		hpx::wait_all(child_futs);
 	}
 	reset();
-
 }
 
 void node_server::init_t0() {

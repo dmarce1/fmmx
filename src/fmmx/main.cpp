@@ -68,8 +68,13 @@ int hpx_main() {
 	}
 
 	start = std::chrono::system_clock::now();
-	root_client.refine(root_client).get();
-	root_client.get_tree().get();
+
+	root_client.set_me(root_client).get();
+	for (integer l = 0; l <= MAXLEVEL; ++l) {
+		root_client.refine().get();
+		root_client.get_tree().get();
+		printf("Refined to level %i\n", l + 1);
+	}
 	end = std::chrono::system_clock::now();
 
 	std::chrono::duration<double> elapsed_seconds = end - start;
@@ -85,14 +90,14 @@ int hpx_main() {
 	end = std::chrono::system_clock::now();
 	elapsed_seconds = end - start;
 	std::cout << "finished computation in " << elapsed_seconds.count() << "s\n";
-	root_client.execute(dt, 1).get();
+//	root_client.execute(dt, 1).get();
 	real t = 0.0;
 	for (integer z = 0; z != 25; z++) {
 		//while (t < tmax) {
 		t += dt;
 		printf("%e %e\n", double(t), double(dt));
 		dt = root_client.execute(dt, 0).get().first;
-		root_client.execute(dt, 1).get();
+//		root_client.execute(dt, 1).get();
 	}
 	root_client.execute(dt, 0).get();
 

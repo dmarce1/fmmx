@@ -22,8 +22,6 @@ real hydro_vars::cell_mass(integer i) const {
 	return U[d0_i][i] * dx * dx * dx;
 }
 
-
-
 void hydro_vars::pack_child_amr_data(integer face, integer child, std::vector<real>::iterator i) const {
 	integer lb[NDIM], ub[NDIM];
 	lb[0] = ((child >> 0) & 1) * NX / 2;
@@ -158,8 +156,8 @@ void hydro_vars::unpack_data_from_child(std::vector<real>& data, integer child, 
 									data[f * (N3 / 8) + ind3d(j - off[0], k - off[1], l - off[2], NX / 2)];
 							const auto crse_flux = Flux[d / 2][f][ind3d(j, k, l, NX + 1)];
 							const auto dif = fine_flux - crse_flux;
-		//					if (fine_flux != 0.0 || crse_flux != 0.0)
-		//						printf("%e %e\n", fine_flux, crse_flux);
+							//					if (fine_flux != 0.0 || crse_flux != 0.0)
+							//						printf("%e %e\n", fine_flux, crse_flux);
 							dU[f][ind3d(j + off2[0], k + off2[1], l + off2[2])] -= sign * dif / dx;
 						}
 					}
@@ -211,6 +209,7 @@ real hydro_vars::compute_du() {
 						const auto if0 = ind3d(j, k, l, NX + 1);
 						const auto ifp = ind3d(j + dn[0], k + dn[1], l + dn[2], NX + 1);
 						dU[f][iu0] -= (Flux[d][f][ifp] - Flux[d][f][if0]) / dx;
+
 					}
 				}
 			}
@@ -267,7 +266,8 @@ void hydro_vars::initialize(real xcorner, real ycorner, real zcorner, real _dx) 
 		for (integer f = 0; f != nf_hydro; ++f) {
 			U[f][i] = 0.0;
 		}
-		if (z[i] > 0.1) {
+
+		if (z[i] > 0.) {
 			U[d0_i][i] = 1.0;
 			U[et_i][i] = 2.5;
 		} else {

@@ -17,20 +17,8 @@ void key_to_location(std::size_t key, integer* level, std::array<integer, NDIM>*
 }
 
 hpx::id_type key_to_locality(std::size_t key) {
-	static auto list = hpx::find_all_localities();
-	integer level;
-	std::array<integer, NDIM> loc;
-	key_to_location(key, &level, &loc);
-	std::size_t cnt = (std::size_t(1) << (3 * level));
-	std::size_t index = key ^ cnt;
-	double chunk_size = double(cnt) / double(list.size());
-	if (chunk_size > 0.0) {
-		index = std::min(std::size_t(double(index) / chunk_size), list.size() - 1);
-	} else {
-		index = 0;
-	}
-	return list[index];
-
+	const auto list = hpx::find_all_localities();
+	return list[(key / 32) % list.size()];
 }
 
 std::size_t location_to_key(integer level, std::array<integer, NDIM> loc) {

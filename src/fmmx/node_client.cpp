@@ -33,8 +33,17 @@ hpx::future<std::pair<real,std::vector<real>>> node_client::execute(real dt, int
 }
 
 
-hpx::future<void> node_client::refine(hpx::id_type myid) {
-	return hpx::async<typename node_server::refine_action>(id, myid);
+hpx::future<void> node_client::set_me(hpx::id_type myid) {
+	return hpx::async<typename node_server::set_me_action>(id, myid);
+}
+
+
+hpx::future<bool> node_client::refine() {
+	return hpx::async<typename node_server::refine_action>(id);
+}
+
+hpx::future<void> node_client::refine_proper() {
+	return hpx::async<typename node_server::refine_proper_action>(id);
 }
 
 hpx::future<void> node_client::derefine() {

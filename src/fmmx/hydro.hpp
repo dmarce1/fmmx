@@ -12,7 +12,7 @@
 
 class hydro_vars {
 public:
-	static constexpr real cfl_factor = 0.4;
+	static constexpr real cfl_factor = (1.0/2.0);
 	static constexpr integer N3F = (NX + 1) * (NX + 1) * (NX + 1);
 	static constexpr integer nf_hydro = 5;
 	static constexpr integer bw = 2;

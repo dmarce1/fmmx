@@ -19,7 +19,9 @@ public:
 	hpx::future<void> get_tree(
 			std::vector<node_client> my_neighbors = std::vector<node_client>(NNEIGHBOR, node_client(hpx::invalid_id)));
 
-	hpx::future<void> refine(hpx::id_type id);
+	hpx::future<bool> refine();
+	hpx::future<void> refine_proper();
+	hpx::future<void> set_me(hpx::id_type id);
 	hpx::future<void> derefine();
 	hpx::future<void> destroy();
 	operator hpx::id_type() const;

@@ -26,6 +26,7 @@ private:
 	std::array<bool,NNEIGHBOR> neighbor_is_leaf;
 	mutable hpx::lcos::local::spinlock L_lock;
 	mutable hpx::lcos::local::spinlock M_lock;
+	mutable hpx::lcos::local::spinlock R_lock;
 	std::array<integer, NDIM> location;
 	hpx::id_type my_id;
 	real dx;
@@ -76,7 +77,9 @@ public:
 	void derefine(bool);
 	bool child_is_amr(integer ci, integer dir) const;
 	bool is_amr(integer dir) const;
-	void refine(hpx::id_type id);
+	bool refine();
+	void refine_proper();
+	void set_me(hpx::id_type id);
 	void unpack_from_child(std::vector<real>::iterator iter, integer ci);
 	void pack_for_parent(std::vector<real>::iterator iter);
 	bool is_phys_bound(integer dir) const;
@@ -85,6 +88,8 @@ public:
 	HPX_DEFINE_COMPONENT_ACTION(node_server, get_children, get_children_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, derefine, derefine_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, refine, refine_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, refine_proper, refine_proper_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, set_me, set_me_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, execute, execute_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, get_node_count, get_node_count_action); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, get_data, get_data_action); //
