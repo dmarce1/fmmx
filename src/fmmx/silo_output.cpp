@@ -20,7 +20,7 @@
 
 silo_output::silo_output() {
 }
-
+/*
 template<class R, class ...Args1, class ...Args2>
 R exec_on_separate_thread(R (*fptr)(Args1...), Args2 ...args) {
 	R data;
@@ -30,12 +30,13 @@ R exec_on_separate_thread(R (*fptr)(Args1...), Args2 ...args) {
 	return data;
 
 }
-
+*/
 void silo_output::do_output(std::list<std::size_t> node_list, integer filenum) {
+	current_index = 0;
 #ifndef NO_OUTPUT
 	std::vector<std::size_t> id_list(node_list.begin(), node_list.end());
 	auto id_list_ptr = &id_list;
-	std::vector<hpx::future<hpx::id_type> > node_futs = hpx::find_ids_from_basename("fmmx_node", std::move(id_list));
+	std::vector<hpx::future<hpx::id_type> > node_futs = hpx::find_ids_from_basename("fmmx_node", id_list);
 	std::vector<hpx::future<void>> data_futs(node_futs.size());
 	for (integer i0 = 0; i0 != node_futs.size(); ++i0) {
 		data_futs[i0] = (node_client(node_futs[i0].get()).get_data()).then(
@@ -92,34 +93,35 @@ void silo_output::do_output(std::list<std::size_t> node_list, integer filenum) {
 	}
 
 	hpx::wait_all(data_futs);
-	constexpr int nshapes = 1;
-	const int nnodes = nodedir.size();
-	const int nzones = zonedir.size();
-	int shapesize[1] = { Nchild };
-	int shapetype[1] = { DB_ZONETYPE_HEX };
-	int shapecnt[1] = { nzones };
-	DBfile * db;
-	DBoptlist * olist;
-	std::vector<double> coord_vectors[NDIM];
-	std::string coordname_strs[NDIM];
-	double* coords[NDIM];
-	const char* coordnames[NDIM];
 
-	for (int di = 0; di < NDIM; di++) {
-		coord_vectors[di].resize(nnodes);
-		coords[di] = coord_vectors[di].data();
-		coordname_strs[di] = ('x' + char(di));
-		coordnames[di] = coordname_strs[di].c_str();
-	}
+	std::thread([=]() {
+		constexpr int nshapes = 1;
+		const int nnodes = nodedir.size();
+		const int nzones = zonedir.size();
+		int shapesize[1] = {Nchild};
+		int shapetype[1] = {DB_ZONETYPE_HEX};
+		int shapecnt[1] = {nzones};
+		DBfile * db;
+		DBoptlist * olist;
+		std::vector<double> coord_vectors[NDIM];
+		std::string coordname_strs[NDIM];
+		double* coords[NDIM];
+		const char* coordnames[NDIM];
 
-	for (auto ni = nodedir.begin(); ni != nodedir.end(); ni++) {
 		for (int di = 0; di < NDIM; di++) {
-			coords[di][ni->index] = (*ni)[di];
-			//	printf("%e ", (*ni)[di]);
+			coord_vectors[di].resize(nnodes);
+			coords[di] = coord_vectors[di].data();
+			coordname_strs[di] = ('x' + char(di));
+			coordnames[di] = coordname_strs[di].c_str();
+		}
+
+		for (auto ni = nodedir.begin(); ni != nodedir.end(); ni++) {
+			for (int di = 0; di < NDIM; di++) {
+				coords[di][ni->index] = (*ni)[di];
+				//	printf("%e ", (*ni)[di]);
 		}
 		//	printf("\n");
 	}
-	nodedir.clear();
 
 	auto this_sz = zonedir.size();
 	std::vector<int> zone_nodes(this_sz * Nchild);
@@ -131,13 +133,13 @@ void silo_output::do_output(std::list<std::size_t> node_list, integer filenum) {
 		}
 	}
 
-	olist = exec_on_separate_thread(&DBMakeOptlist, 1);
+	olist = DBMakeOptlist( 1);
 	char* fname;
 	asprintf(&fname, "X.%i.silo", filenum);
-	db = exec_on_separate_thread(&DBCreateReal, fname, DB_CLOBBER, DB_LOCAL, "Euler Mesh", DB_PDB);
-	exec_on_separate_thread(&DBPutZonelist2, db, "zones", nzones, int(NDIM), zone_nodes.data(), Nchild * nzones, 0, 0,
+	db = DBCreateReal( fname, DB_CLOBBER, DB_LOCAL, "Euler Mesh", DB_PDB);
+	DBPutZonelist2( db, "zones", nzones, int(NDIM), zone_nodes.data(), Nchild * nzones, 0, 0,
 			0, shapetype, shapesize, shapecnt, nshapes, olist);
-	exec_on_separate_thread(&DBPutUcdmesh, db, "mesh", int(NDIM), const_cast<char**>(coordnames),
+	DBPutUcdmesh( db, "mesh", int(NDIM), const_cast<char**>(coordnames),
 			reinterpret_cast<void*>(coords), nnodes, nzones, "zones", static_cast<const char*>(nullptr),
 			(int) DB_DOUBLE, olist);
 
@@ -158,14 +160,16 @@ void silo_output::do_output(std::list<std::size_t> node_list, integer filenum) {
 			data[i] = zi->fields[fi];
 			i++;
 		}
-		exec_on_separate_thread(&DBPutUcdvar1, db, const_cast<const char*>(field_names[fi]), "mesh",
+		DBPutUcdvar1( db, const_cast<const char*>(field_names[fi]), "mesh",
 				reinterpret_cast<void*>(data.data()), nzones, static_cast<void*>(nullptr), 0, (int) DB_DOUBLE,
 				(int) DB_ZONECENT, olist);
 	}
-	zonedir.clear();
 
-	exec_on_separate_thread(DBClose, db);
+	DBClose(db);
 	free(fname);
+	zonedir.clear();
+	nodedir.clear();
 	printf("Output Done\n");
+})	.join();
 #endif
 }
