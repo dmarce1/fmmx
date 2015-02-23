@@ -24,7 +24,7 @@ public:
 	static constexpr double precision = 1.0e-10;
 	static constexpr int Nchild = 1 << NDIM;
 	struct zone {
-		std::array<double, 4 + hydro_vars::nf_hydro> fields;
+		std::array<double, 4 + 4*hydro_vars::nf_hydro> fields;
 		std::array<double, NDIM> position;
 		std::array<double, NDIM> span;
 		zone() {
@@ -55,7 +55,7 @@ public:
 		}
 	};
 	struct silo_zone {
-		std::array<double, 4 + hydro_vars::nf_hydro> fields;
+		std::array<double, 4 + 4*hydro_vars::nf_hydro> fields;
 		std::vector<int> vertices;
 		silo_zone() :
 				vertices(Nchild) {

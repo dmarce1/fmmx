@@ -38,7 +38,7 @@ constexpr integer PP = P * P;
 constexpr integer NDIM = 3;
 constexpr integer NCHILD = 8;
 constexpr integer NNEIGHBOR = 27;
-constexpr integer MAXLEVEL = 3;
+constexpr integer MAXLEVEL = 5;
 
 
 

@@ -95,7 +95,7 @@ int hpx_main() {
 	std::cout << "finished computation in " << elapsed_seconds.count() << "s\n";
 //	root_client.execute(dt, 1).get();
 	real t = 0.0;
-	for (integer z = 0; z != 1; z++) {
+	for (integer z = 0; z != 10; z++) {
 		//while (t < tmax) {
 		t += dt;
 		printf("%e %e\n", double(t), double(dt));

@@ -663,9 +663,9 @@ std::pair<real, std::vector<real>> node_server::execute(real global_dt, integer 
 		for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
 			if (is_amr(dir)) {
 				if (!is_phys_bound(dir)) {
-					hydro_state.unpack_child_amr_data(which_face[dir], iter);
+					hydro_state.prolong_unpack(which_face[dir], iter);
 				}
-				integer inc = NX * NX / 4 * hydro_vars::nf_hydro;
+				integer inc = NX * NX * hydro_vars::nf_hydro;
 				iter += inc;
 			}
 		}
@@ -674,13 +674,13 @@ std::pair<real, std::vector<real>> node_server::execute(real global_dt, integer 
 	hydro_updated = true;
 	if (!is_leaf) {
 		for (integer i = 0; i != NCHILD; ++i) {
-			std::vector<real> amr_data(2 * NDIM * (NX * NX / 4) * hydro_vars::nf_hydro);
+			std::vector<real> amr_data(2 * NDIM * 4 * (NX * NX / 4) * hydro_vars::nf_hydro);
 			integer actual_size = 0;
 			auto iter = amr_data.begin();
 			for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
 				if (child_is_amr(i, dir)) {
-					hydro_state.pack_child_amr_data(which_face[dir], i, iter);
-					integer inc = NX * NX / 4 * hydro_vars::nf_hydro;
+					hydro_state.prolong_pack(which_face[dir], i, iter);
+					integer inc = NX * NX  * hydro_vars::nf_hydro;
 					iter += inc;
 					actual_size += inc;
 				}
@@ -715,7 +715,7 @@ std::pair<real, std::vector<real>> node_server::execute(real global_dt, integer 
 					amr_dirs[fc] = true;
 				}
 			}
-			hydro_state.unpack_data_from_child(pr.second, i, std::move(amr_dirs));
+			hydro_state.restrict_unpack(pr.second, i, std::move(amr_dirs));
 			unpack_from_child(pr.second.begin() + hydro_vars::nf_hydro * NX * NX * NX / 8, i);
 			this_dt = std::min(this_dt, pr.first);
 		}
@@ -729,9 +729,9 @@ std::pair<real, std::vector<real>> node_server::execute(real global_dt, integer 
 		}
 	}
 
-	std::vector<real> parent_data((hydro_vars::nf_hydro + 4) * NX * NX * NX / 8, real(0));
-	hydro_state.pack_parent_data(parent_data, amr_dirs);
-	pack_for_parent(parent_data.begin() + hydro_vars::nf_hydro * NX * NX * NX / 8);
+	std::vector<real> parent_data((4 * hydro_vars::nf_hydro + 4) * NX * NX * NX / 8, real(0));
+	hydro_state.restrict_pack(parent_data, amr_dirs);
+	pack_for_parent(parent_data.begin() + 4 * hydro_vars::nf_hydro * NX * NX * NX / 8);
 
 //	printf("End at grid %li - %li %li %li - dt = %e\n", level, location[2], location[1], location[0], this_dt);
 	return std::make_pair(real(this_dt), parent_data);
@@ -811,7 +811,7 @@ node_server::node_server() {
 
 std::vector<double> node_server::get_data() const {
 //	printf("Getting data\n");
-	std::vector<double> v((4 + hydro_vars::nf_hydro) * N3);
+	std::vector<double> v((4 + 4*hydro_vars::nf_hydro) * N3);
 	auto l = v.begin();
 	for (integer i = 0; i != N3; ++i) {
 		*l++ = double(phi[i]);

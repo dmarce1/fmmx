@@ -12,12 +12,13 @@
 
 class hydro_vars {
 public:
-	static constexpr real cfl_factor = (1.0/2.0);
+	static constexpr bool positive_field[5] = { true, true, false, false, false };
+	static constexpr real cfl_factor = (1.0 / 2.0);
 	static constexpr integer N3F = (NX + 1) * (NX + 1) * (NX + 1);
 	static constexpr integer nf_hydro = 5;
 	static constexpr integer bw = 2;
-	static constexpr integer d0_i = 1;
-	static constexpr integer et_i = 0;
+	static constexpr integer d0_i = 0;
+	static constexpr integer et_i = 1;
 	static constexpr integer s0_i = 2;
 	static constexpr integer sx_i = s0_i + 0;
 	static constexpr integer sy_i = s0_i + 1;
@@ -34,8 +35,14 @@ private:
 	std::vector<std::vector<real>> dU;
 	std::vector<std::vector<real>> U0;
 	std::vector<std::vector<real>> U;
-	std::array<std::vector<std::vector<real>>, NDIM> Flux;
-	std::vector<real> x, y, z, r;
+	std::array<std::vector<std::vector<real>>, NDIM> dUx;
+	std::array<std::vector<std::vector<real>>, NDIM> Ux0;
+	std::array<std::vector<std::vector<real>>, NDIM> Ux;
+	std::array<std::vector<std::vector<real>>, NDIM> FaceFlux;
+	std::array<std::vector<std::vector<real>>, NDIM> CenterFlux;
+	std::array<std::vector<real>, NDIM> Xc;
+	std::array<std::vector<real>, NDIM> Xf;
+	std::vector<real> r;
 	real dx, amax;
 
 	static integer ind3d(integer j, integer k, integer l, integer stride = NX);
@@ -51,10 +58,10 @@ public:
 	void update(real, integer, const std::vector<real>& phi, const std::vector<real>& gx, const std::vector<real>& gy,
 			const std::vector<real>& gz);
 	bool needs_refinement() const;
-	void pack_parent_data(std::vector<real>&, std::vector<bool> amr_dirs) const;
-	void unpack_data_from_child(std::vector<real>&, integer ci, std::vector<bool> amr_directions);
-	void pack_child_amr_data(integer dir, integer child, std::vector<real>::iterator i) const;
-	void unpack_child_amr_data(integer dir, std::vector<real>::iterator);
+	void restrict_pack(std::vector<real>&, std::vector<bool> amr_dirs) const;
+	void restrict_unpack(std::vector<real>&, integer ci, std::vector<bool> amr_directions);
+	void prolong_pack(integer dir, integer child, std::vector<real>::iterator i) const;
+	void prolong_unpack(integer dir, std::vector<real>::iterator);
 
 };
 

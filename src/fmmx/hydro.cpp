@@ -10,19 +10,30 @@
 
 constexpr real hydro_vars::ro_floor;
 
+real minmod(real a, real b) {
+	if (a * b >= real(0)) {
+		return std::copysign(std::min(std::abs(a), std::abs(b)), a);
+	} else {
+		return real(0);
+	}
+}
+
 integer hydro_vars::ind3d(integer j, integer k, integer l, integer stride) {
 	return l + stride * (k + stride * j);
 }
 
 void hydro_vars::store() {
 	U0 = U;
+	for (integer d = 0; d != NDIM; ++d) {
+		Ux0[d] = Ux[d];
+	}
 }
 
 real hydro_vars::cell_mass(integer i) const {
 	return U[d0_i][i] * dx * dx * dx;
 }
 
-void hydro_vars::pack_child_amr_data(integer face, integer child, std::vector<real>::iterator i) const {
+void hydro_vars::prolong_pack(integer face, integer child, std::vector<real>::iterator i) const {
 	integer lb[NDIM], ub[NDIM];
 	lb[0] = ((child >> 0) & 1) * NX / 2;
 	lb[1] = ((child >> 1) & 1) * NX / 2;
@@ -37,13 +48,16 @@ void hydro_vars::pack_child_amr_data(integer face, integer child, std::vector<re
 			for (integer k = lb[1]; k != ub[1]; ++k) {
 				for (integer l = lb[2]; l != ub[2]; ++l) {
 					*i++ = U[f][ind3d(j, k, l)];
+					for (integer d = 0; d != NDIM; ++d) {
+						*i++ = Ux[d][f][ind3d(j, k, l)];
+					}
 				}
 			}
 		}
 	}
 }
 
-void hydro_vars::unpack_child_amr_data(integer face, std::vector<real>::iterator i) {
+void hydro_vars::prolong_unpack(integer face, std::vector<real>::iterator i) {
 	integer lb[NDIM] = { 0, 0, 0 };
 	integer ub[NDIM] = { NX / 2, NX / 2, NX / 2 };
 	lb[face / 2] = (face % 2) * (NX / 2 - 1);
@@ -53,26 +67,43 @@ void hydro_vars::unpack_child_amr_data(integer face, std::vector<real>::iterator
 			for (integer k = lb[1]; k != ub[1]; ++k) {
 				for (integer l = lb[2]; l != ub[2]; ++l) {
 					real v = *i++;
-					U[f][ind3d(2 * j + 0, 2 * k + 0, 2 * l + 0)] = v;
-					U[f][ind3d(2 * j + 0, 2 * k + 0, 2 * l + 1)] = v;
-					U[f][ind3d(2 * j + 0, 2 * k + 1, 2 * l + 0)] = v;
-					U[f][ind3d(2 * j + 0, 2 * k + 1, 2 * l + 1)] = v;
-					U[f][ind3d(2 * j + 1, 2 * k + 0, 2 * l + 0)] = v;
-					U[f][ind3d(2 * j + 1, 2 * k + 0, 2 * l + 1)] = v;
-					U[f][ind3d(2 * j + 1, 2 * k + 1, 2 * l + 0)] = v;
-					U[f][ind3d(2 * j + 1, 2 * k + 1, 2 * l + 1)] = v;
+					real slp[NDIM];
+					for (integer j0 = 0; j0 != 2; ++j0) {
+						for (integer k0 = 0; k0 != 2; ++k0) {
+							for (integer l0 = 0; l0 != 2; ++l0) {
+								U[f][ind3d(2 * j + j0, 2 * k + k0, 2 * l + l0)] = v;
+							}
+						}
+					}
+					for (integer d = 0; d != NDIM; ++d) {
+						real v = *i++;
+						slp[d] = v;
+						for (integer j0 = 0; j0 != 2; ++j0) {
+							for (integer k0 = 0; k0 != 2; ++k0) {
+								for (integer l0 = 0; l0 != 2; ++l0) {
+									Ux[d][f][ind3d(2 * j + j0, 2 * k + k0, 2 * l + l0)] = v;
+								}
+							}
+						}
+					}
 				}
 			}
 		}
 	}
+
 }
 
-void hydro_vars::pack_parent_data(std::vector<real>& data, std::vector<bool> amr_dirs) const {
+void hydro_vars::restrict_pack(std::vector<real>& data, std::vector<bool> amr_dirs) const {
 	for (integer f = 0; f != nf_hydro; ++f) {
 		for (integer j = 0; j != NX; ++j) {
 			for (integer k = 0; k != NX; ++k) {
 				for (integer l = 0; l != NX; ++l) {
 					data[f * (N3 / 8) + ind3d(j / 2, k / 2, l / 2, NX / 2)] += dU[f][ind3d(j, k, l)] * real(1.0 / 8.0);
+					for (integer d = 0; d != NDIM; ++d) {
+						integer offset = (d + 1) * NX * NX * NX / 8 * nf_hydro;
+						data[offset + f * (N3 / 8) + ind3d(j / 2, k / 2, l / 2, NX / 2)] += dUx[d][f][ind3d(j, k, l)]
+								* real(1.0 / 8.0);
+					}
 				}
 			}
 		}
@@ -103,7 +134,7 @@ void hydro_vars::pack_parent_data(std::vector<real>& data, std::vector<bool> amr
 					for (integer k = lb[1]; k != ub[1]; ++k) {
 						for (integer l = lb[2]; l != ub[2]; ++l) {
 							data[f * (N3 / 8) + ind3d((j - off[0]) / 2, (k - off[1]) / 2, (l - off[2]) / 2, NX / 2)] +=
-									Flux[d / 2][f][ind3d(j, k, l, NX + 1)] * real(1.0 / 4.0);
+									FaceFlux[d / 2][f][ind3d(j, k, l, NX + 1)] * real(1.0 / 4.0);
 						}
 					}
 				}
@@ -112,7 +143,7 @@ void hydro_vars::pack_parent_data(std::vector<real>& data, std::vector<bool> amr
 	}
 }
 
-void hydro_vars::unpack_data_from_child(std::vector<real>& data, integer child, std::vector<bool> amr_directions) {
+void hydro_vars::restrict_unpack(std::vector<real>& data, integer child, std::vector<bool> amr_directions) {
 
 	integer lb[NDIM], ub[NDIM], off[NDIM], off2[NDIM];
 
@@ -154,7 +185,7 @@ void hydro_vars::unpack_data_from_child(std::vector<real>& data, integer child, 
 						for (integer l = lb[2]; l != ub[2]; ++l) {
 							const auto fine_flux =
 									data[f * (N3 / 8) + ind3d(j - off[0], k - off[1], l - off[2], NX / 2)];
-							const auto crse_flux = Flux[d / 2][f][ind3d(j, k, l, NX + 1)];
+							const auto crse_flux = FaceFlux[d / 2][f][ind3d(j, k, l, NX + 1)];
 							const auto dif = fine_flux - crse_flux;
 							//					if (fine_flux != 0.0 || crse_flux != 0.0)
 							//						printf("%e %e\n", fine_flux, crse_flux);
@@ -185,6 +216,11 @@ void hydro_vars::unpack_data_from_child(std::vector<real>& data, integer child, 
 			for (integer k = lb[1]; k != ub[1]; ++k) {
 				for (integer l = lb[2]; l != ub[2]; ++l) {
 					dU[f][ind3d(j, k, l)] = data[f * (N3 / 8) + ind3d(j - off[0], k - off[1], l - off[2], NX / 2)];
+					for (integer d = 0; d != NDIM; ++d) {
+						integer offset = (d + 1) * NX * NX * NX / 8 * nf_hydro;
+						dUx[d][f][ind3d(j, k, l)] = data[offset + f * (N3 / 8)
+								+ ind3d(j - off[0], k - off[1], l - off[2], NX / 2)];
+					}
 				}
 			}
 		}
@@ -192,10 +228,14 @@ void hydro_vars::unpack_data_from_child(std::vector<real>& data, integer child, 
 }
 
 real hydro_vars::compute_du() {
+	const auto dxinv = real(1) / dx;
 	std::vector<std::vector<real>> F(nf_hydro, std::vector<real>(N3F, real(0)));
 	for (integer f = 0; f != nf_hydro; ++f) {
 		for (integer i = 0; i != N3; ++i) {
 			dU[f][i] = real(0);
+			for (integer d = 0; d != NDIM; ++d) {
+				dUx[d][f][i] = real(0);
+			}
 		}
 	}
 	std::vector<std::vector<real>> flx(nf_hydro, std::vector<real>(N3F, real(0)));
@@ -208,8 +248,13 @@ real hydro_vars::compute_du() {
 						const auto iu0 = ind3d(j, k, l);
 						const auto if0 = ind3d(j, k, l, NX + 1);
 						const auto ifp = ind3d(j + dn[0], k + dn[1], l + dn[2], NX + 1);
-						dU[f][iu0] -= (Flux[d][f][ifp] - Flux[d][f][if0]) / dx;
-
+						const auto Fp = FaceFlux[d][f][ifp];
+						const auto Fm = FaceFlux[d][f][if0];
+						const auto Fc = CenterFlux[d][f][iu0];
+						const auto Xp = (Xf[d][ifp] - Xc[d][iu0]) * dxinv;
+						const auto Xm = (Xf[d][if0] - Xc[d][iu0]) * dxinv;
+						dU[f][iu0] += -(Fp - Fm) * dxinv;
+						dUx[d][f][iu0] += real(12) * (-(Xp * Fp - Xm * Fm) + Fc) * dxinv;
 					}
 				}
 			}
@@ -223,31 +268,53 @@ hydro_vars::hydro_vars() {
 	U = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3, real(0.0)));
 	dU = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3, real(0.0)));
 	U0 = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3, real(0.0)));
-	x = std::vector<real>(N3);
-	y = std::vector<real>(N3);
-	z = std::vector<real>(N3);
+	for (integer d = 0; d != NDIM; ++d) {
+		Ux[d] = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3, real(0.0)));
+		dUx[d] = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3, real(0.0)));
+		Ux0[d] = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3, real(0.0)));
+		Xc[d] = std::vector<real>(N3);
+		Xf[d] = std::vector<real>(N3F);
+	}
 	r = std::vector<real>(N3);
 	for (integer d = 0; d != NDIM; ++d) {
-		Flux[d] = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3F, real(0.0)));
+		FaceFlux[d] = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3F, real(0.0)));
+		CenterFlux[d] = std::vector<std::vector<real>>(nf_hydro, std::vector<real>(N3, real(0.0)));
 	}
 
 }
+
 void hydro_vars::dump_data(std::vector<double>::iterator& l, integer index) const {
 	for (integer f = 0; f != nf_hydro; ++f) {
 		*l++ = double(U[f][index]);
 	}
+	for (integer d = 0; d != NDIM; ++d) {
+		for (integer f = 0; f != nf_hydro; ++f) {
+			*l++ = double(Ux[d][f][index]);
+		}
+	}
 }
+
 void hydro_vars::initialize(real xcorner, real ycorner, real zcorner, real _dx) {
 	dx = _dx;
 	for (integer i = 0; i != N3; ++i) {
 		auto const j = i / (NX * NX);
 		auto const k = (i / NX) % NX;
 		auto const l = i % NX;
-		x[i] = xcorner + (real(j) + real(0.5)) * dx - real(0.5);
-		y[i] = ycorner + (real(k) + real(0.5)) * dx - real(0.5);
-		z[i] = zcorner + (real(l) + real(0.5)) * dx - real(0.5);
-		r[i] = std::sqrt(x[i] * x[i] + y[i] * y[i] + z[i] * z[i]);
-
+		Xc[0][i] = xcorner + (real(j) + real(0.5)) * dx - real(0.5);
+		Xc[1][i] = ycorner + (real(k) + real(0.5)) * dx - real(0.5);
+		Xc[2][i] = zcorner + (real(l) + real(0.5)) * dx - real(0.5);
+		r[i] = std::sqrt(Xc[0][i] * Xc[0][i] + Xc[1][i] * Xc[1][i] + Xc[2][i] * Xc[2][i]);
+		for (integer j = 0; j != NF; ++j) {
+			Ux[0][i][j] = Ux[1][i][j] = Ux[2][i][j] = 0.0;
+		}
+	}
+	for (integer i = 0; i != N3F; ++i) {
+		auto const j = i / ((NX + 1) * (NX + 1));
+		auto const k = (i / (NX + 1)) % (NX + 1);
+		auto const l = i % (NX + 1);
+		Xf[0][i] = xcorner + real(j) * dx - real(0.5);
+		Xf[1][i] = ycorner + real(k) * dx - real(0.5);
+		Xf[2][i] = zcorner + real(l) * dx - real(0.5);
 	}
 	/*
 	 for (integer i = 0; i != N3; ++i) {
@@ -267,7 +334,7 @@ void hydro_vars::initialize(real xcorner, real ycorner, real zcorner, real _dx) 
 			U[f][i] = 0.0;
 		}
 
-		if (z[i] > 0.) {
+		if (Xc[2][i] < 0.) {
 			U[d0_i][i] = 1.0;
 			U[et_i][i] = 2.5;
 		} else {
@@ -328,6 +395,11 @@ void hydro_vars::update(real dt, integer rk, const std::vector<real>& phi, const
 			real u1 = U[f][i] + dU[f][i] * dt;
 			real u0 = U0[f][i];
 			U[f][i] = u1 * beta[rk] + u0 * (1.0 - beta[rk]);
+			for (integer d = 0; d != NDIM; ++d) {
+				real u1 = Ux[d][f][i] + dUx[d][f][i] * dt;
+				real u0 = Ux0[d][f][i];
+				Ux[d][f][i] = u1 * beta[rk] + u0 * (1.0 - beta[rk]);
+			}
 		}
 	}
 	for (integer i = 0; i != N3; ++i) {
@@ -417,7 +489,8 @@ void hydro_vars::set_boundary(integer d, std::vector<real>::iterator* iter) {
 		V[vx_i][i] = sx / ro;
 		V[vy_i][i] = sy / ro;
 		V[vz_i][i] = sz / ro;
-		V[pr_i][i] = (fgamma - 1.0) * (et - real(0.5) * (sx * sx + sy * sy + sz * sz) / ro);
+		const real ek = real(0.5) * (sx * sx + sy * sy + sz * sz) / ro;
+		V[pr_i][i] = std::max((fgamma - 1.0) * (et - ek), 0.0);
 	}
 	std::vector<real> vr(nf_hydro), vl(nf_hydro);
 	for (integer j = 2 * dn[0]; j != xbdim[d] - dn[0]; ++j) {
@@ -431,6 +504,7 @@ void hydro_vars::set_boundary(integer d, std::vector<real>::iterator* iter) {
 					vl[f] = V[f][vim];
 				}
 				const auto fi = ind3d(j + xoff[d], k + yoff[d], l + zoff[d], NX + 1);
+				const auto ii = ind3d(j + xoff[d], k + yoff[d], l + zoff[d]);
 				const real rho_r = vr[ro_i];
 				const real rho_l = vl[ro_i];
 				const real v_r = vr[v0_i + d / 2];
@@ -449,17 +523,42 @@ void hydro_vars::set_boundary(integer d, std::vector<real>::iterator* iter) {
 				const real a_l = std::sqrt(fgamma * std::max(pr_l, real(0)) / rho_l) + std::abs(v_l);
 				const real a = std::max(a_r, a_l);
 				amax = std::max(amax, a);
-				Flux[d / 2][d0_i][fi] = real(0.5) * (rho_r * v_r + rho_l * v_l);
-				Flux[d / 2][sx_i][fi] = real(0.5) * (rho_r * vx_r * v_r + rho_l * vx_l * v_l);
-				Flux[d / 2][sy_i][fi] = real(0.5) * (rho_r * vy_r * v_r + rho_l * vy_l * v_l);
-				Flux[d / 2][sz_i][fi] = real(0.5) * (rho_r * vz_r * v_r + rho_l * vz_l * v_l);
-				Flux[d / 2][s0_i + d / 2][fi] += real(0.5) * (pr_r + pr_l);
-				Flux[d / 2][et_i][fi] = real(0.5) * ((et_r + pr_r) * v_r + (et_l + pr_l) * v_l);
-				Flux[d / 2][d0_i][fi] -= real(0.5) * (rho_r - rho_l) * a;
-				Flux[d / 2][sx_i][fi] -= real(0.5) * (vx_r * rho_r - vx_l * rho_l) * a;
-				Flux[d / 2][sy_i][fi] -= real(0.5) * (vy_r * rho_r - vy_l * rho_l) * a;
-				Flux[d / 2][sz_i][fi] -= real(0.5) * (vz_r * rho_r - vz_l * rho_l) * a;
-				Flux[d / 2][et_i][fi] -= real(0.5) * (et_r - et_l) * a;
+				FaceFlux[d / 2][d0_i][fi] = real(0.5) * (rho_r * v_r + rho_l * v_l);
+				FaceFlux[d / 2][sx_i][fi] = real(0.5) * (rho_r * vx_r * v_r + rho_l * vx_l * v_l);
+				FaceFlux[d / 2][sy_i][fi] = real(0.5) * (rho_r * vy_r * v_r + rho_l * vy_l * v_l);
+				FaceFlux[d / 2][sz_i][fi] = real(0.5) * (rho_r * vz_r * v_r + rho_l * vz_l * v_l);
+				FaceFlux[d / 2][s0_i + d / 2][fi] += real(0.5) * (pr_r + pr_l);
+				FaceFlux[d / 2][et_i][fi] = real(0.5) * ((et_r + pr_r) * v_r + (et_l + pr_l) * v_l);
+				FaceFlux[d / 2][d0_i][fi] -= real(0.5) * (rho_r - rho_l) * a;
+				FaceFlux[d / 2][sx_i][fi] -= real(0.5) * (vx_r * rho_r - vx_l * rho_l) * a;
+				FaceFlux[d / 2][sy_i][fi] -= real(0.5) * (vy_r * rho_r - vy_l * rho_l) * a;
+				FaceFlux[d / 2][sz_i][fi] -= real(0.5) * (vz_r * rho_r - vz_l * rho_l) * a;
+				FaceFlux[d / 2][et_i][fi] -= real(0.5) * (et_r - et_l) * a;
+			}
+		}
+	}
+	std::vector<real> vc(nf_hydro);
+	for (integer j = 2 * dn[0]; j != xbdim[d] - 2 * dn[0]; ++j) {
+		for (integer k = 2 * dn[1]; k != ybdim[d] - 2 * dn[1]; ++k) {
+			for (integer l = 2 * dn[2]; l != zbdim[d] - 2 * dn[2]; ++l) {
+				for (integer f = 0; f != nf_hydro; ++f) {
+					const auto vi0 = this_ind3d(j, k, l);
+					vc[f] = V[f][vi0];
+				}
+				const auto fi = ind3d(j + xoff[d], k + yoff[d], l + zoff[d]);
+				const real rho_c = vc[ro_i];
+				const real v_c = vc[v0_i + d / 2];
+				const real vx_c = vc[vx_i];
+				const real vy_c = vc[vy_i];
+				const real vz_c = vc[vz_i];
+				const real pr_c = vc[pr_i];
+				const real et_c = pr_c / (fgamma - 1.0) + 0.5 * (vx_c * vx_c + vy_c * vy_c + vz_c * vz_c) * rho_c;
+				CenterFlux[d / 2][d0_i][fi] = (rho_c * v_c);
+				CenterFlux[d / 2][sx_i][fi] = (rho_c * vx_c * v_c);
+				CenterFlux[d / 2][sy_i][fi] = (rho_c * vy_c * v_c);
+				CenterFlux[d / 2][sz_i][fi] = (rho_c * vz_c * v_c);
+				CenterFlux[d / 2][s0_i + d / 2][fi] += (pr_c);
+				CenterFlux[d / 2][et_i][fi] = ((et_c + pr_c) * v_c);
 			}
 		}
 	}

@@ -21,16 +21,16 @@
 silo_output::silo_output() {
 }
 /*
-template<class R, class ...Args1, class ...Args2>
-R exec_on_separate_thread(R (*fptr)(Args1...), Args2 ...args) {
-	R data;
-	std::thread([&](Args2*...args) {
-		data = (*fptr)(*args...);
-	}, &args...).join();
-	return data;
+ template<class R, class ...Args1, class ...Args2>
+ R exec_on_separate_thread(R (*fptr)(Args1...), Args2 ...args) {
+ R data;
+ std::thread([&](Args2*...args) {
+ data = (*fptr)(*args...);
+ }, &args...).join();
+ return data;
 
-}
-*/
+ }
+ */
 void silo_output::do_output(std::list<std::size_t> node_list, integer filenum) {
 	current_index = 0;
 #ifndef NO_OUTPUT
@@ -59,7 +59,7 @@ void silo_output::do_output(std::list<std::size_t> node_list, integer filenum) {
 							for (integer l0 = 0; l0 != NX; ++l0) {
 								silo_zone s;
 								int j;
-								for( integer k = 0; k != 4+hydro_vars::nf_hydro; ++k) {
+								for( integer k = 0; k != 4+4*hydro_vars::nf_hydro; ++k) {
 									s.fields[k] = *iter;
 									iter++;
 									cnt++;
@@ -144,17 +144,32 @@ void silo_output::do_output(std::list<std::size_t> node_list, integer filenum) {
 			(int) DB_DOUBLE, olist);
 
 	std::vector<double> data(nzones);
-	std::array<char[32], 4 + hydro_vars::nf_hydro> field_names;
+	std::array<char[32], 4 + 4*hydro_vars::nf_hydro> field_names;
 	sprintf(field_names[0], "phi");
 	sprintf(field_names[1], "gx");
 	sprintf(field_names[2], "gy");
 	sprintf(field_names[3], "gz");
-	sprintf(field_names[4 + hydro_vars::ro_i], "rho");
-	sprintf(field_names[4 + hydro_vars::et_i], "et");
-	sprintf(field_names[4 + hydro_vars::sx_i], "sx");
-	sprintf(field_names[4 + hydro_vars::sy_i], "sy");
-	sprintf(field_names[4 + hydro_vars::sz_i], "sz");
-	for (int fi = 0; fi != 4 + hydro_vars::nf_hydro; ++fi) {
+	sprintf(field_names[4 + hydro_vars::ro_i + hydro_vars::nf_hydro * 0], "d0");
+	sprintf(field_names[4 + hydro_vars::et_i + hydro_vars::nf_hydro * 0], "et");
+	sprintf(field_names[4 + hydro_vars::sx_i + hydro_vars::nf_hydro * 0], "sx");
+	sprintf(field_names[4 + hydro_vars::sy_i + hydro_vars::nf_hydro * 0], "sy");
+	sprintf(field_names[4 + hydro_vars::sz_i + hydro_vars::nf_hydro * 0], "sz");
+	sprintf(field_names[4 + hydro_vars::ro_i + hydro_vars::nf_hydro * 1], "d0_x");
+	sprintf(field_names[4 + hydro_vars::et_i + hydro_vars::nf_hydro * 1], "et_x");
+	sprintf(field_names[4 + hydro_vars::sx_i + hydro_vars::nf_hydro * 1], "sx_x");
+	sprintf(field_names[4 + hydro_vars::sy_i + hydro_vars::nf_hydro * 1], "sy_x");
+	sprintf(field_names[4 + hydro_vars::sz_i + hydro_vars::nf_hydro * 1], "sz_x");
+	sprintf(field_names[4 + hydro_vars::ro_i + hydro_vars::nf_hydro * 2], "d0_y");
+	sprintf(field_names[4 + hydro_vars::et_i + hydro_vars::nf_hydro * 2], "et_y");
+	sprintf(field_names[4 + hydro_vars::sx_i + hydro_vars::nf_hydro * 2], "sx_y");
+	sprintf(field_names[4 + hydro_vars::sy_i + hydro_vars::nf_hydro * 2], "sy_y");
+	sprintf(field_names[4 + hydro_vars::sz_i + hydro_vars::nf_hydro * 2], "sz_y");
+	sprintf(field_names[4 + hydro_vars::ro_i + hydro_vars::nf_hydro * 3], "d0_z");
+	sprintf(field_names[4 + hydro_vars::et_i + hydro_vars::nf_hydro * 3], "et_z");
+	sprintf(field_names[4 + hydro_vars::sx_i + hydro_vars::nf_hydro * 3], "sx_z");
+	sprintf(field_names[4 + hydro_vars::sy_i + hydro_vars::nf_hydro * 3], "sy_z");
+	sprintf(field_names[4 + hydro_vars::sz_i + hydro_vars::nf_hydro * 3], "sz_z");
+	for (int fi = 0; fi != 4 + 4*hydro_vars::nf_hydro; ++fi) {
 		int i = 0;
 		for (auto zi = zonedir.begin(); zi != zonedir.end(); zi++) {
 			data[i] = zi->fields[fi];
