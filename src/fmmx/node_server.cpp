@@ -12,6 +12,14 @@
 #include "key.hpp"
 #include "exafmm.hpp"
 
+template<class T>
+using hydro_array = std::vector<std::vector<std::vector<T>>>;
+
+template<class T>
+std::vector<std::vector<std::vector<T>>>new_hydro_array() {
+	return std::vector<std::vector<std::vector<T>>>(HYDRO_NX, std::vector<std::vector<T>>(HYDRO_NX, std::vector<T>(HYDRO_NX)));
+}
+
 exafmm_kernel exafmm;
 
 constexpr integer WAITING = 0;
@@ -98,15 +106,6 @@ constexpr std::array<integer, NCHILD> oct_yub = { octub0, octub0, octub1, octub1
 
 constexpr std::array<integer, NCHILD> oct_xub = { octub0, octub1, octub0, octub1, octub0, octub1, octub0, octub1 };
 
-constexpr std::array<integer, NNEIGHBOR> dir_z = { -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-		1, 1, 1, 1, 1, 1, 1 };
-
-constexpr std::array<integer, NNEIGHBOR> dir_y = { -1, -1, -1, 0, 0, 0, 1, 1, 1, -1, -1, -1, 0, 0, 0, 1, 1, 1, -1, -1,
-		-1, 0, 0, 0, 1, 1, 1 };
-
-constexpr std::array<integer, NNEIGHBOR> dir_x = { -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1,
-		-1, 0, 1, -1, 0, 1 };
-
 integer ind4d(integer p, integer j, integer k, integer l, integer stride = NX) {
 	return l + stride * (k + stride * (j + stride * p));
 }
@@ -154,7 +153,9 @@ hpx::future<std::vector<real>> node_server::get_multipoles() {
 	if (is_leaf && P != 0) {
 		M = std::vector<real>(N3 * PP, real(0));
 		for (integer i = 0; i != N3; ++i) {
-			M[i] = hydro_state.cell_mass(i);
+			/****************************************************************/
+			M[i] = rand() % 2;
+			/***************************************************************/
 		}
 	}
 	return hpx::async(hpx::launch::deferred, [=]() {
@@ -189,7 +190,7 @@ hpx::future<std::vector<real>> node_server::get_multipoles() {
 }
 
 bool node_server::refine_me() const {
-	return level < MAXLEVEL && hydro_state.needs_refinement();
+	return level < MAXLEVEL;
 }
 
 void node_server::derefine(bool self) {
@@ -291,7 +292,7 @@ bool node_server::refine() {
 		for (integer ci = 0; ci != NCHILD; ++ci) {
 			if (cfut[ci].get()) {
 				for (integer ni = 0; ni != NNEIGHBOR; ++ni) {
-					if (ni == 13 || neighbor_id[ni] == hpx::invalid_id) {
+					if (ni == center_dir || neighbor_id[ni] == hpx::invalid_id) {
 						continue;
 					}
 					if ((2 * ((ci >> 0) & 1) - 1 == dir_x[ni]) || (2 * ((ci >> 1) & 1) - 1 == dir_y[ni])
@@ -316,14 +317,10 @@ bool node_server::refine() {
 	return !is_leaf;
 }
 
-hpx::future<std::vector<real>> node_server::get_boundary(integer d) const {
+hpx::future<std::vector<real>> node_server::get_fmm_boundary(integer d) const {
 	return hpx::async(hpx::launch::deferred, [=]() {
 		std::vector<real> bnd;
-		if( is_face[d]) {
-			bnd.resize(PP * bnd_size[d] + hydro_vars::nf_hydro * hydro_vars::bw * NX * NX);
-		} else {
-			bnd.resize(PP * bnd_size[d]);
-		}
+		bnd.resize(PP * bnd_size[d]);
 		auto i = bnd.begin();
 		for (integer p = 0; p != PP; ++p) {
 			for (integer j = xlb[d]; j <= xub[d]; ++j) {
@@ -335,38 +332,252 @@ hpx::future<std::vector<real>> node_server::get_boundary(integer d) const {
 				}
 			}
 		}
-		if( is_face[d]) {
-			hydro_state.get_boundary(bnd.begin() + PP * bnd_size[d], which_face[d]);
+		return bnd;
+	});
+}
+
+hpx::future<std::vector<real>> node_server::get_hydro_boundary(integer d) const {
+	const integer xl = dir_x[d] == +1 ? HYDRO_NX - 1 : 0;
+	const integer yl = dir_y[d] == +1 ? HYDRO_NX - 1 : 0;
+	const integer zl = dir_z[d] == +1 ? HYDRO_NX - 1 : 0;
+	const integer xu = dir_x[d] == -1 ? 1 : HYDRO_NX;
+	const integer yu = dir_y[d] == -1 ? 1 : HYDRO_NX;
+	const integer zu = dir_z[d] == -1 ? 1 : HYDRO_NX;
+	return hpx::async(hpx::launch::deferred, [=]() {
+		std::vector<real> bnd;
+		bnd.resize(NMOM * HYDRO_NF * (xu-xl) * (yu-yl) * (zu-zl));
+		auto i = bnd.begin();
+		for (integer p = 0; p != NMOM; ++p) {
+			for (integer j = xl; j < xu; ++j) {
+				for (integer k = yl; k < yu; ++k) {
+					for (integer l = zl; l < zu; ++l) {
+						const auto& ref = U[p][j][k][l];
+						std::copy(std::begin(ref), std::end(ref), i);
+					}
+				}
+			}
 		}
 		return bnd;
 	});
 }
 
-void node_server::set_boundary(hpx::future<std::vector<real>> f, integer d) {
+void node_server::set_hydro_boundary(hpx::future<std::vector<real>> f, integer d) {
+	auto data = f.get();
+	const integer xl = dir_x[d] == +1 ? HYDRO_NX - 1 : 0;
+	const integer yl = dir_y[d] == +1 ? HYDRO_NX - 1 : 0;
+	const integer zl = dir_z[d] == +1 ? HYDRO_NX - 1 : 0;
+	const integer xu = dir_x[d] == -1 ? 1 : HYDRO_NX;
+	const integer yu = dir_y[d] == -1 ? 1 : HYDRO_NX;
+	const integer zu = dir_z[d] == -1 ? 1 : HYDRO_NX;
+	auto i = data.begin();
+	for (integer p = 0; p != NMOM; ++p) {
+		for (integer j = xl; j < xu; ++j) {
+			for (integer k = yl; k < yu; ++k) {
+				for (integer l = zl; l < zu; ++l) {
+					auto& ref = U[p][j][k][l];
+					std::copy(i, i + HYDRO_NF, std::begin(ref));
+				}
+			}
+		}
+	}
+	if (++fmm_neighbor_done_cnt == NNEIGHBOR) {
+		compute_hydro();
+	}
+}
+
+void node_server::set_fmm_boundary(hpx::future<std::vector<real>> f, integer d) {
 	auto data = f.get();
 	M2L(data, d, bnd_size[d]);
-	if (is_face[d]) {
-		while (!hydro_updated) {
-			hpx::this_thread::yield();
-		}
-		auto iter = data.begin() + PP * bnd_size[d];
-		hydro_state.set_boundary(which_face[d], &iter);
-	}
-	if (++neighbor_done_cnt == NNEIGHBOR + 1) {
+	if (++fmm_neighbor_done_cnt == NNEIGHBOR + 1) {
 		send_expansions();
 	}
 }
 
+void node_server::compute_hydro() {
+
+	auto lim = []( real vm, real& vl, real& vr, real vp ) {
+		const real vmin = std::min(vp, vm);
+		const real vmax = std::max(vp, vm);
+		vl = std::max( vmin, std::min( vmax, vl));
+		vr = std::max( vmin, std::min( vmax, vr));
+		if( (vr - vl)*(vp - vm) < real(0) ) {
+			const real avg = (vr + vl) / real(2);
+			vr = vl = avg;
+		}
+	};
+
+	const real hf = real(1) / real(2);
+	const real _1o12 = real(1) / real(12);
+	const real zzz = real(0);
+	const real X[NNEIGHBOR] = { -hf, -hf, -hf, -hf, -hf, -hf, -hf, -hf, -hf, zzz, zzz, zzz, zzz, zzz, zzz, zzz, zzz,
+			zzz, +hf, +hf, +hf, +hf, +hf, +hf, +hf, +hf, +hf };
+	const real Y[NNEIGHBOR] = { -hf, -hf, -hf, zzz, zzz, zzz, +hf, +hf, +hf, -hf, -hf, -hf, zzz, zzz, zzz, +hf, +hf,
+			+hf, -hf, -hf, -hf, zzz, zzz, zzz, +hf, +hf, +hf };
+	const real Z[NNEIGHBOR] = { -hf, zzz, +hf, -hf, zzz, +hf, -hf, zzz, +hf, -hf, zzz, +hf, -hf, zzz, +hf, -hf, zzz,
+			+hf, -hf, zzz, +hf, -hf, zzz, +hf, -hf, zzz, +hf, };
+
+	hydro_array<con_t> UF[NNEIGHBOR];
+	hydro_array<prim_t> VF[NNEIGHBOR];
+	for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
+		if (dir == center_dir) {
+			continue;
+		}
+		UF[dir] = new_hydro_array<con_t>();
+		VF[dir] = new_hydro_array<prim_t>();
+		const real x = X[dir];
+		const real y = Y[dir];
+		const real z = Z[dir];
+		for (integer j = 0; j != HYDRO_NX; ++j) {
+			for (integer k = 0; k != HYDRO_NX; ++k) {
+				for (integer l = 0; l != HYDRO_NX; ++l) {
+					auto& uref = UF[dir][j][k][l];
+					auto& vref = VF[dir][j][k][l];
+					for (integer field = 0; field != HYDRO_NF; ++field) {
+						uref[field] = U[P000][j][k][l][field];
+						uref[field] += U[P100][j][k][l][field] * x;
+						uref[field] += U[P010][j][k][l][field] * y;
+						uref[field] += U[P001][j][k][l][field] * z;
+						uref[field] += U[P110][j][k][l][field] * x * y;
+						uref[field] += U[P101][j][k][l][field] * x * z;
+						uref[field] += U[P011][j][k][l][field] * y * z;
+						uref[field] += U[P200][j][k][l][field] * hf * (x * x - _1o12);
+						uref[field] += U[P020][j][k][l][field] * hf * (y * y - _1o12);
+						uref[field] += U[P002][j][k][l][field] * hf * (z * z - _1o12);
+					}
+					vref = uref;
+				}
+			}
+		}
+	}
+	for (integer j = 0; j != HYDRO_NX; ++j) {
+		for (integer k = 0; k != HYDRO_NX; ++k) {
+			for (integer l = 0; l != HYDRO_NX; ++l) {
+				VF[center_dir][j][k][l] = U[P000][j][k][l];
+			}
+		}
+	}
+
+	for (integer dir = 0; dir < NNEIGHBOR / 2; ++dir) {
+		const integer dir_l = dir;
+		const integer dir_r = NNEIGHBOR - dir;
+		const integer xub = HYDRO_NX - dir_x[dir_r];
+		const integer yub = HYDRO_NX - dir_y[dir_r];
+		const integer zub = HYDRO_NX - dir_z[dir_r];
+		for (integer j = 0; j != xub; ++j) {
+			const integer jm = j;
+			const integer jp = j + dir_x[dir_r];
+			for (integer k = 0; k != yub; ++k) {
+				const integer km = k;
+				const integer kp = k + dir_y[dir_r];
+				for (integer l = 0; l != zub; ++l) {
+					const integer lm = l;
+					const integer lp = l + dir_z[dir_r];
+					const auto& vm = VF[center_dir][jm][km][lm];
+					const auto& vp = VF[center_dir][jp][kp][lp];
+					auto& vr = VF[dir_r][jm][km][lm];
+					auto& vl = VF[dir_l][jp][kp][lp];
+					for (integer field = 0; field != HYDRO_NF; ++field) {
+						lim(vm[field], vl[field], vr[field], vp[field]);
+					}
+				}
+			}
+		}
+	}
+
+	for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
+		if (dir == center_dir) {
+			continue;
+		}
+		for (integer j = 0; j != HYDRO_NX; ++j) {
+			for (integer k = 0; k != HYDRO_NX; ++k) {
+				for (integer l = 0; l != HYDRO_NX; ++l) {
+					UF[dir][j][k][l] = VF[dir][j][k][l];
+				}
+			}
+		}
+	}
+	for (integer j = 0; j != HYDRO_NX; ++j) {
+		for (integer k = 0; k != HYDRO_NX; ++k) {
+			for (integer l = 0; l != HYDRO_NX; ++l) {
+				UF[center_dir][j][k][l] = U[P000][j][k][l];
+			}
+		}
+	}
+
+	real interp_coeff[NDIM][NDIM][NDIM] = { { { -(1.0 / 192), -(1.0 / 72), -(1.0 / 576) }, { -(1.0 / 72), -(1.0 / 9),
+			-(1.0 / 24) }, { -(1.0 / 576), -(1.0 / 24), -(11.0 / 576) } }, { { -(1.0 / 72), -(1.0 / 9), -(1.0 / 24) }, {
+			-(1.0 / 9), 1.0, 1.0 / 9 }, { -(1.0 / 24), 1.0 / 9, 7.0 / 72 } }, { { -(1.0 / 576), -(1.0 / 24), -(11.0
+			/ 576) }, { -(1.0 / 24), 1.0 / 9, 7.0 / 72 }, { -(11.0 / 576), 7.0 / 72, 13.0 / 192 } } };
+
+	for (integer amr_dir = 0; amr_dir != NNEIGHBOR; ++amr_dir) {
+		if (neighbor_id[amr_dir] == hpx::invalid_id && !is_phys_bound(amr_dir)) {
+			const integer xl = dir_x[amr_dir] == +1 ? HYDRO_NX - 2 : 1;
+			const integer yl = dir_y[amr_dir] == +1 ? HYDRO_NX - 2 : 1;
+			const integer zl = dir_z[amr_dir] == +1 ? HYDRO_NX - 2 : 1;
+			const integer xu = dir_x[amr_dir] == -1 ? 2 : HYDRO_NX - 1;
+			const integer yu = dir_y[amr_dir] == -1 ? 2 : HYDRO_NX - 1;
+			const integer zu = dir_z[amr_dir] == -1 ? 2 : HYDRO_NX - 1;
+			const integer sz = HYDRO_NF * (4 * NCHILD + 6) * (xu - xl) * (yu - yl) * (zu - zl);
+			std::vector<real> uc(sz);
+			auto iter = uc.begin();
+			for (integer j = xl; j != xu; ++j) {
+				for (integer k = yl; k != yu; ++k) {
+					for (integer l = zl; l != zu; ++l) {
+						for (integer ci = 0; ci != NCHILD; ++ci) {
+							const integer xs = (2 * ((ci >> 0) & 1) - 1);
+							const integer ys = (2 * ((ci >> 1) & 1) - 1);
+							const integer zs = (2 * ((ci >> 2) & 1) - 1);
+							for (integer field = 0; field != HYDRO_NF; ++field) {
+								real v = real(0);
+								real vx, vy, vz;
+								for (integer d = 0; d != NNEIGHBOR; ++d) {
+									const auto c = interp_coeff[1 + xs * dir_x[d]][1 + ys * dir_y[d]][1 + zs * dir_z[d]];
+									v += c * UF[d][j][k][l][field];
+								}
+								vx = U[P100][j][k][l][field];
+								vx += hf * xs * U[P200][j][k][l][field];
+								vx += hf * ys * U[P010][j][k][l][field];
+								vx += hf * zs * U[P001][j][k][l][field];
+								vy = U[P010][j][k][l][field];
+								vy += hf * xs * U[P100][j][k][l][field];
+								vy += hf * ys * U[P020][j][k][l][field];
+								vy += hf * zs * U[P001][j][k][l][field];
+								vz = U[P001][j][k][l][field];
+								vz += hf * xs * U[P100][j][k][l][field];
+								vz += hf * ys * U[P010][j][k][l][field];
+								vz += hf * zs * U[P002][j][k][l][field];
+								*iter++ = v;
+								*iter++ = vx / real(2);
+								*iter++ = vy / real(2);
+								*iter++ = vz / real(2);
+							}
+						}
+						for (integer field = 0; field != HYDRO_NF; ++field) {
+							*iter++ = U[P110][j][k][l][field] / real(4);
+							*iter++ = U[P101][j][k][l][field] / real(4);
+							*iter++ = U[P011][j][k][l][field] / real(4);
+							*iter++ = U[P200][j][k][l][field] / real(4);
+							*iter++ = U[P020][j][k][l][field] / real(4);
+							*iter++ = U[P002][j][k][l][field] / real(4);
+						}
+					}
+				}
+			}
+		}
+	}
+
+}
+
 void node_server::set_expansions(hpx::future<std::vector<real>> f) {
 	L2L(f.get());
-	if (++neighbor_done_cnt == NNEIGHBOR + 1) {
+	if (++fmm_neighbor_done_cnt == NNEIGHBOR + 1) {
 		send_expansions();
 	}
 }
 
 void node_server::set_multipoles(hpx::future<std::vector<real>> f, integer ci) {
 	M2M(f.get(), ci);
-	if (++child_done_cnt == NCHILD) {
+	if (++fmm_child_done_cnt == NCHILD) {
 		send_multipoles();
 	}
 //	integer cnt = neighbor_done_cnt;
@@ -427,14 +638,14 @@ void node_server::send_multipoles() {
 		if (d == center_dir) {
 			continue;
 		}
-		auto bnd_fut = get_boundary(d);
-		neighbor_id[d].set_boundary(bnd_fut, NNEIGHBOR - 1 - d);
+		auto bnd_fut = get_fmm_boundary(d);
+		neighbor_id[d].set_fmm_boundary(bnd_fut, NNEIGHBOR - 1 - d);
 	}
 	M2L(M, center_dir, N3);
-	if (++neighbor_done_cnt == NNEIGHBOR + 1) {
+	if (++fmm_neighbor_done_cnt == NNEIGHBOR + 1) {
 		send_expansions();
 	}
-	child_done_cnt = 0;
+	fmm_child_done_cnt = 0;
 
 }
 
@@ -449,7 +660,7 @@ void node_server::send_expansions() {
 }
 
 void node_server::M2L(const std::vector<real>& m, integer d, integer N) {
-	//printf( "------------%li %li %li %li - %li %li %li\n", level,location[0], location[1], location[2], d % 3, (d/3)%3, d/9);
+//printf( "------------%li %li %li %li - %li %li %li\n", level,location[0], location[1], location[2], d % 3, (d/3)%3, d/9);
 	if (P == 0) {
 		return;
 	}
@@ -552,7 +763,7 @@ void node_server::get_tree(std::vector<node_client> my_neighbors) {
 	for (integer i = 0; i != NNEIGHBOR; ++i) {
 		neighbor_id[i] = my_neighbors[i];
 	}
-	neighbor_id[13] = my_id;
+	neighbor_id[center_dir] = my_id;
 	integer cnt = 0;
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
 		if (neighbor_id[d] != hpx::invalid_id) {
@@ -653,156 +864,25 @@ bool node_server::child_is_amr(integer ci, integer dir) const {
 	}
 }
 
-std::pair<real, std::vector<real>> node_server::execute(real global_dt, integer rk, std::vector<real> amr_data) {
+void node_server::execute() {
 	bool done, all_poles, poles_sent;
-	std::vector<hpx::future<std::pair<real, std::vector<real>>> >child_exe(NCHILD);
-	//	printf("Begin at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
-	hydro_state.update(global_dt, rk, phi, gx, gy, gz);
-	if (level != 0) {
-		auto iter = amr_data.begin();
-		for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
-			if (is_amr(dir)) {
-				if (!is_phys_bound(dir)) {
-					hydro_state.prolong_unpack(which_face[dir], iter);
-				}
-				integer inc = NX * NX * hydro_vars::nf_hydro;
-				iter += inc;
-			}
-		}
-		assert(iter - amr_data.begin() == amr_data.size());
-	}
-	hydro_updated = true;
+	std::vector<hpx::future<void>> child_exe(NCHILD);
+//	printf("Begin at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
 	if (!is_leaf) {
 		for (integer i = 0; i != NCHILD; ++i) {
-			std::vector<real> amr_data(2 * NDIM * 4 * (NX * NX / 4) * hydro_vars::nf_hydro);
-			integer actual_size = 0;
-			auto iter = amr_data.begin();
-			for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
-				if (child_is_amr(i, dir)) {
-					hydro_state.prolong_pack(which_face[dir], i, iter);
-					integer inc = NX * NX  * hydro_vars::nf_hydro;
-					iter += inc;
-					actual_size += inc;
-				}
-			}
-			amr_data.resize(actual_size);
-			child_exe[i] = child_id[i].execute(global_dt, rk, std::move(amr_data));
+			child_exe[i] = child_id[i].execute();
 		}
 	} else {
 		for (integer i = 0; i != NCHILD; ++i) {
-			child_exe[i] = hpx::make_ready_future(std::make_pair(real(0), std::vector<real>()));
+			child_exe[i] = hpx::make_ready_future();
 		}
 		send_multipoles();
 	}
 	wait_all(child_exe);
 	exe_promise->get_future().wait();
-	for (integer d = 0; d != NNEIGHBOR; ++d) {
-		if (d != center_dir) {
-			if (neighbor_id[d] == hpx::invalid_id && is_face[d]) {
-				hydro_state.set_boundary(which_face[d]);
-			}
-		}
-	}
-	assert(neighbor_done_cnt == NNEIGHBOR + 1);
-	this_dt = hydro_state.compute_du();
-	if (!is_leaf) {
-		for (integer i = 0; i != NCHILD; ++i) {
-			auto pr = child_exe[i].get();
-			std::vector<bool> amr_dirs(2 * NDIM, false);
-			for (integer d = 0; d != NNEIGHBOR; ++d) {
-				if (child_is_amr(i, d)) {
-					auto fc = which_face[d];
-					amr_dirs[fc] = true;
-				}
-			}
-			hydro_state.restrict_unpack(pr.second, i, std::move(amr_dirs));
-			unpack_from_child(pr.second.begin() + hydro_vars::nf_hydro * NX * NX * NX / 8, i);
-			this_dt = std::min(this_dt, pr.first);
-		}
-	}
+	assert(fmm_neighbor_done_cnt == NNEIGHBOR + 1);
 	reset();
-	std::vector<bool> amr_dirs(2 * NDIM, false);
-	for (integer d = 0; d != NNEIGHBOR; ++d) {
-		if (is_amr(d)) {
-			auto fc = which_face[d];
-			amr_dirs[fc] = true;
-		}
-	}
 
-	std::vector<real> parent_data((4 * hydro_vars::nf_hydro + 4) * NX * NX * NX / 8, real(0));
-	hydro_state.restrict_pack(parent_data, amr_dirs);
-	pack_for_parent(parent_data.begin() + 4 * hydro_vars::nf_hydro * NX * NX * NX / 8);
-
-//	printf("End at grid %li - %li %li %li - dt = %e\n", level, location[2], location[1], location[0], this_dt);
-	return std::make_pair(real(this_dt), parent_data);
-}
-
-void node_server::pack_for_parent(std::vector<real>::iterator iter) {
-	if (P == 0) {
-		return;
-	}
-	const auto phi_iter = iter;
-	const auto gx_iter = iter + (1) * NX * NX * NX / 8;
-	const auto gy_iter = iter + (2) * NX * NX * NX / 8;
-	const auto gz_iter = iter + (3) * NX * NX * NX / 8;
-	for (integer j = 0; j != NX / 2; ++j) {
-		for (integer k = 0; k != NX / 2; ++k) {
-			for (integer l = 0; l != NX / 2; ++l) {
-				const auto index = ind4d(0, j, k, l, NX / 2);
-				real m0 = 0.0;
-				*(phi_iter + index) = 0.0;
-				*(gx_iter + index) = 0.0;
-				*(gy_iter + index) = 0.0;
-				*(gz_iter + index) = 0.0;
-				for (integer j0 = 0; j0 != 2; ++j0) {
-					for (integer k0 = 0; k0 != 2; ++k0) {
-						for (integer l0 = 0; l0 != 2; ++l0) {
-							const auto ii = ind4d(0, 2 * j + j0, 2 * k + k0, 2 * l + l0);
-							*(phi_iter + index) += M[ii] * phi[ii];
-							*(gx_iter + index) += M[ii] * gx[ii];
-							*(gy_iter + index) += M[ii] * gy[ii];
-							*(gz_iter + index) += M[ii] * gz[ii];
-							m0 += M[ii];
-						}
-					}
-				}
-				*(gx_iter + index) /= m0;
-				*(gy_iter + index) /= m0;
-				*(gx_iter + index) /= m0;
-				*(phi_iter + index) /= m0;
-			}
-		}
-
-	}
-}
-
-void node_server::unpack_from_child(std::vector<real>::iterator iter, integer ci) {
-	if (P == 0) {
-		return;
-	}
-	const auto phi_iter = iter;
-	const auto gx_iter = iter + (1) * NX * NX * NX / 8;
-	const auto gy_iter = iter + (2) * NX * NX * NX / 8;
-	const auto gz_iter = iter + (3) * NX * NX * NX / 8;
-	const auto xlb = ((ci >> 0) & 1) * NX / 2;
-	const auto ylb = ((ci >> 1) & 1) * NX / 2;
-	const auto zlb = ((ci >> 2) & 1) * NX / 2;
-	const auto xub = xlb + NX / 2;
-	const auto yub = xlb + NX / 2;
-	const auto zub = xlb + NX / 2;
-	for (integer j = xlb; j != xub; ++j) {
-		for (integer k = ylb; k != yub; ++k) {
-			for (integer l = zlb; l != zub; ++l) {
-				const auto ii = ind4d(0, j, k, l);
-				const auto jj = ind4d(0, j - xlb, k - ylb, l - zlb, NX / 2);
-				phi[ii] = *(phi_iter + jj);
-				gx[ii] = *(gx_iter + jj);
-				gy[ii] = *(gy_iter + jj);
-				gz[ii] = *(gz_iter + jj);
-			}
-		}
-
-	}
 }
 
 node_server::node_server() {
@@ -811,14 +891,13 @@ node_server::node_server() {
 
 std::vector<double> node_server::get_data() const {
 //	printf("Getting data\n");
-	std::vector<double> v((4 + 4*hydro_vars::nf_hydro) * N3);
+	std::vector<double> v(NF * N3);
 	auto l = v.begin();
 	for (integer i = 0; i != N3; ++i) {
 		*l++ = double(phi[i]);
 		*l++ = double(gx[i]);
 		*l++ = double(gy[i]);
 		*l++ = double(gz[i]);
-		hydro_state.dump_data(l, i);
 	}
 	return std::move(v);
 }
@@ -878,18 +957,19 @@ void node_server::reset() {
 		}
 	}
 	L = std::vector<real>(PP * N3, 0.0);
-	hydro_updated = false;
-	neighbor_done_cnt = 0;
-	child_done_cnt = 0;
+	fmm_neighbor_done_cnt = 0;
+	hydro_neighbor_done_cnt = 0;
+	fmm_child_done_cnt = 0;
 	for (integer d = 0; d != NNEIGHBOR; ++d) {
 		if (d != center_dir) {
 			if (neighbor_id[d] == hpx::invalid_id) {
-				++neighbor_done_cnt;
+				++fmm_neighbor_done_cnt;
+				++hydro_neighbor_done_cnt;
 			}
 		}
 	}
 	if (level == 0) {
-		++neighbor_done_cnt;
+		++fmm_neighbor_done_cnt;
 	}
 	++step_cnt;
 	if (step_cnt % 2 == 0) {
@@ -913,8 +993,11 @@ void node_server::initialize(node_client pid, integer lev, std::array<integer, N
 	parent_id = pid;
 	key = location_to_key(level, std::move(loc));
 	dx = 1.0 / real(std::pow(2, level) * NX);
+	for (integer i = 0; i != NMOM; ++i) {
+		U[i] = new_hydro_array<con_t>();
+		U0[i] = new_hydro_array<con_t>();
+	}
 	reset();
-	hydro_state.initialize(dx * real(NX * loc[0]), dx * real(NX * loc[1]), dx * real(NX * loc[2]), dx);
 }
 
 node_server::~node_server() {

@@ -28,8 +28,8 @@ hpx::future<std::vector<node_client>> node_client::get_children() const {
 	}
 }
 
-hpx::future<std::pair<real,std::vector<real>>> node_client::execute(real dt, integer rk, std::vector<real> amr_data) {
-	return hpx::async<typename node_server::execute_action>(id, dt, rk, amr_data);
+hpx::future<void> node_client::execute() {
+	return hpx::async<typename node_server::execute_action>(id);
 }
 
 
@@ -98,9 +98,9 @@ void node_client::set_expansions(hpx::future<std::vector<real>>& f) {
 	}
 }
 
-void node_client::set_boundary(hpx::future<std::vector<real>>& f, integer d) {
+void node_client::set_fmm_boundary(hpx::future<std::vector<real>>& f, integer d) {
 	if (id != hpx::invalid_id) {
-		hpx::apply<typename node_server::set_boundary_action>(id, std::move(f), d);
+		hpx::apply<typename node_server::set_fmm_boundary_action>(id, std::move(f), d);
 	}
 }
 

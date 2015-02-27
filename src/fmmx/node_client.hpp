@@ -31,13 +31,13 @@ public:
 	node_client& operator=(const hpx::id_type&);
 	bool operator==(const hpx::id_type&) const;
 	bool operator!=(const hpx::id_type&) const;
-	void set_boundary(hpx::future<std::vector<real>>& f, integer d);
+	void set_fmm_boundary(hpx::future<std::vector<real>>& f, integer d);
 	void set_multipoles(hpx::future<std::vector<real>>& f, integer ci);
 	void set_expansions(hpx::future<std::vector<real>>&);
 	hpx::future<std::vector<double>> get_data() const;
 	hpx::future<integer> get_node_count() const;
 	hpx::future<std::list<std::size_t>> get_leaf_list() const;
-	hpx::future<std::pair<real,std::vector<real>>> execute(real, integer, std::vector<real> amr_data = std::vector<real>());
+	hpx::future<void> execute();
 	template<class Arc>
 	void serialize(Arc&, const unsigned);
 };
