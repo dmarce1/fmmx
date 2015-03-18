@@ -28,8 +28,27 @@ hpx::future<std::vector<node_client>> node_client::get_children() const {
 	}
 }
 
-hpx::future<void> node_client::execute() {
-	return hpx::async<typename node_server::execute_action>(id);
+hpx::future<real> node_client::execute(integer rk) {
+	return hpx::async<typename node_server::execute_action>(id, rk);
+}
+
+
+hpx::future<std::vector<real>> node_client::hydro_restrict(integer rk) {
+	return hpx::async<typename node_server::hydro_restrict_action>(id, rk);
+}
+
+
+hpx::future<real> node_client::hydro_exchange(integer rk, integer sub, real dt) {
+	return hpx::async<typename node_server::hydro_exchange_action>(id, rk, sub, dt);
+}
+
+
+hpx::future<std::vector<real>> node_client::hydro_get_amr_bnd(integer rk, integer dir, integer ci) {
+	return hpx::async<typename node_server::hydro_get_amr_bnd_action>(id, rk, dir, ci);
+}
+
+hpx::future<std::vector<real>> node_client::hydro_get_bnd(integer rk, integer dir) {
+	return hpx::async<typename node_server::hydro_get_bnd_action>(id, rk, dir);
 }
 
 

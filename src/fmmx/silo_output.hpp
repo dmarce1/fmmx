@@ -16,7 +16,7 @@
 
 class node_client;
 
-#define NF 4
+#define SILO_NF HYDRO_NF
 
 #include <vector>
 
@@ -25,7 +25,7 @@ public:
 	static constexpr double precision = 1.0e-10;
 	static constexpr int Nchild = 1 << NDIM;
 	struct zone {
-		std::array<double, NF> fields;
+		std::array<double, HYDRO_NF> fields;
 		std::array<double, NDIM> position;
 		std::array<double, NDIM> span;
 		zone() {
@@ -56,7 +56,7 @@ public:
 		}
 	};
 	struct silo_zone {
-		std::array<double, NF> fields;
+		std::array<double, HYDRO_NF> fields;
 		std::vector<int> vertices;
 		silo_zone() :
 				vertices(Nchild) {

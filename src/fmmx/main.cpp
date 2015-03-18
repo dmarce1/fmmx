@@ -10,6 +10,9 @@
 #include "node_server.hpp"
 #include "key.hpp"
 #include <chrono>
+#ifndef NDEBUG
+#include <fenv.h>
+#endif
 
 HPX_REGISTER_COMPONENT_MODULE();
 
@@ -22,6 +25,13 @@ typedef typename silo_output::do_output_action do_output_t;
 HPX_REGISTER_ACTION(do_output_t);
 
 int hpx_main() {
+
+#ifndef NDEBUG
+	feenableexcept(FE_DIVBYZERO);
+	feenableexcept(FE_INVALID);
+	feenableexcept(FE_OVERFLOW);
+#endif
+
 	std::chrono::time_point<std::chrono::system_clock> start, end;
 
 	node_client root_client;
@@ -34,8 +44,7 @@ int hpx_main() {
 
 	root_client = root.get();
 
-	auto f = hpx::register_id_with_basename("fmmx_node", root_client, location_to_key(0, std::array<integer, NDIM> { {
-			0, 0, 0 } }));
+	auto f = hpx::register_id_with_basename("fmmx_node", root_client, location_to_key(0, std::array<integer, NDIM> { { 0, 0, 0 } }));
 
 	if (!f.get()) {
 		printf("Failed to register id_with_basename\n");
@@ -45,45 +54,68 @@ int hpx_main() {
 	start = std::chrono::system_clock::now();
 
 	root_client.set_me(root_client).get();
-	for (integer l = 0; l <= MAXLEVEL; ++l) {
+	for (integer l = 0; l < MAXLEVEL; ++l) {
 		root_client.refine().get();
 		root_client.get_tree().get();
 		printf("Refined to level %i\n", l + 1);
 	}
-	end = std::chrono::system_clock::now();
-
-	std::chrono::duration<double> elapsed_seconds = end - start;
-	std::cout << "finished refinement in " << elapsed_seconds.count() << "s\n";
 
 	//++fnum;
 	std::list<std::size_t> leaf_list = root_client.get_leaf_list().get();
 	printf("%li leaves detected by root\n", leaf_list.size());
-	auto f1 = hpx::async<typename silo_output::do_output_action>(sout, std::move(leaf_list), 0);
+	auto f1 = hpx::async<typename silo_output::do_output_action>(sout, leaf_list, 0);
 	f1.get();
-	real tmax = 0.1;
-	start = std::chrono::system_clock::now();
+	real tmax = 0.5;
 	integer fnum = 0;
 	printf("Executing...\n");
-	 root_client.execute().get();
-	end = std::chrono::system_clock::now();
-	elapsed_seconds = end - start;
-	std::cout << "finished computation in " << elapsed_seconds.count() << "s\n";
-//	root_client.execute(dt, 1).get();
-//	real t = 0.0;
-//	for (integer z = 0; z != 10; z++) {
-		//while (t < tmax) {
-//		t += dt;
-//		printf("%e %e\n", double(t), double(dt));
-//		dt = root_client.execute(dt, 0).get().first;
-//		root_client.execute(dt, 1).get();
-//	}
-	//root_client.execute(dt, 0).get();
+	real dt;
+	integer step = 0;
+	real t = real(0);
+	dt = real(0);
+	while (t < tmax) {
+		for (integer rk = 0; rk != HYDRO_RK; ++rk) {
 
+			auto tfut = root_client.hydro_exchange(rk, 1, dt);
+			if (rk == 0) {
+				dt = tfut.get() / real(2 * HYDRO_P + 1) * cfl[HYDRO_RK - 1];
+				printf("%e %e\n", double(t), double(dt));
+			} else {
+				tfut.get();
+			}
+
+			root_client.hydro_exchange(rk, 2, dt).get();
+			const integer rk0 = (rk != HYDRO_RK - 1 ? rk + 1 : 0);
+			root_client.hydro_exchange(rk0, 3, dt).get();
+
+			root_client.hydro_restrict(rk0);
+
+			root_client.hydro_exchange(rk0, 0, dt).get();
+
+			root_client.hydro_exchange(rk0, 4, dt).get();
+
+		}
+		++step;
+		if (step % 10 == 0) {
+			f1 = hpx::async<typename silo_output::do_output_action>(sout, leaf_list, step / 10);
+			f1.get();
+		}
+		t += dt;
+	}
+//	 leaf_list = root_client.get_leaf_list().get();
+
+	/*real t = 0.0;
+	 real dt = 0.0;
+	 for (integer z = 0; z != 50; z++) {
+	 //	while (t < tmax) {
+	 dt = root_client.execute(0).get();
+	 for (integer rk = 1; rk < HYDRO_RK; ++rk) {
+	 root_client.execute(rk).get();
+	 }
+	 t += dt;
 	 leaf_list = root_client.get_leaf_list().get();
-	printf("%li leaves detected by root\n", leaf_list.size());
-	f1 = hpx::async<typename silo_output::do_output_action>(sout, std::move(leaf_list), 1);
-	f1.get();
-
+	 }*/
+//root_client.execute(dt, 0).get();
+//printf("%li leaves detected by root\n", leaf_list.size());
 	auto f0 = root_client.destroy();
 	f0.get();
 	hpx::finalize();

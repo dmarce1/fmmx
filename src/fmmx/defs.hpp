@@ -30,40 +30,40 @@
 using real = double;
 using integer = std::int64_t;
 
-constexpr real FGAMMA = 7.0/4.0;
-constexpr integer NMOM = 10;
 constexpr integer NX = 8;
-constexpr integer FMM_BW = 2;
+
+//#define SOD_SHOCK
+#define BLAST_WAVE
+
 constexpr integer HYDRO_NX = NX + 2;
-constexpr integer P = 5;
-constexpr integer N3 = NX * NX * NX;
-constexpr integer PP = P * P;
+constexpr integer HYDRO_N3 = HYDRO_NX * HYDRO_NX * HYDRO_NX;
+constexpr integer HYDRO_RK = 4;
+constexpr integer HYDRO_P = 4;
+constexpr integer HYDRO_PPP = (HYDRO_P + 2) * (HYDRO_P + 1) * (HYDRO_P) / 6;
+constexpr integer HYDRO_NF = 5;
+
+constexpr integer SILO_SUB_NX = HYDRO_P;
+constexpr integer SILO_NX = NX * SILO_SUB_NX;
+constexpr integer SILO_N3 = NX * NX * NX * SILO_SUB_NX * SILO_SUB_NX * SILO_SUB_NX;
+
+constexpr integer FMM_NX = NX;
+constexpr integer FMM_BW = 2;
+constexpr integer FMM_P = 0;
+constexpr integer FMM_N3 = FMM_NX * FMM_NX * FMM_NX;
+constexpr integer FMM_PP = FMM_P * FMM_P;
+
 constexpr integer NDIM = 3;
 constexpr integer NCHILD = 8;
 constexpr integer NNEIGHBOR = 27;
-constexpr integer MAXLEVEL = 4;
-constexpr integer NF = 2 * PP;
+constexpr integer MAXLEVEL = 3;
 
-constexpr integer P000 = 0;
-constexpr integer P001 = 1;
-constexpr integer P010 = 2;
-constexpr integer P100 = 3;
-constexpr integer P110 = 4;
-constexpr integer P101 = 5;
-constexpr integer P011 = 6;
-constexpr integer P200 = 7;
-constexpr integer P020 = 8;
-constexpr integer P002 = 9;
+static constexpr std::array<integer, NNEIGHBOR> dir_z =
+	{ -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
+static constexpr std::array<integer, NNEIGHBOR> dir_y =
+	{ -1, -1, -1, 0, 0, 0, 1, 1, 1, -1, -1, -1, 0, 0, 0, 1, 1, 1, -1, -1, -1, 0, 0, 0, 1, 1, 1 };
 
-static constexpr std::array<integer, NNEIGHBOR> dir_z = { -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-		1, 1, 1, 1, 1, 1, 1 };
-
-static constexpr std::array<integer, NNEIGHBOR> dir_y = { -1, -1, -1, 0, 0, 0, 1, 1, 1, -1, -1, -1, 0, 0, 0, 1, 1, 1, -1, -1,
-		-1, 0, 0, 0, 1, 1, 1 };
-
-static constexpr std::array<integer, NNEIGHBOR> dir_x = { -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1,
-		-1, 0, 1, -1, 0, 1 };
-
+static constexpr std::array<integer, NNEIGHBOR> dir_x =
+	{ -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1 };
 
 #endif /* DEF_HPP_ */

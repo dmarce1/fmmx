@@ -9,8 +9,9 @@
 #define __NODE_SERVER__HPP
 
 #include "defs.hpp"
+#include "hydro.hpp"
+#include "rk.hpp"
 #include <boost/serialization/list.hpp>
-#include "state.hpp"
 #include <boost/atomic.hpp>
 
 class node_server: public hpx::components::managed_component_base<node_server> {
@@ -36,19 +37,13 @@ private:
 	void initialize(node_client, integer, std::array<integer, NDIM>);
 	void reset();
 
-	std::array<std::vector<std::vector<std::vector<con_t>>>, NMOM> U0;
-	std::array<std::vector<std::vector<std::vector<con_t>>>, NMOM> U;
-	std::array<std::vector<std::vector<std::vector<flux_t>>>, NMOM> F[3][4];
-
 	boost::atomic<integer> fmm_child_done_cnt;
 	boost::atomic<integer> fmm_neighbor_done_cnt;
-	boost::atomic<integer> hydro_neighbor_done_cnt;
 	integer step_cnt;
 	std::pair<hpx::promise<void>, hpx::promise<void>> exe_pair;
 	hpx::promise<void>* exe_promise;
 
-	void compute_hydro();
-
+	std::shared_ptr<hydro> hydro_vars;
 public:
 
 	bool refine_me() const;
@@ -56,8 +51,7 @@ public:
 	node_server(hpx::id_type);
 	node_server(node_client, integer, std::array<integer, NDIM>);
 	~node_server();
-	void get_tree(
-			std::vector<node_client> my_neighbors = std::vector<node_client>(NNEIGHBOR, node_client(hpx::invalid_id)));
+	void get_tree(std::vector<node_client> my_neighbors = std::vector<node_client>(NNEIGHBOR, node_client(hpx::invalid_id)));
 	void init_t0();
 	integer get_node_count() const;
 	std::vector<double> get_data() const;
@@ -68,15 +62,13 @@ public:
 	hpx::future<std::vector<real>> get_multipoles();
 	hpx::future<std::vector<real>> get_expansions(integer ci) const;
 	hpx::future<std::vector<real>> get_fmm_boundary(integer d) const;
-	hpx::future<std::vector<real>> get_hydro_boundary(integer d) const;
 	void set_fmm_boundary(hpx::future<std::vector<real>> f, integer d);
-	void set_hydro_boundary(hpx::future<std::vector<real>> f, integer d);
 	void set_multipoles(hpx::future<std::vector<real>> f, integer ci);
 	void set_expansions(hpx::future<std::vector<real>>);
 	void M2M(const std::vector<real>&, integer);
 	void M2L(const std::vector<real>&, integer, integer);
 	void L2L(const std::vector<real>&);
-	void execute();
+	real execute(integer rk);
 	void derefine(bool);
 	bool child_is_amr(integer ci, integer dir) const;
 	bool is_amr(integer dir) const;
@@ -85,22 +77,36 @@ public:
 	void set_me(hpx::id_type id);
 	bool is_phys_bound(integer dir) const;
 	//
-			HPX_DEFINE_COMPONENT_ACTION(node_server, get_tree, get_tree_action);//
-			HPX_DEFINE_COMPONENT_ACTION(node_server, get_children, get_children_action);//
-			HPX_DEFINE_COMPONENT_ACTION(node_server, derefine, derefine_action);//
-			HPX_DEFINE_COMPONENT_ACTION(node_server, refine, refine_action);//
-			HPX_DEFINE_COMPONENT_ACTION(node_server, refine_proper, refine_proper_action);//
-			HPX_DEFINE_COMPONENT_ACTION(node_server, set_me, set_me_action);//
-			HPX_DEFINE_COMPONENT_ACTION(node_server, execute, execute_action);//
-			HPX_DEFINE_COMPONENT_ACTION(node_server, get_node_count, get_node_count_action);//
-			HPX_DEFINE_COMPONENT_ACTION(node_server, get_data, get_data_action);//
-			HPX_DEFINE_COMPONENT_ACTION(node_server, get_leaf_list, get_leaf_list_action);//
-			HPX_DEFINE_COMPONENT_ACTION(node_server, set_fmm_boundary, set_fmm_boundary_action);//
-			HPX_DEFINE_COMPONENT_ACTION(node_server, set_multipoles, set_multipole_action);//
-			HPX_DEFINE_COMPONENT_ACTION(node_server, set_expansions, set_expansions_action);
-			//
-			//
-		};
+	HPX_DEFINE_COMPONENT_ACTION(node_server, get_tree, get_tree_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, get_children, get_children_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, derefine, derefine_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, refine, refine_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, refine_proper, refine_proper_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, set_me, set_me_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, execute, execute_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, get_node_count, get_node_count_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, get_data, get_data_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, get_leaf_list, get_leaf_list_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, set_fmm_boundary, set_fmm_boundary_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, set_multipoles, set_multipole_action); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, set_expansions, set_expansions_action);
+	//
+
+	real hydro_exchange(integer, integer, real dt); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, hydro_exchange, hydro_exchange_action);
+	//
+	std::vector<real> hydro_get_bnd(integer, integer); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, hydro_get_bnd, hydro_get_bnd_action);
+	//
+
+	std::vector<real> hydro_get_amr_bnd(integer, integer, integer); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, hydro_get_amr_bnd, hydro_get_amr_bnd_action);
+	//
+	std::vector<real> hydro_restrict(integer); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, hydro_restrict, hydro_restrict_action);
+	//
+
+};
 
 #endif
 

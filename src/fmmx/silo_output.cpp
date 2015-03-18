@@ -12,6 +12,7 @@
  *      Author: dmarce1
  */
 
+#include "math.hpp"
 #include "silo_output.hpp"
 #include "node_client.hpp"
 #include "key.hpp"
@@ -38,57 +39,68 @@ void silo_output::do_output(std::list<std::size_t> node_list, integer filenum) {
 	std::vector<hpx::future<hpx::id_type> > node_futs = hpx::find_ids_from_basename("fmmx_node", id_list);
 	std::vector<hpx::future<void>> data_futs(node_futs.size());
 	for (integer i0 = 0; i0 != node_futs.size(); ++i0) {
-		data_futs[i0] = (node_client(node_futs[i0].get()).get_data()).then(
-				hpx::util::unwrapped([=](std::vector<double> data) {
-					auto iter = data.begin();
-					auto key = (*id_list_ptr)[i0];
-					constexpr integer vertex_order[8] = {0, 1, 3, 2, 4, 5, 7, 6};
-					std::array<integer, NDIM> loc;
-					std::array<double, NDIM> corner;
-					integer lev;
-					double span;
-					key_to_location(key, &lev, &loc);
-					for( integer a = 0; a != NDIM; ++a) {
-						corner[a] = double(loc[a]) / double(std::pow(2,lev));
-					}
-					integer cnt = 0;
-					span = 1.0 / double(NX*std::pow(2,lev));
-					for (integer j0 = 0; j0 != NX; ++j0) {
-						for (integer k0 = 0; k0 != NX; ++k0) {
-							for (integer l0 = 0; l0 != NX; ++l0) {
-								silo_zone s;
-								int j;
-								for( integer k = 0; k != NF; ++k) {
-									s.fields[k] = *iter;
-									iter++;
-									cnt++;
-								}
-								for (int ci0 = 0; ci0 < Nchild; ci0++) {
-									vertex v;
-									int ci = vertex_order[ci0];
-									v[0] = (double(j0) + (0.5 * double(2 * ((ci >> 0) & 1) - 1))+0.5)*span + corner[0];
-									v[1] = (double(k0) + (0.5 * double(2 * ((ci >> 1) & 1) - 1))+0.5)*span + corner[1];
-									v[2] = (double(l0) + (0.5 * double(2 * ((ci >> 2) & 1) - 1))+0.5)*span + corner[2];
-									mutex0.lock();
-									auto iter = nodedir.find(v);
-									if (iter == nodedir.end()) {
-										j = current_index;
-										v.index = j;
-										current_index++;
-										nodedir.insert(std::move(v));
-									} else {
-										j = iter->index;
-									}
-									mutex0.unlock();
-									s.vertices[ci0] = j;
-								}
-								mutex0.lock();
-								zonedir.push_back(std::move(s));
-								mutex0.unlock();
-							}
+		data_futs[i0] = (node_client(node_futs[i0].get()).get_data()).then(hpx::util::unwrapped([=](std::vector<double> data) {
+			auto iter = data.begin();
+			auto key = (*id_list_ptr)[i0];
+			constexpr integer vertex_order[8] = {0, 1, 3, 2, 4, 5, 7, 6};
+			std::array<integer, NDIM> loc;
+			std::array<double, NDIM> corner;
+			integer lev;
+			double span;
+			key_to_location(key, &lev, &loc);
+			for( integer a = 0; a != NDIM; ++a) {
+				corner[a] = double(loc[a]) / double(std::pow(2,lev));
+			}
+			integer cnt = 0;
+			span = 1.0 / double(NX*std::pow(2,lev));
+			for (integer j0 = 0; j0 != SILO_NX; ++j0) {
+				for (integer k0 = 0; k0 != SILO_NX; ++k0) {
+					for (integer l0 = 0; l0 != SILO_NX; ++l0) {
+						const integer jp = j0 / HYDRO_P;
+						const integer kp = k0 / HYDRO_P;
+						const integer lp = l0/ HYDRO_P;
+						const integer jc = j0 % HYDRO_P;
+						const integer kc = k0 % HYDRO_P;
+						const integer lc = l0 % HYDRO_P;
+						silo_zone s;
+						int j;
+						for( integer k = 0; k != HYDRO_NF; ++k) {
+							s.fields[k] = *iter;
+							iter++;
+							cnt++;
 						}
+						auto dx0 = span * gauss_weights[HYDRO_P-1][jc] / real(2);
+						auto dy0 = span * gauss_weights[HYDRO_P-1][kc] / real(2);
+						auto dz0 = span * gauss_weights[HYDRO_P-1][lc] / real(2);
+						auto x0 = corner[0] + (span/real(2))*(gauss_vol_lb[HYDRO_P-1][jc]+real(1));
+						auto y0 = corner[1] + (span/real(2))*(gauss_vol_lb[HYDRO_P-1][kc]+real(1));
+						auto z0 = corner[2] + (span/real(2))*(gauss_vol_lb[HYDRO_P-1][lc]+real(1));
+						for (int ci0 = 0; ci0 < Nchild; ci0++) {
+							vertex v;
+							int ci = vertex_order[ci0];
+							v[0] = real(jp)*span + real((ci >> 0) & 1)*dx0 + x0;
+							v[1] = real(kp)*span + real((ci >> 1) & 1)*dy0 + y0;
+							v[2] = real(lp)*span + real((ci >> 2) & 1)*dz0 + z0;
+							mutex0.lock();
+							auto iter = nodedir.find(v);
+							if (iter == nodedir.end()) {
+								j = current_index;
+								v.index = j;
+								current_index++;
+								nodedir.insert(std::move(v));
+							} else {
+								j = iter->index;
+							}
+							mutex0.unlock();
+							s.vertices[ci0] = j;
+						}
+						mutex0.lock();
+						zonedir.push_back(std::move(s));
+						mutex0.unlock();
 					}
-				}));
+				}
+			}
+		}));
 	}
 
 	hpx::wait_all(data_futs);
@@ -143,12 +155,13 @@ void silo_output::do_output(std::list<std::size_t> node_list, integer filenum) {
 			(int) DB_DOUBLE, olist);
 
 	std::vector<double> data(nzones);
-	std::array<char[32], NF> field_names;
-	sprintf(field_names[0], "phi");
-	sprintf(field_names[1], "gx");
-	sprintf(field_names[2], "gy");
-	sprintf(field_names[3], "gz");
-	for (int fi = 0; fi != NF; ++fi) {
+	std::array<char[32], HYDRO_NF> field_names;
+	sprintf(field_names[0], "D");
+	sprintf(field_names[1], "SX");
+	sprintf(field_names[2], "SY");
+	sprintf(field_names[3], "SZ");
+	sprintf(field_names[4], "E");
+	for (int fi = 0; fi != HYDRO_NF; ++fi) {
 		int i = 0;
 		for (auto zi = zonedir.begin(); zi != zonedir.end(); zi++) {
 			data[i] = zi->fields[fi];

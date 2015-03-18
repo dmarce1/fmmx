@@ -22,15 +22,15 @@
 
 #define SGN(i) real((i) > 0 ? 1 : ((i)<0 ? -1 : 0))
 
-std::array<real,P> factorial;
+std::array<real,FMM_P> factorial;
 
-std::array<real,P*P> prefactor;
+std::array<real,FMM_P*FMM_P> prefactor;
 
-std::array<real,P*P> Anm;
+std::array<real,FMM_P*FMM_P> Anm;
 
-std::array<real,P*P*P*P> Cnm_r;
+std::array<real,FMM_P*FMM_P*FMM_P*FMM_P> Cnm_r;
 
-std::array<real,P*P*P*P> Cnm_i;
+std::array<real,FMM_P*FMM_P*FMM_P*FMM_P> Cnm_i;
 
 void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 		const std::array<std::vector<real>, NDIM>& d, integer N, std::vector<real>& L_r, std::vector<real>& L_i, std::vector<real>& Ynm) {
@@ -48,7 +48,7 @@ void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 		real pn = 1;                        // Initialize Legendre polynomial Pn
 		real rhom = real(1.0) / rho;                          // Initialize rho^(-m-1)
 #pragma novector
-		for (int m = 0; m != P; ++m) {                     // Loop over m in Ynm
+		for (int m = 0; m != FMM_P; ++m) {                     // Loop over m in Ynm
 			real eim_r = std::cos(real(m) * phi);
 			real eim_i = std::sin(real(m) * phi);
 			real p = pn;                  //  Associated Legendre polynomial Pnm
@@ -63,7 +63,7 @@ void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 			rhom /= rho;                                          //  rho^(-m-1)
 			real rhon = rhom;                                     //  rho^(-n-1)
 #pragma novector
-			for (int n = m + 1; n != P; ++n) {            //  Loop over n in Ynm
+			for (int n = m + 1; n != FMM_P; ++n) {            //  Loop over n in Ynm
 				int npm = n * n + n + m;             //   Index of Ynm for m > 0
 				int nmm = n * n + n - m;             //   Index of Ynm for m < 0
 				Ynm[npm * Nynm + i] = rhon * p * prefactor[npm] * eim_r; //   rho^n * Ynm for m > 0
@@ -80,7 +80,7 @@ void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 		}                                              // End loop over m in Ynm
 	}
 
-	for (integer j = 0; j != P; ++j) {
+	for (integer j = 0; j != FMM_P; ++j) {
 		for (integer k = 0; k <= j; ++k) {
 			const integer jkp = j * j + j + k;
 			const integer jkm = j * j + j - k;
@@ -89,11 +89,11 @@ void exafmm_kernel::M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 			for (integer i = 0; i != N; ++i) {
 				L_r[i] = L_i[i] = real(0.0);
 			}
-			for (integer n = 0; n != P - j; ++n) {
+			for (integer n = 0; n != FMM_P - j; ++n) {
 				for (integer m = -n; m <= +n; ++m) {
 					const integer nn = n * n + n;
 					const integer nj = (n + j) * ((n + j) + 1);
-					const integer jknm = jkp * P * P + n * n + n + m;
+					const integer jknm = jkp * FMM_P * FMM_P + n * n + n + m;
 					const integer nmp = nn + std::abs(m);
 					const integer nmm = nn - std::abs(m);
 					const integer jnkmp = nj + std::abs(m - k);
@@ -135,12 +135,12 @@ void exafmm_kernel::cart2sph(real& r, real& theta, real& phi, std::array<real, N
 
 void exafmm_kernel::M2M(std::vector<real>& CiM, const std::vector<real>& CjM, const std::array<real, NDIM>& dist,
 		const integer N) {
-	std::vector<real> Ynm(P * P);
+	std::vector<real> Ynm(FMM_P * FMM_P);
 	std::vector<real> M_r(N), M_i(N);
 	real rho, theta, phi;
 	cart2sph(rho, theta, phi, dist);
 	evalMultipole(rho, theta, -phi, Ynm);
-	for (integer j = 0; j != P; ++j) {
+	for (integer j = 0; j != FMM_P; ++j) {
 		for (integer k = 0; k <= j; ++k) {
 			const integer jkp = j * j + j + k;
 			const integer jkm = j * j + j - k;
@@ -186,12 +186,12 @@ void exafmm_kernel::M2M(std::vector<real>& CiM, const std::vector<real>& CjM, co
 
 void exafmm_kernel::L2L(std::vector<real>& CiL, const std::vector<real>& CjL, const std::array<real, NDIM>& dist,
 		const integer N) {
-	std::vector<real> Ynm(P * P);
+	std::vector<real> Ynm(FMM_P * FMM_P);
 	real rho, theta, phi;
 	std::vector<real> L_r(N), L_i(N);
 	cart2sph(rho, theta, phi, dist);
 	evalMultipole(rho, theta, phi, Ynm);
-	for (integer j = 0; j != P; ++j) {
+	for (integer j = 0; j != FMM_P; ++j) {
 		for (integer k = 0; k <= j; ++k) {
 			integer jkp = j * j + j + k;
 			integer jkm = j * j + j - k;
@@ -200,7 +200,7 @@ void exafmm_kernel::L2L(std::vector<real>& CiL, const std::vector<real>& CjL, co
 			for (integer i = 0; i != N; ++i) {
 				L_r[i] = L_i[i] = 0.0;
 			}
-			for (integer n = j; n != P; ++n) {
+			for (integer n = j; n != FMM_P; ++n) {
 				for (integer m = j - n + k; m <= n - j + k; ++m) {
 					const integer nn = n * n + n;
 					const integer nj = (n - j) * ((n - j) + 1);
@@ -240,7 +240,7 @@ void exafmm_kernel::evalMultipole(real rho, real theta, real phi, std::vector<re
 	real fact = 1;                                   // Initialize 2 * m + 1
 	real pn = 1;                        // Initialize Legendre polynomial Pn
 	real rhom = 1;                                       // Initialize rho^m
-	for (int m = 0; m != P; ++m) {                     // Loop over m in Ynm
+	for (int m = 0; m != FMM_P; ++m) {                     // Loop over m in Ynm
 		real eim_r = std::cos(real(m) * phi);
 		real eim_i = std::sin(real(m) * phi);
 		real p = pn;                  //  Associated Legendre polynomial Pnm
@@ -254,7 +254,7 @@ void exafmm_kernel::evalMultipole(real rho, real theta, real phi, std::vector<re
 		p = x *real(2 * m + 1) * p1;          //  Pnm using recurrence relation
 		rhom *= rho;                                              //  rho^m
 		real rhon = rhom;                                         //  rho^n
-		for (int n = m + 1; n != P; ++n) {            //  Loop over n in Ynm
+		for (int n = m + 1; n != FMM_P; ++n) {            //  Loop over n in Ynm
 			int npm = n * n + n + m;             //   Index of Ynm for m > 0
 			int nmm = n * n + n - m;             //   Index of Ynm for m < 0
 			Ynm[npm] = rhon * p * prefactor[npm] * eim_r;     //   rho^n * Ynm
@@ -273,15 +273,15 @@ void exafmm_kernel::evalMultipole(real rho, real theta, real phi, std::vector<re
 
 exafmm_kernel::exafmm_kernel() {
 	const complex I(0., 1.);                               // Imaginary unit
-	if( P == 0 ) {
+	if( FMM_P == 0 ) {
 		return;
 	}
 	factorial[0] = 1;                                // Initialize factorial
-	for (int n = 1; n < P; ++n) {                              // Loop to P
+	for (int n = 1; n < FMM_P; ++n) {                              // Loop to P
 		factorial[n] = factorial[n - 1] * n;                        //  n!
 	}                                                       // End loop to P
 
-	for (int n = 0; n != P; ++n) {                     // Loop over n in Anm
+	for (int n = 0; n != FMM_P; ++n) {                     // Loop over n in Anm
 		for (int m = -n; m <= n; ++m) {               //  Loop over m in Anm
 			int nm = n * n + n + m;                        //   Index of Anm
 			int nabsm = abs(m);                                     //   |m|
@@ -302,11 +302,11 @@ exafmm_kernel::exafmm_kernel() {
 		}                                         //  End loop over m in Anm
 	}                                              // End loop over n in Anm
 
-	for (int j = 0, jk = 0, jknm = 0; j != P; ++j) { // Loop over j in Cjknm
+	for (int j = 0, jk = 0, jknm = 0; j != FMM_P; ++j) { // Loop over j in Cjknm
 		for (int k = -j; k <= j; ++k, ++jk) {       //  Loop over k in Cjknm
-			for (int n = 0, nm = 0; n != P; ++n) { //   Loop over n in Cjknm
+			for (int n = 0, nm = 0; n != FMM_P; ++n) { //   Loop over n in Cjknm
 				for (int m = -n; m <= n; ++m, ++nm, ++jknm) { //    Loop over m in Cjknm
-					if (j + n < P) {
+					if (j + n < FMM_P) {
 						const int jnkm = (j + n) * (j + n) + j + n + m - k; //     Index C_{j+n}^{m-k}
 						auto tmp = std::pow(I, real(abs(k - m) - abs(k) - abs(m))) //     Cjknm
 						* real(ODDEVEN(j) * Anm[nm] * Anm[jk] / Anm[jnkm]);

@@ -18,7 +18,7 @@ private:
 public:
 	hpx::future<void> get_tree(
 			std::vector<node_client> my_neighbors = std::vector<node_client>(NNEIGHBOR, node_client(hpx::invalid_id)));
-
+	hpx::future<std::vector<real>> hydro_restrict( integer rk);
 	hpx::future<bool> refine();
 	hpx::future<void> refine_proper();
 	hpx::future<void> set_me(hpx::id_type id);
@@ -26,6 +26,9 @@ public:
 	hpx::future<void> destroy();
 	operator hpx::id_type() const;
 	node_client();
+	hpx::future<real> hydro_exchange(integer, integer, real); //
+	hpx::future<std::vector<real>> hydro_get_amr_bnd(integer, integer, integer); //
+	hpx::future<std::vector<real>> hydro_get_bnd(integer, integer); //
 	hpx::future<std::vector<node_client>> get_children() const;
 	node_client(const hpx::id_type&);
 	node_client& operator=(const hpx::id_type&);
@@ -37,7 +40,7 @@ public:
 	hpx::future<std::vector<double>> get_data() const;
 	hpx::future<integer> get_node_count() const;
 	hpx::future<std::list<std::size_t>> get_leaf_list() const;
-	hpx::future<void> execute();
+	hpx::future<real> execute(integer rk);
 	template<class Arc>
 	void serialize(Arc&, const unsigned);
 };
