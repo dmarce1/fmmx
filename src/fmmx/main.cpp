@@ -57,46 +57,46 @@ int hpx_main() {
 	for (integer l = 0; l < MAXLEVEL; ++l) {
 		root_client.refine().get();
 		root_client.get_tree().get();
-		printf("Refined to level %i\n", l + 1);
+		printf("Refined to level %li\n", l + 1);
 	}
 
 	//++fnum;
 	std::list<std::size_t> leaf_list = root_client.get_leaf_list().get();
 	printf("%li leaves detected by root\n", leaf_list.size());
+	root_client.hydro_project(0).get();
 	auto f1 = hpx::async<typename silo_output::do_output_action>(sout, leaf_list, 0);
 	f1.get();
 	real tmax = 0.5;
-	integer fnum = 0;
 	printf("Executing...\n");
 	real dt;
 	integer step = 0;
 	real t = real(0);
 	dt = real(0);
+	root_client.hydro_amr_prolong(0).get();
 	while (t < tmax) {
 		for (integer rk = 0; rk != HYDRO_RK; ++rk) {
+			root_client.hydro_project(rk).get();
+			root_client.hydro_amr_prolong(rk).get();
+			root_client.hydro_exchange(rk).get();
 
-			auto tfut = root_client.hydro_exchange(rk, 1, dt);
+			auto tfut = root_client.hydro_next_du(rk);
 			if (rk == 0) {
-				dt = tfut.get() / real(2 * HYDRO_P + 1) * cfl[HYDRO_RK - 1];
-				printf("%e %e\n", double(t), double(dt));
+				dt = tfut.get().first / real(2 * HYDRO_P + 1) * cfl[HYDRO_RK - 1];
+				printf("%li %e %e\n", step, double(t), double(dt));
 			} else {
 				tfut.get();
 			}
 
-			root_client.hydro_exchange(rk, 2, dt).get();
+			root_client.hydro_next_u(rk, dt).get();
 			const integer rk0 = (rk != HYDRO_RK - 1 ? rk + 1 : 0);
-			root_client.hydro_exchange(rk0, 3, dt).get();
-
-			root_client.hydro_restrict(rk0);
-
-			root_client.hydro_exchange(rk0, 0, dt).get();
-
-			root_client.hydro_exchange(rk0, 4, dt).get();
+			root_client.hydro_amr_prolong(rk0).get();
+			root_client.hydro_exchange(rk0).get();
+			root_client.hydro_restrict(rk0).get();
 
 		}
 		++step;
-		if (step % 10 == 0) {
-			f1 = hpx::async<typename silo_output::do_output_action>(sout, leaf_list, step / 10);
+		if (step % 1 == 0) {
+			f1 = hpx::async<typename silo_output::do_output_action>(sout, leaf_list, step / 1);
 			f1.get();
 		}
 		t += dt;

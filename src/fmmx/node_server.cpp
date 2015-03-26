@@ -308,7 +308,7 @@ bool node_server::refine() {
 }
 
 std::vector<real> node_server::hydro_restrict(integer rk) {
-	std::vector<hpx::future<std::vector<real>>> cfuts(NCHILD);
+	std::vector<hpx::future<std::vector<real>>>cfuts(NCHILD);
 	if (!is_leaf) {
 		for (integer ci = 0; ci != NCHILD; ++ci) {
 			cfuts[ci] = child_id[ci].hydro_restrict(rk);
@@ -321,9 +321,9 @@ std::vector<real> node_server::hydro_restrict(integer rk) {
 	return hydro_vars->restrict_pack(rk);
 }
 
-real node_server::hydro_exchange(integer rk, integer sub, real dt) {
+void node_server::hydro_amr_prolong(integer rk) {
 
-	for( integer f = 0; f != 2*NDIM; ++f) {
+	for (integer f = 0; f != 2 * NDIM; ++f) {
 		hydro_vars->set_amr(f, false);
 		hydro_vars->set_child_amr(f, false);
 	}
@@ -333,72 +333,76 @@ real node_server::hydro_exchange(integer rk, integer sub, real dt) {
 				hydro_vars->set_amr(which_face[dir], true);
 			}
 			if (!is_leaf && neighbor_is_leaf[dir]) {
-					hydro_vars->set_child_amr(which_face[dir], true);
+				hydro_vars->set_child_amr(which_face[dir], true);
 			}
 		}
 	}
-	std::vector<hpx::future<real>> child_exe(NCHILD);
+	std::vector<hpx::future<void>> child_exe(NCHILD);
 	if (!is_leaf) {
 		for (integer i = 0; i != NCHILD; ++i) {
-			child_exe[i] = child_id[i].hydro_exchange(rk, sub, dt);
+			child_exe[i] = child_id[i].hydro_amr_prolong(rk);
 		}
 	}
-
-	switch (sub) {
-	case 0:
-		hydro_vars->apply_limiter(rk);
-		break;
-	case 1:
-		dt = hydro_vars->next_du(rk);
-		break;
-	case 2:
-		hydro_vars->next_u(rk, dt);
-		rk++;
-		if (rk == HYDRO_RK - 1) {
-			rk = 0;
-		}
-		break;
-	case 3:
-	case 4: {
-		std::vector<hpx::future<std::vector<real>>>bnd_futs(NNEIGHBOR);
-		for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
-			bnd_futs[dir] = hpx::make_ready_future(std::vector<real>(0));
-			if (dir != center_dir) {
-				if (neighbor_id[dir] != hpx::invalid_id) {
-					bnd_futs[dir] = neighbor_id[dir].hydro_get_bnd(rk, NNEIGHBOR - dir - 1);
-				} else if( !is_phys_bound(dir) && is_face[dir] && sub == 3 ) {
-					integer ci = 0;
-					ci |= (location[0] & 1) << 0;
-					ci |= (location[1] & 1) << 1;
-					ci |= (location[2] & 1) << 2;
-					bnd_futs[dir] = parent_id.hydro_get_amr_bnd(rk, NNEIGHBOR - dir - 1, ci);
-				}
+	std::vector<hpx::future<std::vector<real>>>bnd_futs(NNEIGHBOR);
+	for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
+		bnd_futs[dir] = hpx::make_ready_future(std::vector<real>(0));
+		if (dir != center_dir) {
+			if (neighbor_id[dir] == hpx::invalid_id && !is_phys_bound(dir) && is_face[dir]) {
+				integer ci = 0;
+				ci |= ((location[0] & 1) << 0);
+				ci |= ((location[1] & 1) << 1);
+				ci |= ((location[2] & 1) << 2);
+				bnd_futs[dir] = parent_id.hydro_get_amr_bnd(rk, dir, ci);
 			}
 		}
-		for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
-			auto data = bnd_futs[dir].get();
-			if (data.size()) {
-				if( neighbor_id[dir] != hpx::invalid_id) {
-					hydro_vars->unpack_boundary(rk, data, dir);
-				} else {
-					hydro_vars->unpack_amr_boundary(rk, data, dir);
-				}
-			}
+	}
+	for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
+		auto data = bnd_futs[dir].get();
+		if (data.size()) {
+			hydro_vars->unpack_amr_boundary(rk, data, dir);
 		}
-		for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
-			if (is_face[dir] && neighbor_id[dir] == hpx::invalid_id) {
-				hydro_vars->enforce_physical_boundaries(rk, which_face[dir]);
-			}
+	}
+	if (!is_leaf) {
+		for (integer i = 0; i != NCHILD; ++i) {
+			child_exe[i].get();
 		}
 	}
 }
-//	printf( "%i sub dt = %e\n", sub, dt);
+
+void node_server::hydro_exchange(integer rk) {
+	std::vector<hpx::future<void>> child_exe(NCHILD);
 	if (!is_leaf) {
 		for (integer i = 0; i != NCHILD; ++i) {
-			dt = std::min(dt, child_exe[i].get());
+			child_exe[i] = child_id[i].hydro_exchange(rk);
 		}
 	}
-	return dt;
+	std::vector<hpx::future<std::vector<real>>>bnd_futs(NNEIGHBOR);
+	for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
+		bnd_futs[dir] = hpx::make_ready_future(std::vector<real>(0));
+		if (dir != center_dir) {
+			if (neighbor_id[dir] != hpx::invalid_id) {
+				bnd_futs[dir] = neighbor_id[dir].hydro_get_bnd(rk, NNEIGHBOR - dir - 1);
+			}
+		}
+	}
+	for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
+		auto data = bnd_futs[dir].get();
+		if (data.size()) {
+			if (neighbor_id[dir] != hpx::invalid_id) {
+				hydro_vars->unpack_boundary(rk, data, dir);
+			}
+		}
+	}
+	for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
+		if (is_face[dir] && neighbor_id[dir] == hpx::invalid_id && is_phys_bound(dir) ) {
+			hydro_vars->enforce_physical_boundaries(rk, which_face[dir]);
+		}
+	}
+	if (!is_leaf) {
+		for (integer i = 0; i != NCHILD; ++i) {
+			child_exe[i].get();
+		}
+	}
 }
 
 std::vector<real> node_server::hydro_get_bnd(integer rk, integer dir) {
@@ -516,6 +520,63 @@ void node_server::send_multipoles() {
 
 }
 
+void node_server::hydro_next_u(integer rk, real dt) {
+	std::vector<hpx::future<void>> cfuts(NCHILD);
+	if (!is_leaf) {
+		for (integer ci = 0; ci != NCHILD; ++ci) {
+			cfuts[ci] = child_id[ci].hydro_next_u(rk, dt);
+		}
+	}
+	hydro_vars->next_u(rk, dt);
+	if (!is_leaf) {
+		for (integer ci = 0; ci != NCHILD; ++ci) {
+			cfuts[ci].get();
+		}
+	}
+
+}
+
+std::pair<real, std::vector<real>> node_server::hydro_next_du(integer rk) {
+	std::pair<real, std::vector<real>> rc;
+	std::vector<hpx::future<std::pair<real, std::vector<real>>> >cfuts(NCHILD);
+	if (!is_leaf) {
+		for (integer ci = 0; ci != NCHILD; ++ci) {
+			cfuts[ci] = child_id[ci].hydro_next_du(rk);
+		}
+	}
+	rc.first = 1.0e+99;
+	std::vector<std::vector<real>> cflux(NCHILD);
+	if (!is_leaf) {
+		for (integer ci = 0; ci != NCHILD; ++ci) {
+			auto tmp = cfuts[ci].get();
+			cflux[ci] = std::move(tmp.second);
+			rc.first = std::min(rc.first, tmp.first);
+		}
+	}
+	rc.second = hydro_vars->flux_correct_pack(rk);
+	auto this_dt = hydro_vars->next_du(rk, cflux);
+	rc.first = std::min(rc.first, this_dt);
+
+	return rc;
+
+}
+
+void node_server::hydro_project(integer rk) {
+	std::vector<hpx::future<void>> cfuts(NCHILD);
+	if (!is_leaf) {
+		for (integer ci = 0; ci != NCHILD; ++ci) {
+			cfuts[ci] = child_id[ci].hydro_project(rk);
+		}
+	}
+	hydro_vars->apply_limiter(rk);
+	if (!is_leaf) {
+		for (integer ci = 0; ci != NCHILD; ++ci) {
+			cfuts[ci].get();
+		}
+	}
+
+}
+
 void node_server::send_expansions() {
 	if (!is_leaf) {
 		for (integer ci = 0; ci != NCHILD; ++ci) {
@@ -558,8 +619,6 @@ void node_server::M2L(const std::vector<real>& m, integer d, integer N) {
 	for (integer i = 0; i != NDIM; ++i) {
 		dist[i].resize(level == 0 ? FMM_N3 : 216);
 	}
-	const real delta = 1.0 / real(std::pow(integer(2), level));
-
 	integer max_list_size = level == 0 ? FMM_N3 : 216;
 
 	max_list_size = ((max_list_size - 1) / 64 + 1) * 64;
@@ -732,7 +791,6 @@ bool node_server::child_is_amr(integer ci, integer dir) const {
 }
 
 real node_server::execute(integer rk) {
-	bool done, all_poles, poles_sent;
 	std::vector<hpx::future<real>> child_exe(NCHILD);
 //	printf("Begin at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
 	if (!is_leaf) {
@@ -749,28 +807,7 @@ real node_server::execute(integer rk) {
 	exe_promise->get_future().wait();
 	assert(fmm_neighbor_done_cnt == NNEIGHBOR + 1);
 	reset();
-
-	/*	integer next_rk = rk != HYDRO_RK - 1 ? rk + 1 : 0;
-	 hydro_vars->apply_limiter(rk);
-	 for (integer dir = 0; dir != 6; ++dir) {
-	 hydro_vars->enforce_physical_boundaries(rk, dir);
-	 }*/
-	real this_dt = hydro_vars->next_du(rk);
-	real dt;
-	if (rk == 0) {
-		dt = (this_dt / real(2 * HYDRO_P + 1)) * cfl[HYDRO_RK - 1];
-	}
-	hydro_vars->next_u(rk, dt);
-	integer next_rk = rk != HYDRO_RK - 1 ? rk + 1 : 0;
-	for (integer dir = 0; dir != 6; ++dir) {
-		hydro_vars->enforce_physical_boundaries(next_rk, dir);
-	}
-	hydro_vars->apply_limiter(next_rk);
-	for (integer dir = 0; dir != 6; ++dir) {
-		hydro_vars->enforce_physical_boundaries(next_rk, dir);
-	}
-	return dt;
-
+	return 0.0;
 }
 
 node_server::node_server() {

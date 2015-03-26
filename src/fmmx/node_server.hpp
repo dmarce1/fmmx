@@ -92,8 +92,21 @@ public:
 	HPX_DEFINE_COMPONENT_ACTION(node_server, set_expansions, set_expansions_action);
 	//
 
-	real hydro_exchange(integer, integer, real dt); //
+	void hydro_exchange(integer); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, hydro_exchange, hydro_exchange_action);
+
+	void hydro_amr_prolong(integer); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, hydro_amr_prolong, hydro_amr_prolong_action);
+
+	void hydro_next_u(integer, real dt); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, hydro_next_u, hydro_next_u_action);
+
+	std::pair<real,std::vector<real>> hydro_next_du(integer); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, hydro_next_du, hydro_next_du_action);
+
+	void hydro_project(integer); //
+	HPX_DEFINE_COMPONENT_ACTION(node_server, hydro_project, hydro_project_action);
+
 	//
 	std::vector<real> hydro_get_bnd(integer, integer); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, hydro_get_bnd, hydro_get_bnd_action);

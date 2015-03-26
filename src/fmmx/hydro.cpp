@@ -9,6 +9,12 @@
 #include "math.hpp"
 #include "rk.hpp"
 
+const integer di = HYDRO_NX * HYDRO_NX;
+const integer dj = HYDRO_NX;
+const integer dk = 1;
+
+//#define NO_FLUX_CORRECTION
+
 state blast_wave(real x, real y, real z) {
 	state u(HYDRO_NF);
 	u = real(0);
@@ -24,7 +30,7 @@ state blast_wave(real x, real y, real z) {
 state sod_shock(real x, real y, real z) {
 	state u(HYDRO_NF);
 	u = real(0);
-	if (x < 0.5) {
+	if (z > 0.5) {
 		u[d0i] = 1.0;
 		u[egi] = 2.5;
 	} else {
@@ -35,7 +41,7 @@ state sod_shock(real x, real y, real z) {
 	return u;
 }
 
-std::function<state(real, real, real)> init_func = blast_wave;
+std::function<state(real, real, real)> init_func = sod_shock;
 
 bool hydro::refinement_needed() const {
 	for (integer i = 0; i != NX + 1; ++i) {
@@ -183,14 +189,11 @@ integer hydro::gindex(integer i, integer j, integer k, integer d) {
 
 }
 
-real hydro::next_du(integer rk) {
+real hydro::next_du(integer rk, const std::vector<std::vector<real>>& fflux) {
 	real amax = real(0);
-	const integer di = HYDRO_NX * HYDRO_NX;
-	const integer dj = HYDRO_NX;
-	const integer dk = 1;
 	const integer NGF = std::max(HYDRO_P - 1, integer(1));
 	const integer NGC = std::max(HYDRO_P - 1, integer(1));
-	const real dxinv = real(1) / dx;
+	const real dxinv = real(2) / dx;
 	const auto& gfpt = gauss_points[NGF - 1];
 	const auto& gfwt = gauss_weights[NGF - 1];
 	const auto& gcpt = gauss_points[NGC - 1];
@@ -223,32 +226,155 @@ real hydro::next_du(integer rk) {
 						amax = std::max(amax, spectral_radius(uly, 1));
 						amax = std::max(amax, spectral_radius(urz, 2));
 						amax = std::max(amax, spectral_radius(ulz, 2));
-						for (integer l = 0; l != HYDRO_P; ++l) {
-							for (integer m = 0; m != HYDRO_P - l; ++m) {
-								for (integer n = 0; n != HYDRO_P - l - m; ++n) {
-									const integer p = pindex(l, m, n);
-									const state ix = fx * (LegendreP(m, x1) * LegendreP(n, x2) * gfwt[g1] * gfwt[g2]);
-									const state iy = fy * (LegendreP(l, x1) * LegendreP(n, x2) * gfwt[g1] * gfwt[g2]);
-									const state iz = fz * (LegendreP(l, x1) * LegendreP(m, x2) * gfwt[g1] * gfwt[g2]);
-									const real lsgn = real(l % 2 == 0 ? +1 : -1);
-									const real msgn = real(m % 2 == 0 ? +1 : -1);
-									const real nsgn = real(n % 2 == 0 ? +1 : -1);
-									const real factor = real((2 * l + 1) * (2 * m + 1) * (2 * n + 1)) / real(8);
-									dU[rk][i][p] += ix * (lsgn * factor) * dxinv;
-									dU[rk][i][p] += iy * (msgn * factor) * dxinv;
-									dU[rk][i][p] += iz * (nsgn * factor) * dxinv;
-									dU[rk][i - di][p] -= ix * (factor * dxinv);
-									dU[rk][i - dj][p] -= iy * (factor * dxinv);
-									dU[rk][i - dk][p] -= iz * (factor * dxinv);
+#ifndef  NO_FLUX_CORRECTION
+						if (is_child_amr[i] == is_child_amr[i - di]) {
+#endif
+							for (integer l = 0; l != HYDRO_P; ++l) {
+								for (integer m = 0; m != HYDRO_P - l; ++m) {
+									for (integer n = 0; n != HYDRO_P - l - m; ++n) {
+										const integer p = pindex(l, m, n);
+										const state ix = fx * (LegendreP(m, x1) * LegendreP(n, x2) * gfwt[g1] * gfwt[g2]);
+										const real lsgn = real(l % 2 == 0 ? +1 : -1);
+										const real factor = real((2 * l + 1) * (2 * m + 1) * (2 * n + 1)) / real(8);
+										dU[rk][i][p] += ix * (lsgn * factor) * dxinv;
+										dU[rk][i - di][p] -= ix * (factor * dxinv);
+									}
 								}
 							}
+#ifndef  NO_FLUX_CORRECTION
 						}
-
+						if (is_child_amr[i] == is_child_amr[i - dj]) {
+#endif
+							for (integer l = 0; l != HYDRO_P; ++l) {
+								for (integer m = 0; m != HYDRO_P - l; ++m) {
+									for (integer n = 0; n != HYDRO_P - l - m; ++n) {
+										const integer p = pindex(l, m, n);
+										const state iy = fy * (LegendreP(l, x1) * LegendreP(n, x2) * gfwt[g1] * gfwt[g2]);
+										const real msgn = real(m % 2 == 0 ? +1 : -1);
+										const real factor = real((2 * l + 1) * (2 * m + 1) * (2 * n + 1)) / real(8);
+										dU[rk][i][p] += iy * (msgn * factor) * dxinv;
+										dU[rk][i - dj][p] -= iy * (factor * dxinv);
+									}
+								}
+							}
+#ifndef  NO_FLUX_CORRECTION
+						}
+						if (is_child_amr[i] == is_child_amr[i - dk]) {
+#endif
+							for (integer l = 0; l != HYDRO_P; ++l) {
+								for (integer m = 0; m != HYDRO_P - l; ++m) {
+									for (integer n = 0; n != HYDRO_P - l - m; ++n) {
+										const integer p = pindex(l, m, n);
+										const state iz = fz * (LegendreP(l, x1) * LegendreP(m, x2) * gfwt[g1] * gfwt[g2]);
+										const real nsgn = real(n % 2 == 0 ? +1 : -1);
+										const real factor = real((2 * l + 1) * (2 * m + 1) * (2 * n + 1)) / real(8);
+										dU[rk][i][p] += iz * (nsgn * factor) * dxinv;
+										dU[rk][i - dk][p] -= iz * (factor * dxinv);
+									}
+								}
+#ifndef  NO_FLUX_CORRECTION
+							}
+#endif
+						}
 					}
 				}
 			}
 		}
 	}
+#ifndef  NO_FLUX_CORRECTION
+	for (integer ci = 0; ci != NCHILD; ++ci) {
+		auto iter = fflux[ci].begin();
+		const integer cx = (ci >> 0) & 1;
+		const integer cy = (ci >> 1) & 1;
+		const integer cz = (ci >> 2) & 1;
+		const integer xlb = 1 + cx * (NX / 2);
+		const integer ylb = 1 + cy * (NX / 2);
+		const integer zlb = 1 + cz * (NX / 2);
+		const integer zub = zlb + NX / 2;
+		const integer xub = xlb + NX / 2;
+		const integer yub = ylb + NX / 2;
+		state f(HYDRO_NF);
+		integer fi;
+		fi = 0 + cx;
+		if (is_child_amr_face[fi]) {
+			//printf("%li %li\n", ci, fflux[ci].size());
+			const integer sgn = integer(2 * (fi % 2) - 1);
+			const integer ii = 1 + (fi % 2) * (HYDRO_NX - 3);
+			for (integer jj = ylb; jj != yub; ++jj) {
+				for (integer kk = zlb; kk != zub; ++kk) {
+					const integer i = gindex(ii, jj, kk);
+					std::valarray<real> tmp(real(0), HYDRO_PPP * HYDRO_NF);
+					std::copy(iter, iter + HYDRO_NF * HYDRO_PPP, std::begin(tmp));
+					for (integer l = 0; l != HYDRO_P; ++l) {
+						for (integer m = 0; m != HYDRO_P - l; ++m) {
+							for (integer n = 0; n != HYDRO_P - l - m; ++n) {
+								const integer p = pindex(l, m, n);
+								std::copy(std::begin(tmp) + p * HYDRO_NF, std::begin(tmp) + (p + 1) * HYDRO_NF, std::begin(f));
+								if ((is_child_amr[i] != is_child_amr[i - sgn * di])) {
+									dU[rk][i][p] += real(sgn) * f * dxinv;
+								}
+							}
+						}
+					}
+					iter += HYDRO_NF * HYDRO_PPP;
+				}
+			}
+		}
+		fi = 2 + cy;
+		if (is_child_amr_face[fi]) {
+			const integer sgn = integer(2 * (fi % 2) - 1);
+			const integer jj = 1 + (fi % 2) * (HYDRO_NX - 3);
+			for (integer ii = xlb; ii != xub; ++ii) {
+				for (integer kk = zlb; kk != zub; ++kk) {
+					const integer i = gindex(ii, jj, kk);
+					std::valarray<real> tmp(real(0), HYDRO_PPP * HYDRO_NF);
+					std::copy(iter, iter + HYDRO_NF * HYDRO_PPP, std::begin(tmp));
+					for (integer l = 0; l != HYDRO_P; ++l) {
+						for (integer m = 0; m != HYDRO_P - l; ++m) {
+							for (integer n = 0; n != HYDRO_P - l - m; ++n) {
+								const integer p = pindex(l, m, n);
+								std::copy(std::begin(tmp) + p * HYDRO_NF, std::begin(tmp) + (p + 1) * HYDRO_NF, std::begin(f));
+								if ((is_child_amr[i] != is_child_amr[i - sgn * dj])) {
+									dU[rk][i][p] += real(sgn) * f * dxinv;
+								}
+							}
+						}
+					}
+					iter += HYDRO_NF * HYDRO_PPP;
+				}
+			}
+		}
+
+		fi = 4 + cz;
+		if (is_child_amr_face[fi]) {
+			const integer sgn = integer(2 * (fi % 2) - 1);
+			const integer kk = 1 + (fi % 2) * (HYDRO_NX - 3);
+			for (integer ii = xlb; ii != xub; ++ii) {
+				for (integer jj = ylb; jj != yub; ++jj) {
+					const integer i = gindex(ii, jj, kk);
+					std::valarray<real> tmp(real(0), HYDRO_PPP * HYDRO_NF);
+					std::copy(iter, iter + HYDRO_NF * HYDRO_PPP, std::begin(tmp));
+					for (integer l = 0; l != HYDRO_P; ++l) {
+						for (integer m = 0; m != HYDRO_P - l; ++m) {
+							for (integer n = 0; n != HYDRO_P - l - m; ++n) {
+								const integer p = pindex(l, m, n);
+								std::copy(std::begin(tmp) + p * HYDRO_NF, std::begin(tmp) + (p + 1) * HYDRO_NF, std::begin(f));
+								if ((is_child_amr[i] != is_child_amr[i - sgn * dk])) {
+									dU[rk][i][p] += real(sgn) * f * dxinv;
+								}
+							}
+						}
+					}
+					iter += HYDRO_NF * HYDRO_PPP;
+				}
+			}
+		}
+		if (iter - fflux[ci].begin() != fflux[ci].size()) {
+			printf("%li %li Error 0\n", iter - fflux[ci].begin(), fflux[ci].size());
+			abort();
+		}
+	}
+#endif
 	for (integer ii = 1; ii != HYDRO_NX - 1; ++ii) {
 		for (integer jj = 1; jj != HYDRO_NX - 1; ++jj) {
 			for (integer kk = 1; kk != HYDRO_NX - 1; ++kk) {
@@ -291,6 +417,146 @@ real hydro::next_du(integer rk) {
 		}
 	}
 	return dx / amax;
+}
+
+std::vector<real> hydro::flux_correct_pack(integer rk) const {
+	const integer NGF = std::max(HYDRO_P - 1, integer(1));
+	const auto& gfpt = gauss_points[NGF - 1];
+	const auto& gfwt = gauss_weights[NGF - 1];
+	std::vector<real> a;
+	integer cnt = 0;
+	for (integer i = 0; i != 2 * NDIM; ++i) {
+		if (is_amr_face[i]) {
+			++cnt;
+		}
+	}
+	a.resize(cnt * HYDRO_NF * HYDRO_PPP * NX * NX / 4);
+	auto iter = a.begin();
+	for (integer face = 0; face != 2; ++face) {
+		if (is_amr_face[face]) {
+			integer ii = (face % 2 == 0) ? 3 : HYDRO_NX - 3;
+			for (integer jp = 1; jp != HYDRO_NX - 1; jp += 2) {
+				for (integer kp = 1; kp != HYDRO_NX - 1; kp += 2) {
+					std::valarray<real> tmp(real(0), HYDRO_PPP * HYDRO_NF);
+					for (integer jj = jp; jj < jp + 2; ++jj) {
+						for (integer kk = kp; kk < kp + 2; ++kk) {
+							const integer i = gindex(ii, jj, kk);
+							const integer c1 = (jj - 1) % 2;
+							const integer c2 = (kk - 1) % 2;
+							for (integer g1 = 0; g1 != NGF; ++g1) {
+								for (integer g2 = 0; g2 != NGF; ++g2) {
+									const real x1 = (real(2 * c1) + gfpt[g1] - real(1)) / real(2);
+									const real x2 = (real(2 * c2) + gfpt[g2] - real(1)) / real(2);
+									const state& urx = value_at(U[rk][i], -real(1), gfpt[g1], gfpt[g2]);
+									const state& ulx = value_at(U[rk][i - di], +real(1), gfpt[g1], gfpt[g2]);
+									state fx = Riemann_flux(urx, ulx, 0);
+									for (integer l = 0; l != HYDRO_P; ++l) {
+										for (integer m = 0; m != HYDRO_P - l; ++m) {
+											for (integer n = 0; n != HYDRO_P - l - m; ++n) {
+												const state ix = fx * (LegendreP(m, x1) * LegendreP(n, x2) * gfwt[g1] * gfwt[g2]);
+												const real lsgn = (face % 2 == 0) ? real(1) : real(l % 2 == 0 ? +1 : -1);
+												const real factor = real((2 * l + 1) * (2 * m + 1) * (2 * n + 1)) / real(8);
+												const state f = ix * lsgn * factor;
+												for (integer ff = 0; ff != HYDRO_NF; ++ff) {
+													tmp[HYDRO_NF * pindex(l, m, n) + ff] += f[ff] / real(4);
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					std::copy(std::begin(tmp), std::end(tmp), iter);
+					iter += HYDRO_PPP * HYDRO_NF;
+				}
+			}
+		}
+	}
+	for (integer face = 2; face != 4; ++face) {
+		if (is_amr_face[face]) {
+			integer jj = (face % 2 == 0) ? 3 : HYDRO_NX - 3;
+			for (integer ip = 1; ip != HYDRO_NX - 1; ip += 2) {
+				for (integer kp = 1; kp != HYDRO_NX - 1; kp += 2) {
+					std::valarray<real> tmp(real(0), HYDRO_PPP * HYDRO_NF);
+					for (integer ii = ip; ii < ip + 2; ++ii) {
+						for (integer kk = kp; kk < kp + 2; ++kk) {
+							const integer i = gindex(ii, jj, kk);
+							const integer c1 = (ii - 1) % 2;
+							const integer c2 = (kk - 1) % 2;
+							for (integer g1 = 0; g1 != NGF; ++g1) {
+								for (integer g2 = 0; g2 != NGF; ++g2) {
+									const real x1 = (real(2 * c1) + gfpt[g1] - real(1)) / real(2);
+									const real x2 = (real(2 * c2) + gfpt[g2] - real(1)) / real(2);
+									const state& ury = value_at(U[rk][i], gfpt[g1], -real(1), gfpt[g2]);
+									const state& uly = value_at(U[rk][i - dj], gfpt[g1], +real(1), gfpt[g2]);
+									state fy = Riemann_flux(ury, uly, 1);
+									for (integer l = 0; l != HYDRO_P; ++l) {
+										for (integer m = 0; m != HYDRO_P - l; ++m) {
+											for (integer n = 0; n != HYDRO_P - l - m; ++n) {
+												const state iy = fy * (LegendreP(l, x1) * LegendreP(n, x2) * gfwt[g1] * gfwt[g2]);
+												const real msgn = (face % 2 == 0) ? real(1) : real(m % 2 == 0 ? +1 : -1);
+												const real factor = real((2 * l + 1) * (2 * m + 1) * (2 * n + 1)) / real(8);
+												const state f = iy * msgn * factor;
+												for (integer ff = 0; ff != HYDRO_NF; ++ff) {
+													tmp[HYDRO_NF * pindex(l, m, n) + ff] += f[ff] / real(4);
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					std::copy(std::begin(tmp), std::end(tmp), iter);
+					iter += HYDRO_PPP * HYDRO_NF;
+				}
+			}
+		}
+	}
+	for (integer face = 4; face != 6; ++face) {
+		if (is_amr_face[face]) {
+			integer kk = (face % 2 == 0) ? 3 : HYDRO_NX - 3;
+			for (integer ip = 1; ip != HYDRO_NX - 1; ip += 2) {
+				for (integer jp = 1; jp != HYDRO_NX - 1; jp += 2) {
+					std::valarray<real> tmp(real(0), HYDRO_PPP * HYDRO_NF);
+					for (integer ii = ip; ii < ip + 2; ++ii) {
+						for (integer jj = jp; jj < jp + 2; ++jj) {
+							const integer i = gindex(ii, jj, kk);
+							const integer c1 = (ii - 1) % 2;
+							const integer c2 = (jj - 1) % 2;
+							for (integer g1 = 0; g1 != NGF; ++g1) {
+								for (integer g2 = 0; g2 != NGF; ++g2) {
+									const real x1 = (real(2 * c1) + gfpt[g1] - real(1)) / real(2);
+									const real x2 = (real(2 * c2) + gfpt[g2] - real(1)) / real(2);
+									const state& urz = value_at(U[rk][i], gfpt[g1], gfpt[g2], -real(1));
+									const state& ulz = value_at(U[rk][i - dk], gfpt[g1], gfpt[g2], +real(1));
+									state fz = Riemann_flux(urz, ulz, 2);
+									for (integer l = 0; l != HYDRO_P; ++l) {
+										for (integer m = 0; m != HYDRO_P - l; ++m) {
+											for (integer n = 0; n != HYDRO_P - l - m; ++n) {
+												const state iz = fz * (LegendreP(l, x1) * LegendreP(m, x2) * gfwt[g1] * gfwt[g2]);
+												const real nsgn = (face % 2 == 0) ? real(1) : real(n % 2 == 0 ? +1 : -1);
+												const real factor = real((2 * l + 1) * (2 * m + 1) * (2 * n + 1)) / real(8);
+												const state f = iz * nsgn * factor;
+												for (integer ff = 0; ff != HYDRO_NF; ++ff) {
+													tmp[HYDRO_NF * pindex(l, m, n) + ff] += f[ff] / real(4);
+												}
+											}
+										}
+									}
+
+								}
+							}
+						}
+					}
+					std::copy(std::begin(tmp), std::end(tmp), iter);
+					iter += HYDRO_PPP * HYDRO_NF;
+				}
+			}
+		}
+	}
+	return a;
 }
 
 void hydro::enforce_physical_boundaries(integer rk, integer dir) {
@@ -514,7 +780,6 @@ std::vector<real> hydro::pack_amr_boundary(integer rk, integer d, integer ci) co
 				for (integer l = 0; l < HYDRO_P; ++l) {
 					for (integer m = 0; m < HYDRO_P - l; ++m) {
 						for (integer n = 0; n < HYDRO_P - l - m; ++n) {
-							const integer p = pindex(l, m, n);
 							uc = real(0);
 							for (integer gx = 0; gx != HYDRO_P; ++gx) {
 								real px = LegendreP(l, gpt[gx]) * real(2 * l + 1) / real(2);
@@ -522,9 +787,9 @@ std::vector<real> hydro::pack_amr_boundary(integer rk, integer d, integer ci) co
 									real py = LegendreP(m, gpt[gy]) * real(2 * m + 1) / real(2);
 									for (integer gz = 0; gz != HYDRO_P; ++gz) {
 										real pz = LegendreP(n, gpt[gz]) * real(2 * n + 1) / real(2);
-										x = gpt[gx] / real(2) + real(ic % 2) - real(1) / real(2);
-										y = gpt[gy] / real(2) + real(jc % 2) - real(1) / real(2);
-										z = gpt[gz] / real(2) + real(kc % 2) - real(1) / real(2);
+										x = gpt[gx] / real(2) + real((ic % 2) ^ 1) - real(1) / real(2);
+										y = gpt[gy] / real(2) + real((jc % 2) ^ 1) - real(1) / real(2);
+										z = gpt[gz] / real(2) + real((kc % 2) ^ 1) - real(1) / real(2);
 										auto v = value_at(U[rk][ii], x, y, z);
 										uc += (gwt[gx] * gwt[gy] * gwt[gz]) * px * py * pz * v;
 									}
@@ -578,10 +843,6 @@ void hydro::apply_limiter(integer rk) {
 		}
 		return c;
 	};
-
-	const integer di = HYDRO_NX * HYDRO_NX;
-	const integer dj = HYDRO_NX;
-	const integer dk = 1;
 
 	auto& u = U[rk];
 	auto ux = u;
@@ -675,26 +936,27 @@ void hydro::apply_limiter(integer rk) {
 
 	for (integer i = 0; i < HYDRO_N3; ++i) {
 		for (integer pp = 1; pp != HYDRO_PPP; ++pp) {
-			u[i][pp] = minmod(ux[i][pp], minmod(uy[i][pp], uz[i][pp]));
+			u[i][pp] = minmod(uz[i][pp], minmod(ux[i][pp], uy[i][pp]));
 		}
 	}
 
 }
 
 void hydro::set_amr(integer face, bool val) {
+	is_amr_face[face] = val;
 	integer xlb, xub, ylb, yub, zlb, zub;
 	xlb = ylb = zlb = 1;
 	xub = yub = zub = HYDRO_NX - 1;
 	if (face == 1) {
-		xlb == HYDRO_NX - 3;
+		xlb = HYDRO_NX - 3;
 	} else if (face == 0) {
 		xub = 3;
 	} else if (face == 3) {
-		ylb == HYDRO_NX - 3;
+		ylb = HYDRO_NX - 3;
 	} else if (face == 2) {
 		yub = 3;
 	} else if (face == 5) {
-		zlb == HYDRO_NX - 3;
+		zlb = HYDRO_NX - 3;
 	} else if (face == 4) {
 		zub = 3;
 	}
@@ -708,19 +970,20 @@ void hydro::set_amr(integer face, bool val) {
 }
 
 void hydro::set_child_amr(integer face, bool val) {
+	is_child_amr_face[face] = val;
 	integer xlb, xub, ylb, yub, zlb, zub;
-	xlb = ylb = zlb = 1;
-	xub = yub = zub = HYDRO_NX - 1;
+	xlb = ylb = zlb = 0;
+	xub = yub = zub = HYDRO_NX;
 	if (face == 1) {
-		xlb == HYDRO_NX - 2;
+		xlb = HYDRO_NX - 2;
 	} else if (face == 0) {
 		xub = 2;
 	} else if (face == 3) {
-		ylb == HYDRO_NX - 2;
+		ylb = HYDRO_NX - 2;
 	} else if (face == 2) {
 		yub = 2;
 	} else if (face == 5) {
-		zlb == HYDRO_NX - 2;
+		zlb = HYDRO_NX - 2;
 	} else if (face == 4) {
 		zub = 2;
 	}
@@ -760,5 +1023,7 @@ hydro::hydro(real _dx, real _x0, real _y0, real _z0) {
 	}
 	std::fill(is_amr.begin(), is_amr.end(), false);
 	std::fill(is_child_amr.begin(), is_child_amr.end(), false);
+	std::fill(is_amr_face.begin(), is_amr_face.end(), false);
+	std::fill(is_child_amr_face.begin(), is_child_amr_face.end(), false);
 	initialize();
 }

@@ -11,14 +11,12 @@
 #include "defs.hpp"
 #include <boost/serialization/vector.hpp>
 
-
 class node_client {
 private:
 	hpx::id_type id;
 public:
-	hpx::future<void> get_tree(
-			std::vector<node_client> my_neighbors = std::vector<node_client>(NNEIGHBOR, node_client(hpx::invalid_id)));
-	hpx::future<std::vector<real>> hydro_restrict( integer rk);
+	hpx::future<void> get_tree(std::vector<node_client> my_neighbors = std::vector<node_client>(NNEIGHBOR, node_client(hpx::invalid_id)));
+	hpx::future<std::vector<real>> hydro_restrict(integer rk);
 	hpx::future<bool> refine();
 	hpx::future<void> refine_proper();
 	hpx::future<void> set_me(hpx::id_type id);
@@ -26,7 +24,8 @@ public:
 	hpx::future<void> destroy();
 	operator hpx::id_type() const;
 	node_client();
-	hpx::future<real> hydro_exchange(integer, integer, real); //
+	hpx::future<void> hydro_exchange(integer); //
+	hpx::future<void> hydro_amr_prolong(integer); //
 	hpx::future<std::vector<real>> hydro_get_amr_bnd(integer, integer, integer); //
 	hpx::future<std::vector<real>> hydro_get_bnd(integer, integer); //
 	hpx::future<std::vector<node_client>> get_children() const;
@@ -43,6 +42,11 @@ public:
 	hpx::future<real> execute(integer rk);
 	template<class Arc>
 	void serialize(Arc&, const unsigned);
+
+	hpx::future<void> hydro_next_u(integer, real dt); //
+	hpx::future<std::pair<real, std::vector<real>>> hydro_next_du(integer); //
+	hpx::future<void> hydro_project(integer); //
+
 };
 
 template<class Arc>

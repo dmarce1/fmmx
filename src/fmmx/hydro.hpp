@@ -17,6 +17,8 @@ private:
 	real dx, x0, y0, z0;
 	std::array<bool, HYDRO_N3> is_amr;
 	std::array<bool, HYDRO_N3> is_child_amr;
+	std::array<bool,2*NDIM> is_amr_face;
+	std::array<bool, 2*NDIM> is_child_amr_face;
 	std::valarray<std::valarray<std::valarray<std::valarray<real>>> >U;
 	std::valarray<std::valarray<std::valarray<std::valarray<real>>>> dU;
 	static integer pindex(integer, integer, integer);
@@ -29,8 +31,9 @@ public:
 	void set_amr( integer face , bool val=true);
 	void set_child_amr( integer face , bool val=true);
  	state get_U_at(real, real, real) const;
+ 	std::vector<real>flux_correct_pack(integer rk) const;
 	void apply_limiter(integer rk);
-	real next_du(integer rk);
+	real next_du(integer rk, const std::vector<std::vector<real>>&);
 	void next_u(integer rk, real dt);
 	void initialize();
 	void enforce_physical_boundaries(integer rk, integer dir);

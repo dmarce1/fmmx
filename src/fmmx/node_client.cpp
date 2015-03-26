@@ -12,6 +12,19 @@ hpx::future<void> node_client::get_tree(std::vector<node_client> my_neighbors) {
 	return hpx::async<typename node_server::get_tree_action>(id, std::move(my_neighbors));
 }
 
+hpx::future<void> node_client::hydro_next_u(integer rk, real dt) {
+	return hpx::async<typename node_server::hydro_next_u_action>(id,rk, dt);
+
+}
+
+hpx::future<std::pair<real, std::vector<real>>> node_client::hydro_next_du(integer rk) {
+	return hpx::async<typename node_server::hydro_next_du_action>(id,rk);
+}
+
+hpx::future<void> node_client::hydro_project(integer rk) {
+	return hpx::async<typename node_server::hydro_project_action>(id, rk);
+}
+
 
 bool node_client::operator==(const hpx::id_type& other) const {
 	return id == other;
@@ -38,8 +51,12 @@ hpx::future<std::vector<real>> node_client::hydro_restrict(integer rk) {
 }
 
 
-hpx::future<real> node_client::hydro_exchange(integer rk, integer sub, real dt) {
-	return hpx::async<typename node_server::hydro_exchange_action>(id, rk, sub, dt);
+hpx::future<void> node_client::hydro_exchange(integer rk) {
+	return hpx::async<typename node_server::hydro_exchange_action>(id, rk);
+}
+
+hpx::future<void> node_client::hydro_amr_prolong(integer rk) {
+	return hpx::async<typename node_server::hydro_amr_prolong_action>(id, rk);
 }
 
 

@@ -22,6 +22,7 @@ real LegendreP(integer n, real x) {
 	case 4:
 		assert(false);
 	}
+	return 0.0;
 }
 
 real dLegendreP_dx(integer n, real x) {
@@ -37,4 +38,5 @@ real dLegendreP_dx(integer n, real x) {
 	case 4:
 		assert(false);
 	}
+	return 0.0;
 }

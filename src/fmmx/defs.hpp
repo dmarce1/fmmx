@@ -37,8 +37,8 @@ constexpr integer NX = 8;
 
 constexpr integer HYDRO_NX = NX + 2;
 constexpr integer HYDRO_N3 = HYDRO_NX * HYDRO_NX * HYDRO_NX;
-constexpr integer HYDRO_RK = 4;
-constexpr integer HYDRO_P = 4;
+constexpr integer HYDRO_RK = 3;
+constexpr integer HYDRO_P = 3;
 constexpr integer HYDRO_PPP = (HYDRO_P + 2) * (HYDRO_P + 1) * (HYDRO_P) / 6;
 constexpr integer HYDRO_NF = 5;
 

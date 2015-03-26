@@ -38,7 +38,7 @@ void silo_output::do_output(std::list<std::size_t> node_list, integer filenum) {
 	auto id_list_ptr = &id_list;
 	std::vector<hpx::future<hpx::id_type> > node_futs = hpx::find_ids_from_basename("fmmx_node", id_list);
 	std::vector<hpx::future<void>> data_futs(node_futs.size());
-	for (integer i0 = 0; i0 != node_futs.size(); ++i0) {
+	for (std::size_t i0 = 0; i0 != node_futs.size(); ++i0) {
 		data_futs[i0] = (node_client(node_futs[i0].get()).get_data()).then(hpx::util::unwrapped([=](std::vector<double> data) {
 			auto iter = data.begin();
 			auto key = (*id_list_ptr)[i0];
