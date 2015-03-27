@@ -75,9 +75,6 @@ int hpx_main() {
 	root_client.hydro_amr_prolong(0).get();
 	while (t < tmax) {
 		for (integer rk = 0; rk != HYDRO_RK; ++rk) {
-			root_client.hydro_project(rk).get();
-			root_client.hydro_amr_prolong(rk).get();
-			root_client.hydro_exchange(rk).get();
 
 			auto tfut = root_client.hydro_next_du(rk);
 			if (rk == 0) {
@@ -91,12 +88,15 @@ int hpx_main() {
 			const integer rk0 = (rk != HYDRO_RK - 1 ? rk + 1 : 0);
 			root_client.hydro_amr_prolong(rk0).get();
 			root_client.hydro_exchange(rk0).get();
+			root_client.hydro_project(rk0).get();
 			root_client.hydro_restrict(rk0).get();
+			root_client.hydro_amr_prolong(rk0).get();
+			root_client.hydro_exchange(rk0).get();
 
 		}
 		++step;
-		if (step % 1 == 0) {
-			f1 = hpx::async<typename silo_output::do_output_action>(sout, leaf_list, step / 1);
+		if (step % 10 == 0) {
+			f1 = hpx::async<typename silo_output::do_output_action>(sout, leaf_list, step / 10);
 			f1.get();
 		}
 		t += dt;

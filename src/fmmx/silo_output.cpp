@@ -146,7 +146,7 @@ void silo_output::do_output(std::list<std::size_t> node_list, integer filenum) {
 
 	olist = DBMakeOptlist( 1);
 	char* fname;
-	asprintf(&fname, "X.%i.silo", filenum);
+	asprintf(&fname, "X.%li.silo", filenum);
 	db = DBCreateReal( fname, DB_CLOBBER, DB_LOCAL, "Euler Mesh", DB_PDB);
 	DBPutZonelist2( db, "zones", nzones, int(NDIM), zone_nodes.data(), Nchild * nzones, 0, 0,
 			0, shapetype, shapesize, shapecnt, nshapes, olist);

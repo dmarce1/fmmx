@@ -17,6 +17,7 @@ private:
 	real dx, x0, y0, z0;
 	std::array<bool, HYDRO_N3> is_amr;
 	std::array<bool, HYDRO_N3> is_child_amr;
+	std::array<bool, HYDRO_N3> is_compute_cell;
 	std::array<bool,2*NDIM> is_amr_face;
 	std::array<bool, 2*NDIM> is_child_amr_face;
 	std::valarray<std::valarray<std::valarray<std::valarray<real>>> >U;
@@ -26,6 +27,7 @@ private:
 	void transform(const std::function<state(const state&)>&, integer rk);
 	static state value_at(const std::valarray<state>&, real, real, real);
 public:
+	void set_compute(bool);
 	std::vector<real> restrict_pack( integer rk ) const;
 	void restrict_unpack( integer rk, const std::vector<real>& data, integer ci );
 	void set_amr( integer face , bool val=true);

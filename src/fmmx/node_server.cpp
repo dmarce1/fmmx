@@ -337,6 +337,7 @@ void node_server::hydro_amr_prolong(integer rk) {
 			}
 		}
 	}
+	hydro_vars->set_compute(is_leaf);
 	std::vector<hpx::future<void>> child_exe(NCHILD);
 	if (!is_leaf) {
 		for (integer i = 0; i != NCHILD; ++i) {
@@ -815,7 +816,12 @@ node_server::node_server() {
 }
 
 std::vector<double> node_server::get_data() const {
-	return hydro_vars->output_data();
+	auto a = hydro_vars->output_data();
+	std::vector<double> b(a.size());
+	for( std::size_t i = 0; i != a.size(); ++i) {
+		b[i] = double(a[i]);
+	}
+	return b;
 }
 
 node_server::node_server(hpx::id_type sid) {

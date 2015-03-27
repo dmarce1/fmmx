@@ -30,7 +30,7 @@
 using real = double;
 using integer = std::int64_t;
 
-constexpr integer NX = 8;
+constexpr integer NX = 4;
 
 //#define SOD_SHOCK
 #define BLAST_WAVE

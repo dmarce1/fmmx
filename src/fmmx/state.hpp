@@ -10,7 +10,7 @@
 
 #include "defs.hpp"
 
-using state = std::valarray<double>;
+using state = std::valarray<real>;
 
 constexpr integer d0i = 0;
 constexpr integer sxi = 1;
