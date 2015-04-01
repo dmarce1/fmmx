@@ -17,10 +17,11 @@
 class node_server: public hpx::components::managed_component_base<node_server> {
 private:
 	static hpx::id_type output;
+	integer this_rk;
 	std::vector<real> M;
 	std::vector<real> L;
-	std::vector<real> phi;
-	std::vector<real> gx, gy, gz;
+//	std::vector<real> phi;
+//	std::vector<real> gx, gy, gz;
 	node_client parent_id;
 	std::array<node_client, NCHILD> child_id;
 	std::array<node_client, NNEIGHBOR> neighbor_id;

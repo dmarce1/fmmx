@@ -10,7 +10,7 @@
 #include "defs.hpp"
 #include "state.hpp"
 
-constexpr real fgamma = 7.0 / 5.0;
+constexpr real fgamma = 5.0 / 3.0;
 constexpr real eps_floor = 1.0e-8;
 
 real pressure_eos(real d, real eps) {

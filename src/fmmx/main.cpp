@@ -24,7 +24,11 @@ HPX_REGISTER_MINIMAL_COMPONENT_FACTORY(hpx::components::managed_component<silo_o
 typedef typename silo_output::do_output_action do_output_t;
 HPX_REGISTER_ACTION(do_output_t);
 
+extern void hydro_initialize();
+
 int hpx_main() {
+
+	hydro_initialize();
 
 #ifndef NDEBUG
 	feenableexcept(FE_DIVBYZERO);
@@ -63,6 +67,7 @@ int hpx_main() {
 	//++fnum;
 	std::list<std::size_t> leaf_list = root_client.get_leaf_list().get();
 	printf("%li leaves detected by root\n", leaf_list.size());
+	root_client.execute(0).get();
 	root_client.hydro_project(0).get();
 	auto f1 = hpx::async<typename silo_output::do_output_action>(sout, leaf_list, 0);
 	f1.get();
@@ -75,6 +80,7 @@ int hpx_main() {
 	root_client.hydro_amr_prolong(0).get();
 	while (t < tmax) {
 		for (integer rk = 0; rk != HYDRO_RK; ++rk) {
+
 
 			auto tfut = root_client.hydro_next_du(rk);
 			if (rk == 0) {
@@ -92,11 +98,12 @@ int hpx_main() {
 			root_client.hydro_restrict(rk0).get();
 			root_client.hydro_amr_prolong(rk0).get();
 			root_client.hydro_exchange(rk0).get();
+			root_client.execute(rk0).get();
 
 		}
 		++step;
-		if (step % 10 == 0) {
-			f1 = hpx::async<typename silo_output::do_output_action>(sout, leaf_list, step / 10);
+		if (step % 5 == 0) {
+			f1 = hpx::async<typename silo_output::do_output_action>(sout, leaf_list, step / 5);
 			f1.get();
 		}
 		t += dt;

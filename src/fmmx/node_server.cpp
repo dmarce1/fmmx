@@ -136,12 +136,7 @@ hpx::future<std::vector<real>> node_server::get_expansions(integer c) const {
 
 hpx::future<std::vector<real>> node_server::get_multipoles() {
 	if (is_leaf && FMM_P != 0) {
-		M = std::vector<real>(FMM_N3 * FMM_PP, real(0));
-		for (integer i = 0; i != FMM_N3; ++i) {
-			/****************************************************************/
-			M[i] = rand() % 2;
-			/***************************************************************/
-		}
+		M = hydro_vars->get_gravity_sources(this_rk);
 	}
 	return hpx::async(hpx::launch::deferred, [=]() {
 		std::vector<real> m_out(FMM_PP * FMM_N3 / NCHILD, 0.0);
@@ -395,7 +390,7 @@ void node_server::hydro_exchange(integer rk) {
 		}
 	}
 	for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
-		if (is_face[dir] && neighbor_id[dir] == hpx::invalid_id && is_phys_bound(dir) ) {
+		if (is_face[dir] && neighbor_id[dir] == hpx::invalid_id && is_phys_bound(dir)) {
 			hydro_vars->enforce_physical_boundaries(rk, which_face[dir]);
 		}
 	}
@@ -479,9 +474,9 @@ void node_server::L2L(const std::vector<real>& l_in) {
 		std::array<real, NDIM> dist;
 		for (integer d = 0; d != NDIM; ++d) {
 			if ((c >> d) & 1) {
-				dist[d] = -0.5 * dx;
-			} else {
 				dist[d] = +0.5 * dx;
+			} else {
+				dist[d] = -0.5 * dx;
 			}
 		}
 		constexpr auto sz = FMM_N3 / NCHILD;
@@ -648,9 +643,9 @@ void node_server::M2L(const std::vector<real>& m, integer d, integer N) {
 							const integer max_d = std::max(tmp, std::abs(l1 - l0));
 							if (max_d > max_d0) {
 								*i_list++ = ind4d(0, j0, k0, l0);
-								*i_xdist++ = real(j1 - j0) * dx;
-								*i_ydist++ = real(k1 - k0) * dx;
-								*i_zdist++ = real(l1 - l0) * dx;
+								*i_xdist++ = real(j0 - j1) * dx;
+								*i_ydist++ = real(k0 - k1) * dx;
+								*i_zdist++ = real(l0 - l1) * dx;
 								++cnt;
 							}
 						}
@@ -792,6 +787,7 @@ bool node_server::child_is_amr(integer ci, integer dir) const {
 }
 
 real node_server::execute(integer rk) {
+	this_rk = rk;
 	std::vector<hpx::future<real>> child_exe(NCHILD);
 //	printf("Begin at grid %li - %li %li %li\n", level, location[2], location[1], location[0]);
 	if (!is_leaf) {
@@ -807,6 +803,7 @@ real node_server::execute(integer rk) {
 	wait_all(child_exe);
 	exe_promise->get_future().wait();
 	assert(fmm_neighbor_done_cnt == NNEIGHBOR + 1);
+	hydro_vars->set_gravity_sources(L,this_rk);
 	reset();
 	return 0.0;
 }
@@ -818,7 +815,7 @@ node_server::node_server() {
 std::vector<double> node_server::get_data() const {
 	auto a = hydro_vars->output_data();
 	std::vector<double> b(a.size());
-	for( std::size_t i = 0; i != a.size(); ++i) {
+	for (std::size_t i = 0; i != a.size(); ++i) {
 		b[i] = double(a[i]);
 	}
 	return b;
@@ -871,12 +868,12 @@ std::list<std::size_t> node_server::get_leaf_list() const {
 
 void node_server::reset() {
 	if (FMM_P != 0) {
-		for (integer i = 0; i != FMM_N3; ++i) {
+/*		for (integer i = 0; i != FMM_N3; ++i) {
 			phi[i] = -L[i];
 			gz[i] = -L[i + FMM_N3 * 2];
 			gx[i] = L[i + FMM_N3 * 3] * std::sqrt(real(2));
 			gy[i] = -L[i + FMM_N3 * 1] * std::sqrt(real(2));
-		}
+		}*/
 	}
 	L = std::vector<real>(FMM_PP * FMM_N3, 0.0);
 	fmm_neighbor_done_cnt = 0;
@@ -904,7 +901,7 @@ void node_server::reset() {
 
 void node_server::initialize(node_client pid, integer lev, std::array<integer, NDIM> loc) {
 	step_cnt = 0;
-	phi = gx = gy = gz = std::vector<real>(FMM_N3);
+	//phi = gx = gy = gz = std::vector<real>(FMM_N3);
 	M.resize(FMM_PP * FMM_N3, 0.0);
 	L.resize(FMM_PP * FMM_N3, 0.0);
 	location = loc;

@@ -48,22 +48,19 @@ constexpr integer SILO_N3 = NX * NX * NX * SILO_SUB_NX * SILO_SUB_NX * SILO_SUB_
 
 constexpr integer FMM_NX = NX;
 constexpr integer FMM_BW = 2;
-constexpr integer FMM_P = 0;
+constexpr integer FMM_P = HYDRO_RK + 2;
 constexpr integer FMM_N3 = FMM_NX * FMM_NX * FMM_NX;
 constexpr integer FMM_PP = FMM_P * FMM_P;
 
 constexpr integer NDIM = 3;
 constexpr integer NCHILD = 8;
 constexpr integer NNEIGHBOR = 27;
-constexpr integer MAXLEVEL = 3;
+constexpr integer MAXLEVEL = 1;
 
-static constexpr std::array<integer, NNEIGHBOR> dir_z =
-	{ -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+static constexpr std::array<integer, NNEIGHBOR> dir_z = { -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
-static constexpr std::array<integer, NNEIGHBOR> dir_y =
-	{ -1, -1, -1, 0, 0, 0, 1, 1, 1, -1, -1, -1, 0, 0, 0, 1, 1, 1, -1, -1, -1, 0, 0, 0, 1, 1, 1 };
+static constexpr std::array<integer, NNEIGHBOR> dir_y = { -1, -1, -1, 0, 0, 0, 1, 1, 1, -1, -1, -1, 0, 0, 0, 1, 1, 1, -1, -1, -1, 0, 0, 0, 1, 1, 1 };
 
-static constexpr std::array<integer, NNEIGHBOR> dir_x =
-	{ -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1 };
+static constexpr std::array<integer, NNEIGHBOR> dir_x = { -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1, -1, 0, 1 };
 
 #endif /* DEF_HPP_ */

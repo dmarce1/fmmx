@@ -64,7 +64,7 @@ void silo_output::do_output(std::list<std::size_t> node_list, integer filenum) {
 						const integer lc = l0 % HYDRO_P;
 						silo_zone s;
 						int j;
-						for( integer k = 0; k != HYDRO_NF; ++k) {
+						for( integer k = 0; k != HYDRO_NF+4; ++k) {
 							s.fields[k] = *iter;
 							iter++;
 							cnt++;
@@ -155,13 +155,17 @@ void silo_output::do_output(std::list<std::size_t> node_list, integer filenum) {
 			(int) DB_DOUBLE, olist);
 
 	std::vector<double> data(nzones);
-	std::array<char[32], HYDRO_NF> field_names;
+	std::array<char[32], HYDRO_NF+4> field_names;
 	sprintf(field_names[0], "D");
 	sprintf(field_names[1], "SX");
 	sprintf(field_names[2], "SY");
 	sprintf(field_names[3], "SZ");
 	sprintf(field_names[4], "E");
-	for (int fi = 0; fi != HYDRO_NF; ++fi) {
+	sprintf(field_names[5], "phi");
+	sprintf(field_names[6], "gx");
+	sprintf(field_names[7], "gy");
+	sprintf(field_names[8], "gz");
+	for (int fi = 0; fi != HYDRO_NF+4; ++fi) {
 		int i = 0;
 		for (auto zi = zonedir.begin(); zi != zonedir.end(); zi++) {
 			data[i] = zi->fields[fi];

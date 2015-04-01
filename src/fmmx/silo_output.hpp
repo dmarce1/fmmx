@@ -16,8 +16,6 @@
 
 class node_client;
 
-#define SILO_NF HYDRO_NF
-
 #include <vector>
 
 class silo_output: public hpx::components::managed_component_base<silo_output> {
@@ -25,7 +23,7 @@ public:
 	static constexpr double precision = 1.0e-10;
 	static constexpr int Nchild = 1 << NDIM;
 	struct zone {
-		std::array<double, HYDRO_NF> fields;
+		std::array<double, HYDRO_NF + 4> fields;
 		std::array<double, NDIM> position;
 		std::array<double, NDIM> span;
 		zone() {
@@ -56,7 +54,7 @@ public:
 		}
 	};
 	struct silo_zone {
-		std::array<double, HYDRO_NF> fields;
+		std::array<double, HYDRO_NF + 4> fields;
 		std::vector<int> vertices;
 		silo_zone() :
 				vertices(Nchild) {

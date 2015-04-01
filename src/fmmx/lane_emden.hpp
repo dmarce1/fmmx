@@ -11,7 +11,7 @@
 #include "defs.hpp"
 
 
-real lane_emden(real r0);
+real lane_emden(real r0, double dr);
 
 
 
