@@ -30,7 +30,7 @@
 using real = double;
 using integer = std::int64_t;
 
-constexpr integer NX = 4;
+constexpr integer NX = 8;
 
 //#define SOD_SHOCK
 #define BLAST_WAVE
@@ -48,7 +48,7 @@ constexpr integer SILO_N3 = NX * NX * NX * SILO_SUB_NX * SILO_SUB_NX * SILO_SUB_
 
 constexpr integer FMM_NX = NX;
 constexpr integer FMM_BW = 2;
-constexpr integer FMM_P = HYDRO_RK + 2;
+constexpr integer FMM_P = HYDRO_P + 3;
 constexpr integer FMM_N3 = FMM_NX * FMM_NX * FMM_NX;
 constexpr integer FMM_PP = FMM_P * FMM_P;
 

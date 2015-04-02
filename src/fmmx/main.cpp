@@ -67,20 +67,22 @@ int hpx_main() {
 	//++fnum;
 	std::list<std::size_t> leaf_list = root_client.get_leaf_list().get();
 	printf("%li leaves detected by root\n", leaf_list.size());
-	root_client.execute(0).get();
-	root_client.hydro_project(0).get();
-	auto f1 = hpx::async<typename silo_output::do_output_action>(sout, leaf_list, 0);
-	f1.get();
-	real tmax = 0.5;
+
+	real tmax = 10.0;
 	printf("Executing...\n");
 	real dt;
 	integer step = 0;
 	real t = real(0);
 	dt = real(0);
+	root_client.hydro_project(0).get();
+	root_client.hydro_restrict(0).get();
 	root_client.hydro_amr_prolong(0).get();
+	root_client.hydro_exchange(0).get();
+	root_client.execute(0).get();
+	auto f1 = hpx::async<typename silo_output::do_output_action>(sout, leaf_list, 0);
+	f1.get();
 	while (t < tmax) {
 		for (integer rk = 0; rk != HYDRO_RK; ++rk) {
-
 
 			auto tfut = root_client.hydro_next_du(rk);
 			if (rk == 0) {

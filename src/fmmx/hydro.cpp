@@ -35,7 +35,7 @@ state lane_emden_star(real x, real y, real z) {
 	real theta_floor = 1.0e-3;
 	if (r < 4) {
 		theta = lane_emden(r, .05);
-	} else if (r < 1.0e-6) {
+	} else if (r < 1.0e-3) {
 		theta = real(1);
 	}
 	theta = std::max(theta, theta_floor);
@@ -127,10 +127,12 @@ void hydro::initialize() {
 							}
 						}
 					}
+
 				}
 			}
 		}
 	}
+
 }
 
 /*** Change sample points***********/
@@ -948,6 +950,21 @@ std::valarray<real> minmod(const std::valarray<real>& a, const std::valarray<rea
 }
 ;
 
+std::valarray<real> maxmod(const std::valarray<real>& a, const std::valarray<real>& b) {
+	state c(HYDRO_NF);
+	for (integer i = 0; i != HYDRO_NF; ++i) {
+		if (std::abs(a[i]) > std::abs(b[i])) {
+			c[i] = a[i];
+		} else if (std::abs(a[i]) < std::abs(b[i])) {
+			c[i] = b[i];
+		} else {
+			c[i] = (a[i] + b[i]) / real(2);
+		}
+	}
+	return c;
+}
+;
+
 bool real_eq(real a, real b) {
 	constexpr real delta = 1.0e-11;
 	if (a == real(0) && b == real(0)) {
@@ -962,7 +979,7 @@ void hydro::apply_limiter(integer rk) {
 	auto ux = u;
 	auto uy = u;
 	auto uz = u;
-	auto utmp = u;
+	auto u_tilde = u;
 
 	for (integer i = di; i < HYDRO_N3 - di; ++i) {
 		for (integer m = 0; m < HYDRO_P - 1; ++m) {
@@ -972,17 +989,23 @@ void hydro::apply_limiter(integer rk) {
 					const integer pp1 = pindex(l + 1, m, n);
 					state dup = (u[i + di][p] - u[i][p]) / real(2 * l + 1);
 					state dum = (u[i][p] - u[i - di][p]) / real(2 * l + 1);
+					state dur = (u[i + di][p] - u[i][p]) / real(2 * l + 1) - u[i + di][pp1];
+					state dul = (u[i][p] - u[i - di][p]) / real(2 * l + 1) - u[i - di][pp1];
 					state du0 = u[i][pp1];
 					dup = con_to_characteristic(u[i][0], dup, 0);
 					dum = con_to_characteristic(u[i][0], dum, 0);
+					dur = con_to_characteristic(u[i][0], dur, 0);
+					dul = con_to_characteristic(u[i][0], dul, 0);
 					du0 = con_to_characteristic(u[i][0], du0, 0);
-					utmp[i][pp1] = characteristic_to_con(u[i][0], minmod(du0, minmod(dup, dum)), 0);
+					state u1 = characteristic_to_con(u[i][0], minmod(du0, minmod(dup, dum)), 0);
+					state u2 = characteristic_to_con(u[i][0], minmod(du0, minmod(dur, dul)), 0);
+					u_tilde[i][pp1] = maxmod(u1, u2);
 				}
 				for (integer f = 0; f != HYDRO_NF; ++f) {
 					for (integer l = HYDRO_P - 2 - n - m; l >= 0; --l) {
 						const integer pp1 = pindex(l + 1, m, n);
-						if (!real_eq(utmp[i][pp1][f], u[i][pp1][f])) {
-							ux[i][pp1][f] = utmp[i][pp1][f];
+						if (!real_eq(u_tilde[i][pp1][f], u[i][pp1][f])) {
+							ux[i][pp1][f] = u_tilde[i][pp1][f];
 						} else {
 							break;
 						}
@@ -1001,16 +1024,22 @@ void hydro::apply_limiter(integer rk) {
 					state dup = (u[i + dj][p] - u[i][p]) / real(2 * m + 1);
 					state dum = (u[i][p] - u[i - dj][p]) / real(2 * m + 1);
 					state du0 = u[i][pp1];
+					state dur = (u[i + dj][p] - u[i][p]) / real(2 * m + 1) - u[i + dj][pp1];
+					state dul = (u[i][p] - u[i - dj][p]) / real(2 * m + 1) - u[i - dj][pp1];
 					dup = con_to_characteristic(u[i][0], dup, 1);
 					dum = con_to_characteristic(u[i][0], dum, 1);
+					dur = con_to_characteristic(u[i][0], dur, 1);
+					dul = con_to_characteristic(u[i][0], dul, 1);
 					du0 = con_to_characteristic(u[i][0], du0, 1);
-					utmp[i][pp1] = characteristic_to_con(u[i][0], minmod(du0, minmod(dup, dum)), 1);
+					state u1 = characteristic_to_con(u[i][0], minmod(du0, minmod(dup, dum)), 1);
+					state u2 = characteristic_to_con(u[i][0], minmod(du0, minmod(dur, dul)), 1);
+					u_tilde[i][pp1] = maxmod(u1, u2);
 				}
 				for (integer f = 0; f != HYDRO_NF; ++f) {
 					for (integer m = HYDRO_P - 2 - l - n; m >= 0; --m) {
 						const integer pp1 = pindex(l, m + 1, n);
-						if (!real_eq(utmp[i][pp1][f], u[i][pp1][f])) {
-							uy[i][pp1][f] = utmp[i][pp1][f];
+						if (!real_eq(u_tilde[i][pp1][f], u[i][pp1][f])) {
+							uy[i][pp1][f] = u_tilde[i][pp1][f];
 						} else {
 							break;
 						}
@@ -1029,16 +1058,22 @@ void hydro::apply_limiter(integer rk) {
 					state dup = (u[i + dk][p] - u[i][p]) / real(2 * n + 1);
 					state dum = (u[i][p] - u[i - dk][p]) / real(2 * n + 1);
 					state du0 = u[i][pp1];
+					state dur = (u[i + dk][p] - u[i][p]) / real(2 * n + 1) - u[i + dk][pp1];
+					state dul = (u[i][p] - u[i - dk][p]) / real(2 * n + 1) - u[i - dk][pp1];
 					dup = con_to_characteristic(u[i][0], dup, 2);
 					dum = con_to_characteristic(u[i][0], dum, 2);
+					dur = con_to_characteristic(u[i][0], dur, 2);
+					dul = con_to_characteristic(u[i][0], dul, 2);
 					du0 = con_to_characteristic(u[i][0], du0, 2);
-					utmp[i][pp1] = characteristic_to_con(u[i][0], minmod(du0, minmod(dup, dum)), 2);
+					state u1 = characteristic_to_con(u[i][0], minmod(du0, minmod(dup, dum)), 2);
+					state u2 = characteristic_to_con(u[i][0], minmod(du0, minmod(dur, dul)), 2);
+					u_tilde[i][pp1] = maxmod(u1, u2);
 				}
 				for (integer f = 0; f != HYDRO_NF; ++f) {
 					for (integer n = HYDRO_P - 2 - m - l; n >= 0; --n) {
 						const integer pp1 = pindex(l, m, n + 1);
-						if (!real_eq(utmp[i][pp1][f], u[i][pp1][f])) {
-							uz[i][pp1][f] = utmp[i][pp1][f];
+						if (!real_eq(u_tilde[i][pp1][f], u[i][pp1][f])) {
+							uz[i][pp1][f] = u_tilde[i][pp1][f];
 						} else {
 							break;
 						}
@@ -1050,7 +1085,7 @@ void hydro::apply_limiter(integer rk) {
 
 	for (integer i = 0; i < HYDRO_N3; ++i) {
 		for (integer pp = 1; pp != HYDRO_PPP; ++pp) {
-			u[i][pp] = minmod(uz[i][pp], minmod(ux[i][pp], uy[i][pp]));
+			u[i][pp] = minmod(ux[i][pp], minmod(uz[i][pp], uy[i][pp]));
 		}
 	}
 
@@ -1158,7 +1193,6 @@ hydro::hydro(real _dx, real _x0, real _y0, real _z0) {
 	std::fill(is_child_amr.begin(), is_child_amr.end(), false);
 	std::fill(is_amr_face.begin(), is_amr_face.end(), false);
 	std::fill(is_child_amr_face.begin(), is_child_amr_face.end(), false);
-	initialize();
 }
 
 real Ylm2Plmn[FMM_PP][HYDRO_PPP] = { { real(0) } };

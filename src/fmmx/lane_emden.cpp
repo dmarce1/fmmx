@@ -32,7 +32,7 @@ real lane_emden(real r0, double dr) {
 	if (N < 1) {
 		N = 1;
 	}
-//	dr = r0 / (real) N;
+	dr = r0 / 32.0;
 	r = 0.0;
 	do {
 		if (r + dr > r0) {
