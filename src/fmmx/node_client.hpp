@@ -24,10 +24,10 @@ public:
 	hpx::future<void> destroy();
 	operator hpx::id_type() const;
 	node_client();
-	hpx::future<void> hydro_exchange(integer); //
+	hpx::future<void> hydro_exchange(integer, exchange_type); //
 	hpx::future<void> hydro_amr_prolong(integer); //
 	hpx::future<std::vector<real>> hydro_get_amr_bnd(integer, integer, integer); //
-	hpx::future<std::vector<real>> hydro_get_bnd(integer, integer); //
+	hpx::future<std::vector<real>> hydro_get_bnd(integer, integer, exchange_type); //
 	hpx::future<std::vector<node_client>> get_children() const;
 	node_client(const hpx::id_type&);
 	node_client& operator=(const hpx::id_type&);

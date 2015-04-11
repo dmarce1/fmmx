@@ -14,6 +14,8 @@
 #include <boost/serialization/list.hpp>
 #include <boost/atomic.hpp>
 
+
+
 class node_server: public hpx::components::managed_component_base<node_server> {
 private:
 	static hpx::id_type output;
@@ -93,7 +95,7 @@ public:
 	HPX_DEFINE_COMPONENT_ACTION(node_server, set_expansions, set_expansions_action);
 	//
 
-	void hydro_exchange(integer); //
+	void hydro_exchange(integer, exchange_type); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, hydro_exchange, hydro_exchange_action);
 
 	void hydro_amr_prolong(integer); //
@@ -109,7 +111,7 @@ public:
 	HPX_DEFINE_COMPONENT_ACTION(node_server, hydro_project, hydro_project_action);
 
 	//
-	std::vector<real> hydro_get_bnd(integer, integer); //
+	std::vector<real> hydro_get_bnd(integer, integer, exchange_type); //
 	HPX_DEFINE_COMPONENT_ACTION(node_server, hydro_get_bnd, hydro_get_bnd_action);
 	//
 

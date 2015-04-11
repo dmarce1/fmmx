@@ -10,6 +10,9 @@
 
 #include <cstdint>
 
+enum exchange_type { HYDRO_BND, GRAV_BND};
+
+
 #ifdef MINI_HPX
 #include "../hpx/hpx_fwd.hpp"
 #include "../hpx/hpx.hpp"
@@ -27,6 +30,9 @@
 #endif
 #include <boost/serialization/utility.hpp>
 
+#define TOTAL_ENERGY
+//#define DIRECT_GRAVITY
+
 using real = double;
 using integer = std::int64_t;
 
@@ -35,10 +41,12 @@ constexpr integer NX = 8;
 //#define SOD_SHOCK
 #define BLAST_WAVE
 
+
+
 constexpr integer HYDRO_NX = NX + 2;
 constexpr integer HYDRO_N3 = HYDRO_NX * HYDRO_NX * HYDRO_NX;
-constexpr integer HYDRO_RK = 3;
-constexpr integer HYDRO_P = 3;
+constexpr integer HYDRO_RK = 2;
+constexpr integer HYDRO_P = 2;
 constexpr integer HYDRO_PPP = (HYDRO_P + 2) * (HYDRO_P + 1) * (HYDRO_P) / 6;
 constexpr integer HYDRO_NF = 5;
 

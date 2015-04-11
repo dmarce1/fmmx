@@ -4,7 +4,7 @@
  *  Created on: Nov 9, 2014
  *      Author: dmarce1
  */
-
+#include <mpi.h>
 #include "node_client.hpp"
 #include "silo_output.hpp"
 #include "node_server.hpp"
@@ -68,7 +68,7 @@ int hpx_main() {
 	std::list<std::size_t> leaf_list = root_client.get_leaf_list().get();
 	printf("%li leaves detected by root\n", leaf_list.size());
 
-	real tmax = 10.0;
+	real tmax = 100.0;
 	printf("Executing...\n");
 	real dt;
 	integer step = 0;
@@ -77,11 +77,17 @@ int hpx_main() {
 	root_client.hydro_project(0).get();
 	root_client.hydro_restrict(0).get();
 	root_client.hydro_amr_prolong(0).get();
-	root_client.hydro_exchange(0).get();
+	root_client.hydro_exchange(0,HYDRO_BND).get();
+	root_client.hydro_exchange(0,GRAV_BND).get();
 	root_client.execute(0).get();
+	root_client.hydro_exchange(0,GRAV_BND).get();
 	auto f1 = hpx::async<typename silo_output::do_output_action>(sout, leaf_list, 0);
 	f1.get();
+	const real dt_output = 1.0e-1;
+	integer out_cnt = 1;
 	while (t < tmax) {
+	//	break;
+		real tstart = MPI_Wtime();
 		for (integer rk = 0; rk != HYDRO_RK; ++rk) {
 
 			auto tfut = root_client.hydro_next_du(rk);
@@ -95,20 +101,22 @@ int hpx_main() {
 			root_client.hydro_next_u(rk, dt).get();
 			const integer rk0 = (rk != HYDRO_RK - 1 ? rk + 1 : 0);
 			root_client.hydro_amr_prolong(rk0).get();
-			root_client.hydro_exchange(rk0).get();
+			root_client.hydro_exchange(rk0,HYDRO_BND).get();
 			root_client.hydro_project(rk0).get();
 			root_client.hydro_restrict(rk0).get();
 			root_client.hydro_amr_prolong(rk0).get();
-			root_client.hydro_exchange(rk0).get();
+			root_client.hydro_exchange(rk0,HYDRO_BND).get();
 			root_client.execute(rk0).get();
-
+			root_client.hydro_exchange(rk0,GRAV_BND).get();
 		}
 		++step;
-		if (step % 5 == 0) {
-			f1 = hpx::async<typename silo_output::do_output_action>(sout, leaf_list, step / 5);
+		if (out_cnt*dt_output < t) {
+			f1 = hpx::async<typename silo_output::do_output_action>(sout, leaf_list, out_cnt++);
 			f1.get();
 		}
 		t += dt;
+		real tend = MPI_Wtime();
+//		printf( "%e\n", tend - tstart);
 	}
 //	 leaf_list = root_client.get_leaf_list().get();
 

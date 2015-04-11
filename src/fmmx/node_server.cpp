@@ -365,11 +365,11 @@ void node_server::hydro_amr_prolong(integer rk) {
 	}
 }
 
-void node_server::hydro_exchange(integer rk) {
+void node_server::hydro_exchange(integer rk, exchange_type type) {
 	std::vector<hpx::future<void>> child_exe(NCHILD);
 	if (!is_leaf) {
 		for (integer i = 0; i != NCHILD; ++i) {
-			child_exe[i] = child_id[i].hydro_exchange(rk);
+			child_exe[i] = child_id[i].hydro_exchange(rk,type);
 		}
 	}
 	std::vector<hpx::future<std::vector<real>>>bnd_futs(NNEIGHBOR);
@@ -377,7 +377,7 @@ void node_server::hydro_exchange(integer rk) {
 		bnd_futs[dir] = hpx::make_ready_future(std::vector<real>(0));
 		if (dir != center_dir) {
 			if (neighbor_id[dir] != hpx::invalid_id) {
-				bnd_futs[dir] = neighbor_id[dir].hydro_get_bnd(rk, NNEIGHBOR - dir - 1);
+				bnd_futs[dir] = neighbor_id[dir].hydro_get_bnd(rk, NNEIGHBOR - dir - 1, type);
 			}
 		}
 	}
@@ -385,13 +385,27 @@ void node_server::hydro_exchange(integer rk) {
 		auto data = bnd_futs[dir].get();
 		if (data.size()) {
 			if (neighbor_id[dir] != hpx::invalid_id) {
-				hydro_vars->unpack_boundary(rk, data, dir);
+				switch (type) {
+				case HYDRO_BND:
+					hydro_vars->unpack_boundary(rk, data, dir);
+					break;
+				case GRAV_BND:
+					hydro_vars->unpack_phi_boundary(rk, data, dir);
+					break;
+				}
 			}
 		}
 	}
 	for (integer dir = 0; dir != NNEIGHBOR; ++dir) {
 		if (is_face[dir] && neighbor_id[dir] == hpx::invalid_id && is_phys_bound(dir)) {
-			hydro_vars->enforce_physical_boundaries(rk, which_face[dir]);
+			switch (type) {
+			case HYDRO_BND:
+				hydro_vars->enforce_physical_boundaries(rk, which_face[dir]);
+				break;
+			case GRAV_BND:
+				hydro_vars->enforce_physical_phi_boundaries(rk, which_face[dir]);
+				break;
+			}
 		}
 	}
 	if (!is_leaf) {
@@ -401,8 +415,17 @@ void node_server::hydro_exchange(integer rk) {
 	}
 }
 
-std::vector<real> node_server::hydro_get_bnd(integer rk, integer dir) {
-	return hydro_vars->pack_boundary(rk, dir);
+std::vector<real> node_server::hydro_get_bnd(integer rk, integer dir, exchange_type type) {
+	std::vector<real> v;
+	switch (type) {
+	case HYDRO_BND:
+		v= hydro_vars->pack_boundary(rk, dir);
+		break;
+	case GRAV_BND:
+		v= hydro_vars->pack_phi_boundary(rk, dir);
+		break;
+	}
+	return v;
 }
 
 std::vector<real> node_server::hydro_get_amr_bnd(integer rk, integer dir, integer ci) {
@@ -605,8 +628,11 @@ void node_server::M2L(const std::vector<real>& m, integer d, integer N) {
 			return integer(0);
 		}
 	};
-
+#ifdef DIRECT_GRAVITY
+	const integer max_d0 =1;
+#else
 	const integer max_d0 = (is_leaf || neighbor_is_leaf[d]) ? 0 : 1;
+#endif
 	integer is = 0;
 	std::vector<integer> list(level == 0 ? FMM_N3 : 216);
 	std::vector<real> l_out;
@@ -803,7 +829,7 @@ real node_server::execute(integer rk) {
 	wait_all(child_exe);
 	exe_promise->get_future().wait();
 	assert(fmm_neighbor_done_cnt == NNEIGHBOR + 1);
-	hydro_vars->set_gravity_sources(L,this_rk);
+	hydro_vars->set_gravity_sources(L, this_rk);
 	reset();
 	return 0.0;
 }
@@ -868,12 +894,12 @@ std::list<std::size_t> node_server::get_leaf_list() const {
 
 void node_server::reset() {
 	if (FMM_P != 0) {
-/*		for (integer i = 0; i != FMM_N3; ++i) {
-			phi[i] = -L[i];
-			gz[i] = -L[i + FMM_N3 * 2];
-			gx[i] = L[i + FMM_N3 * 3] * std::sqrt(real(2));
-			gy[i] = -L[i + FMM_N3 * 1] * std::sqrt(real(2));
-		}*/
+		/*		for (integer i = 0; i != FMM_N3; ++i) {
+		 phi[i] = -L[i];
+		 gz[i] = -L[i + FMM_N3 * 2];
+		 gx[i] = L[i + FMM_N3 * 3] * std::sqrt(real(2));
+		 gy[i] = -L[i + FMM_N3 * 1] * std::sqrt(real(2));
+		 }*/
 	}
 	L = std::vector<real>(FMM_PP * FMM_N3, 0.0);
 	fmm_neighbor_done_cnt = 0;

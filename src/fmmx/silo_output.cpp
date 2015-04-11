@@ -101,9 +101,10 @@ void silo_output::do_output(std::list<std::size_t> node_list, integer filenum) {
 				}
 			}
 		}));
+		data_futs[i0].get();
 	}
 
-	hpx::wait_all(data_futs);
+//	hpx::wait_all(data_futs);
 
 	std::thread([=]() {
 		constexpr int nshapes = 1;

@@ -13,18 +13,17 @@ hpx::future<void> node_client::get_tree(std::vector<node_client> my_neighbors) {
 }
 
 hpx::future<void> node_client::hydro_next_u(integer rk, real dt) {
-	return hpx::async<typename node_server::hydro_next_u_action>(id,rk, dt);
+	return hpx::async<typename node_server::hydro_next_u_action>(id, rk, dt);
 
 }
 
-hpx::future<std::pair<real, std::vector<real>>> node_client::hydro_next_du(integer rk) {
+hpx::future<std::pair<real, std::vector<real>>>node_client::hydro_next_du(integer rk) {
 	return hpx::async<typename node_server::hydro_next_du_action>(id,rk);
 }
 
 hpx::future<void> node_client::hydro_project(integer rk) {
 	return hpx::async<typename node_server::hydro_project_action>(id, rk);
 }
-
 
 bool node_client::operator==(const hpx::id_type& other) const {
 	return id == other;
@@ -45,34 +44,29 @@ hpx::future<real> node_client::execute(integer rk) {
 	return hpx::async<typename node_server::execute_action>(id, rk);
 }
 
-
 hpx::future<std::vector<real>> node_client::hydro_restrict(integer rk) {
 	return hpx::async<typename node_server::hydro_restrict_action>(id, rk);
 }
 
-
-hpx::future<void> node_client::hydro_exchange(integer rk) {
-	return hpx::async<typename node_server::hydro_exchange_action>(id, rk);
+hpx::future<void> node_client::hydro_exchange(integer rk, exchange_type type) {
+	return hpx::async<typename node_server::hydro_exchange_action>(id, rk, type);
 }
 
 hpx::future<void> node_client::hydro_amr_prolong(integer rk) {
 	return hpx::async<typename node_server::hydro_amr_prolong_action>(id, rk);
 }
 
-
 hpx::future<std::vector<real>> node_client::hydro_get_amr_bnd(integer rk, integer dir, integer ci) {
 	return hpx::async<typename node_server::hydro_get_amr_bnd_action>(id, rk, dir, ci);
 }
 
-hpx::future<std::vector<real>> node_client::hydro_get_bnd(integer rk, integer dir) {
-	return hpx::async<typename node_server::hydro_get_bnd_action>(id, rk, dir);
+hpx::future<std::vector<real>> node_client::hydro_get_bnd(integer rk, integer dir, exchange_type type) {
+	return hpx::async<typename node_server::hydro_get_bnd_action>(id, rk, dir, type);
 }
-
 
 hpx::future<void> node_client::set_me(hpx::id_type myid) {
 	return hpx::async<typename node_server::set_me_action>(id, myid);
 }
-
 
 hpx::future<bool> node_client::refine() {
 	return hpx::async<typename node_server::refine_action>(id);

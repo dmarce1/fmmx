@@ -42,6 +42,8 @@ using complex = std::complex<real>;
 
 class exafmm_kernel {
 public:
+	static void P2M(std::vector<real>& M, const std::array<real,NDIM> dist, real m);
+	static void L2P(std::vector<real>& L, const std::array<real,NDIM> dist, real&, real&, real&, real&);
 
 	static void M2L(std::vector<real>& CiL, const std::vector<real> CjM,
 			const std::array<std::vector<real>,NDIM>& dist, integer N, std::vector<real>& L_r, std::vector<real>& L_i, std::vector<real>& Ynm);
@@ -52,6 +54,7 @@ public:
 	static void L2L(std::vector<real>& CiL, const std::vector<real>& CjL, const std::array<real, NDIM>& dist,
 			const integer N);
 	static void evalMultipole(real rho, real theta, real phi, std::vector<real>& Ynm);
+	static void evalMultipole(real rho, real theta, real phi, std::vector<real>& Ynm, std::vector<real>& Ynm_theta);
 
 public:
 	exafmm_kernel();

@@ -15,9 +15,19 @@ const integer di = HYDRO_NX * HYDRO_NX;
 const integer dj = HYDRO_NX;
 const integer dk = 1;
 
+static exafmm_kernel exafmm;
+
+const integer NGF = std::max(HYDRO_P, integer(1));
+const integer NGC = std::max(HYDRO_P, integer(1));
+
 state lane_emden_star(real x, real y, real z);
 state blast_wave(real x, real y, real z);
 state sod_shock(real x, real y, real z);
+
+std::array<
+		std::array<
+				std::array<std::array<std::array<std::array<std::array<std::array<std::array<real, HYDRO_P>, HYDRO_P>, HYDRO_P>, HYDRO_P>, HYDRO_P>, HYDRO_P>, 3>,
+				3>, 3> rad_inv;
 
 std::function<state(real, real, real)> init_func = lane_emden_star;
 
@@ -32,7 +42,7 @@ state lane_emden_star(real x, real y, real z) {
 	real alpha = 0.1;
 	const real r = std::sqrt(x * x + y * y + z * z) / alpha;
 	real theta = 0.0;
-	real theta_floor = 1.0e-3;
+	real theta_floor = 1.0e-10;
 	if (r < 4) {
 		theta = lane_emden(r, .05);
 	} else if (r < 1.0e-3) {
@@ -135,7 +145,6 @@ void hydro::initialize() {
 
 }
 
-/*** Change sample points***********/
 std::vector<real> hydro::output_data() const {
 	const auto& gpt = gauss_points[HYDRO_P - 1];
 	std::vector<real> data(SILO_N3 * (HYDRO_NF + 4));
@@ -153,17 +162,14 @@ std::vector<real> hydro::output_data() const {
 				const real y = ((real(jp) + 0.5) + gpt[jc] * 0.5) / real(NX);
 				const real z = ((real(kp) + 0.5) + gpt[kc] * 0.5) / real(NX);
 				const auto u = get_U_at(x, y, z);
-				const auto gphi = get_gphi_at(x, y, z);
-				const auto gx = get_fg_at(x, y, z, 0);
-				const auto gy = get_fg_at(x, y, z, 1);
-				const auto gz = get_fg_at(x, y, z, 2);
+				const auto g = get_gforce_at(x, y, z);
 				for (integer f = 0; f != HYDRO_NF; ++f) {
 					*iter++ = u[f];
 				}
-				*iter++ = gphi;
-				*iter++ = gx;
-				*iter++ = gy;
-				*iter++ = gz;
+				*iter++ = g[3];
+				*iter++ = g[0];
+				*iter++ = g[1];
+				*iter++ = g[2];
 			}
 		}
 	}
@@ -204,37 +210,6 @@ real hydro::derivative_at(const std::valarray<real>& u, real x, real y, real z, 
 	}
 //	printf( "----%e\n", u[1]);
 	return v;
-}
-
-real hydro::get_gphi_at(real x, real y, real z) const {
-	constexpr real dx = real(1) / real(HYDRO_NX - 2);
-	const integer i = integer(x / dx) + 1;
-	const integer j = integer(y / dx) + 1;
-	const integer k = integer(z / dx) + 1;
-	x -= (i - 1) * dx;
-	y -= (j - 1) * dx;
-	z -= (k - 1) * dx;
-	x = real(2) * x / dx - real(1);
-	y = real(2) * y / dx - real(1);
-	z = real(2) * z / dx - real(1);
-	return value_at(gphi[0][gindex(i, j, k)], x, y, z);
-
-}
-
-real hydro::get_fg_at(real x, real y, real z, integer dir) const {
-	constexpr real dx0 = real(1) / real(HYDRO_NX - 2);
-	const integer i = integer(x / dx0) + 1;
-	const integer j = integer(y / dx0) + 1;
-	const integer k = integer(z / dx0) + 1;
-	x -= (i - 1) * dx0;
-	y -= (j - 1) * dx0;
-	z -= (k - 1) * dx0;
-	x = real(2) * x / dx0 - real(1);
-	y = real(2) * y / dx0 - real(1);
-	z = real(2) * z / dx0 - real(1);
-	real d = -real(2) * derivative_at(gphi[0][gindex(i, j, k)], x, y, z, dir) / dx;
-	return d;
-
 }
 
 real hydro::value_at(const std::valarray<real>& u, real x, real y, real z) {
@@ -297,8 +272,6 @@ integer hydro::gindex(integer i, integer j, integer k, integer d) {
 
 real hydro::next_du(integer rk, const std::vector<std::vector<real>>& fflux) {
 	real amax = real(0);
-	const integer NGF = std::max(HYDRO_P - 1, integer(1));
-	const integer NGC = std::max(HYDRO_P - 1, integer(1));
 	const real dxinv = real(2) / dx;
 	const auto& gfpt = gauss_points[NGF - 1];
 	const auto& gfwt = gauss_weights[NGF - 1];
@@ -317,15 +290,21 @@ real hydro::next_du(integer rk, const std::vector<std::vector<real>>& fflux) {
 					for (integer g2 = 0; g2 != NGF; ++g2) {
 						const real x1 = gfpt[g1];
 						const real x2 = gfpt[g2];
-						const state& urx = value_at(U[rk][i], -real(1), x1, x2);
-						const state& ury = value_at(U[rk][i], x1, -real(1), x2);
-						const state& urz = value_at(U[rk][i], x1, x2, -real(1));
-						const state& ulx = value_at(U[rk][i - di], +real(1), x1, x2);
-						const state& uly = value_at(U[rk][i - dj], x1, +real(1), x2);
-						const state& ulz = value_at(U[rk][i - dk], x1, x2, +real(1));
-						state fx = Riemann_flux(urx, ulx, 0);
-						state fy = Riemann_flux(ury, uly, 1);
-						state fz = Riemann_flux(urz, ulz, 2);
+						const state urx = value_at(U[rk][i], -real(1), x1, x2);
+						const state ury = value_at(U[rk][i], x1, -real(1), x2);
+						const state urz = value_at(U[rk][i], x1, x2, -real(1));
+						const state ulx = value_at(U[rk][i - di], +real(1), x1, x2);
+						const state uly = value_at(U[rk][i - dj], x1, +real(1), x2);
+						const state ulz = value_at(U[rk][i - dk], x1, x2, +real(1));
+						const auto g_rx = gforce_at(psi[rk][i], U[rk][i], -real(1), x1, x2);
+						const auto g_ry = gforce_at(psi[rk][i], U[rk][i], x1, -real(1), x2);
+						const auto g_rz = gforce_at(psi[rk][i], U[rk][i], x1, x2, -real(1));
+						const auto g_lx = gforce_at(psi[rk][i - di], U[rk][i - di], +real(1), x1, x2);
+						const auto g_ly = gforce_at(psi[rk][i - dj], U[rk][i - dj], x1, +real(1), x2);
+						const auto g_lz = gforce_at(psi[rk][i - dk], U[rk][i - dk], x1, x2, +real(1));
+						state fx = Riemann_flux(urx, ulx, 0, g_rx[3], g_lx[3]);
+						state fy = Riemann_flux(ury, uly, 1, g_ry[3], g_ly[3]);
+						state fz = Riemann_flux(urz, ulz, 2, g_rz[3], g_lz[3]);
 						if ((is_child_amr[i] == is_child_amr[i - di]) && (is_compute_cell[i] || is_compute_cell[i - di])) {
 							amax = std::max(amax, spectral_radius(urx, 0));
 							amax = std::max(amax, spectral_radius(ulx, 0));
@@ -478,13 +457,15 @@ real hydro::next_du(integer rk, const std::vector<std::vector<real>>& fflux) {
 								const real x = gcpt[gx];
 								const real y = gcpt[gy];
 								const real z = gcpt[gz];
-								const state& u = value_at(U[rk][i], x, y, z);
-								const real fg_x = -derivative_at(gphi[rk][i], x, y, z, 0) * dxinv;
-								const real fg_y = -derivative_at(gphi[rk][i], x, y, z, 1) * dxinv;
-								const real fg_z = -derivative_at(gphi[rk][i], x, y, z, 2) * dxinv;
-								state fx = flux(u, 0);
-								state fy = flux(u, 1);
-								state fz = flux(u, 2);
+								const state u = value_at(U[rk][i], x, y, z);
+								const auto g = gforce_at(psi[rk][i], U[rk][i], x, y, z);
+								const real phi = g[3];
+								const real fg_x = g[0];
+								const real fg_y = g[1];
+								const real fg_z = g[2];
+								state fx = flux(u, 0, phi);
+								state fy = flux(u, 1, phi);
+								state fz = flux(u, 2, phi);
 								amax = std::max(amax, spectral_radius(u, 0));
 								amax = std::max(amax, spectral_radius(u, 1));
 								amax = std::max(amax, spectral_radius(u, 2));
@@ -503,12 +484,19 @@ real hydro::next_du(integer rk, const std::vector<std::vector<real>>& fflux) {
 											dU[rk][i][p] += fx * dpx_dx * py * pz * wt * factor * dxinv;
 											dU[rk][i][p] += fy * px * dpy_dy * pz * wt * factor * dxinv;
 											dU[rk][i][p] += fz * px * py * dpz_dz * wt * factor * dxinv;
-											dU[rk][i][p][sxi] += u[d0i] * fg_x * px * py * pz * wt * factor;
-											dU[rk][i][p][syi] += u[d0i] * fg_y * px * py * pz * wt * factor;
-											dU[rk][i][p][szi] += u[d0i] * fg_z * px * py * pz * wt * factor;
+
+											real rho0 = u[d0i];
+											if (p == 0) {
+												rho0 -= rho_floor;
+											}
+											dU[rk][i][p][sxi] += rho0 * fg_x * px * py * pz * wt * factor;
+											dU[rk][i][p][syi] += rho0 * fg_y * px * py * pz * wt * factor;
+											dU[rk][i][p][szi] += rho0 * fg_z * px * py * pz * wt * factor;
+#ifndef TOTAL_ENERGY
 											dU[rk][i][p][egi] += u[sxi] * fg_x * px * py * pz * wt * factor;
 											dU[rk][i][p][egi] += u[syi] * fg_y * px * py * pz * wt * factor;
 											dU[rk][i][p][egi] += u[szi] * fg_z * px * py * pz * wt * factor;
+#endif
 										}
 									}
 								}
@@ -519,6 +507,42 @@ real hydro::next_du(integer rk, const std::vector<std::vector<real>>& fflux) {
 			}
 		}
 	}
+#ifdef TOTAL_ENERGY
+	for (integer ii = 1; ii != HYDRO_NX - 1; ++ii) {
+		for (integer jj = 1; jj != HYDRO_NX - 1; ++jj) {
+			for (integer kk = 1; kk != HYDRO_NX - 1; ++kk) {
+				const integer i = gindex(ii, jj, kk);
+				if (is_compute_cell[i]) {
+					for (integer gx = 0; gx != NGC; ++gx) {
+						for (integer gy = 0; gy != NGC; ++gy) {
+							for (integer gz = 0; gz != NGC; ++gz) {
+								const real wt = gcwt[gx] * gcwt[gy] * gcwt[gz];
+								const real x = gcpt[gx];
+								const real y = gcpt[gy];
+								const real z = gcpt[gz];
+								const state du = value_at(dU[rk][i], x, y, z);
+								const state u = value_at(U[rk][i], x, y, z);
+								real rho0 = u[d0i];
+								const real phi = gforce_at(psi[rk][i], U[rk][i], x, y, z)[3];
+								for (integer l = 0; l != HYDRO_P; ++l) {
+									for (integer m = 0; m != HYDRO_P - l; ++m) {
+										for (integer n = 0; n != HYDRO_P - l - m; ++n) {
+											const integer p = pindex(l, m, n);
+											const real px = LegendreP(l, x) * real(2 * l + 1) / real(2);
+											const real py = LegendreP(m, y) * real(2 * m + 1) / real(2);
+											const real pz = LegendreP(n, z) * real(2 * n + 1) / real(2);
+											dU[rk][i][p][egi] -= du[d0i] * phi * px * py * pz * wt * (real(1) - rho_floor / rho0);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+#endif
 	if (amax == real(0)) {
 		return std::numeric_limits<real>::max();
 	} else {
@@ -526,8 +550,36 @@ real hydro::next_du(integer rk, const std::vector<std::vector<real>>& fflux) {
 	}
 }
 
+gforce_t hydro::self_gforce(const std::valarray<std::valarray<real>>& U, real x, real y, real z) const {
+	const auto& gpt = gauss_points[HYDRO_P - 1];
+	const auto& gwt = gauss_weights[HYDRO_P - 1];
+
+	gforce_t g;
+	std::fill(std::begin(g), std::end(g), real(0));
+	for (integer gx = 0; gx < HYDRO_P; ++gx) {
+		for (integer gy = 0; gy < HYDRO_P; ++gy) {
+			for (integer gz = 0; gz < HYDRO_P; ++gz) {
+				const real rho0 = value_at(U, gpt[gx], gpt[gy], gpt[gz])[d0i];
+				const real mass = rho0 * dx * dx * dx * gwt[gx] * gwt[gy] * gwt[gz] / real(8);
+				const real x0 = (gpt[gx] - x)*dx;
+				const real y0 = (gpt[gy] - y)*dx;
+				const real z0 = (gpt[gz] - z)*dx;
+				const real r2 = x0 * x0 + y0 * y0 + z0 * z0;
+				const real r = std::sqrt(r2);
+				if (r > 1.0e-10) {
+					const real r3 = r * r2;
+					g[3] -= mass / r;
+					g[0] += x0 * mass / r3;
+					g[1] += y0 * mass / r3;
+					g[2] += z0 * mass / r3;
+				}
+			}
+		}
+	}
+	return g;
+}
+
 std::vector<real> hydro::flux_correct_pack(integer rk) const {
-	const integer NGF = std::max(HYDRO_P - 1, integer(1));
 	const auto& gfpt = gauss_points[NGF - 1];
 	const auto& gfwt = gauss_weights[NGF - 1];
 	std::vector<real> a;
@@ -554,9 +606,11 @@ std::vector<real> hydro::flux_correct_pack(integer rk) const {
 								for (integer g2 = 0; g2 != NGF; ++g2) {
 									const real x1 = (real(2 * c1) + gfpt[g1] - real(1)) / real(2);
 									const real x2 = (real(2 * c2) + gfpt[g2] - real(1)) / real(2);
-									const state& urx = value_at(U[rk][i], -real(1), gfpt[g1], gfpt[g2]);
-									const state& ulx = value_at(U[rk][i - di], +real(1), gfpt[g1], gfpt[g2]);
-									state fx = Riemann_flux(urx, ulx, 0);
+									const state urx = value_at(U[rk][i], -real(1), gfpt[g1], gfpt[g2]);
+									const state ulx = value_at(U[rk][i - di], +real(1), gfpt[g1], gfpt[g2]);
+									const real phi_rx = gforce_at(psi[rk][i], U[rk][i], -real(1), gfpt[g1], gfpt[g2])[3];
+									const real phi_lx = gforce_at(psi[rk][i - di], U[rk][i - di], +real(1), gfpt[g1], gfpt[g2])[3];
+									state fx = Riemann_flux(urx, ulx, 0, phi_rx, phi_lx);
 									for (integer l = 0; l != HYDRO_P; ++l) {
 										for (integer m = 0; m != HYDRO_P - l; ++m) {
 											for (integer n = 0; n != HYDRO_P - l - m; ++n) {
@@ -595,9 +649,11 @@ std::vector<real> hydro::flux_correct_pack(integer rk) const {
 								for (integer g2 = 0; g2 != NGF; ++g2) {
 									const real x1 = (real(2 * c1) + gfpt[g1] - real(1)) / real(2);
 									const real x2 = (real(2 * c2) + gfpt[g2] - real(1)) / real(2);
-									const state& ury = value_at(U[rk][i], gfpt[g1], -real(1), gfpt[g2]);
-									const state& uly = value_at(U[rk][i - dj], gfpt[g1], +real(1), gfpt[g2]);
-									state fy = Riemann_flux(ury, uly, 1);
+									const state ury = value_at(U[rk][i], gfpt[g1], -real(1), gfpt[g2]);
+									const state uly = value_at(U[rk][i - dj], gfpt[g1], +real(1), gfpt[g2]);
+									const real phi_ry = gforce_at(psi[rk][i], U[rk][i], gfpt[g1], -real(1), gfpt[g2])[3];
+									const real phi_ly = gforce_at(psi[rk][i - dj], U[rk][i - dj], gfpt[g1], +real(1), gfpt[g2])[3];
+									state fy = Riemann_flux(ury, uly, 1, phi_ry, phi_ly);
 									for (integer l = 0; l != HYDRO_P; ++l) {
 										for (integer m = 0; m != HYDRO_P - l; ++m) {
 											for (integer n = 0; n != HYDRO_P - l - m; ++n) {
@@ -636,9 +692,11 @@ std::vector<real> hydro::flux_correct_pack(integer rk) const {
 								for (integer g2 = 0; g2 != NGF; ++g2) {
 									const real x1 = (real(2 * c1) + gfpt[g1] - real(1)) / real(2);
 									const real x2 = (real(2 * c2) + gfpt[g2] - real(1)) / real(2);
-									const state& urz = value_at(U[rk][i], gfpt[g1], gfpt[g2], -real(1));
-									const state& ulz = value_at(U[rk][i - dk], gfpt[g1], gfpt[g2], +real(1));
-									state fz = Riemann_flux(urz, ulz, 2);
+									const state urz = value_at(U[rk][i], gfpt[g1], gfpt[g2], -real(1));
+									const state ulz = value_at(U[rk][i - dk], gfpt[g1], gfpt[g2], +real(1));
+									const real phi_rz = gforce_at(psi[rk][i], U[rk][i], gfpt[g1], gfpt[g2], -real(1))[3];
+									const real phi_lz = gforce_at(psi[rk][i - dk], U[rk][i - dk], gfpt[g1], gfpt[g2], +real(1))[3];
+									state fz = Riemann_flux(urz, ulz, 2, phi_rz, phi_lz);
 									for (integer l = 0; l != HYDRO_P; ++l) {
 										for (integer m = 0; m != HYDRO_P - l; ++m) {
 											for (integer n = 0; n != HYDRO_P - l - m; ++n) {
@@ -667,6 +725,59 @@ std::vector<real> hydro::flux_correct_pack(integer rk) const {
 }
 
 void hydro::enforce_physical_boundaries(integer rk, integer dir) {
+	const integer dim = dir / 2;
+	const integer si = dim + sxi;
+	const real sgn = real(2 * (dir % 2) - 1);
+	for (integer j = 0; j != HYDRO_NX; ++j) {
+		for (integer k = 0; k != HYDRO_NX; ++k) {
+			integer iii;
+			if (dir == 0) {
+				iii = gindex(0, j, k);
+			} else if (dir == 1) {
+				iii = gindex(HYDRO_NX - 1, j, k);
+			} else if (dir == 2) {
+				iii = gindex(j, 0, k);
+			} else if (dir == 3) {
+				iii = gindex(j, HYDRO_NX - 1, k);
+			} else if (dir == 4) {
+				iii = gindex(j, k, 0);
+			} else /*if (dir == 5)*/{
+				iii = gindex(j, k, HYDRO_NX - 1);
+			}
+			for (integer ppp = 1; ppp < HYDRO_PPP; ++ppp) {
+				U[rk][iii][ppp] = real(0);
+			}
+			for (integer l = 0; l != HYDRO_P; ++l) {
+				for (integer m = 0; m != HYDRO_P - l; ++m) {
+					for (integer n = 0; n != HYDRO_P - l - m; ++n) {
+						if (!((l != 0 && dim == 0) || (m != 0 && dim == 1) || (n != 0 && dim == 2))) {
+							const integer p = pindex(l, m, n);
+							if (dir == 0) {
+								U[rk][iii][p] = U[rk][gindex(1, j, k)][p];
+							} else if (dir == 1) {
+								U[rk][iii][p] = U[rk][gindex(HYDRO_NX - 2, j, k)][p];
+							} else if (dir == 2) {
+								U[rk][iii][p] = U[rk][gindex(j, 1, k)][p];
+							} else if (dir == 3) {
+								U[rk][iii][p] = U[rk][gindex(j, HYDRO_NX - 2, k)][p];
+							} else if (dir == 4) {
+								U[rk][iii][p] = U[rk][gindex(j, k, 1)][p];
+							} else if (dir == 5) {
+								U[rk][iii][p] = U[rk][gindex(j, k, HYDRO_NX - 2)][p];
+							}
+						}
+					}
+				}
+			}
+			if (U[rk][iii][0][si] * sgn < real(0)) {
+				U[rk][iii][0][egi] -= std::pow(U[rk][iii][0][si], 2) / U[rk][iii][0][d0i];
+				U[rk][iii][0][si] = real(0);
+			}
+		}
+	}
+}
+
+void hydro::enforce_physical_phi_boundaries(integer rk, integer dir) {
 	for (integer l = 0; l != HYDRO_P; ++l) {
 		for (integer m = 0; m != HYDRO_P - l; ++m) {
 			for (integer n = 0; n != HYDRO_P - l - m; ++n) {
@@ -674,17 +785,17 @@ void hydro::enforce_physical_boundaries(integer rk, integer dir) {
 					for (integer k = 0; k != HYDRO_NX; ++k) {
 						const integer p = pindex(l, m, n);
 						if (dir == 0) {
-							U[rk][gindex(0, j, k)][p] = U[rk][gindex(1, j, k)][p];
+							psi[rk][gindex(0, j, k)][p] = psi[rk][gindex(1, j, k)][p];
 						} else if (dir == 1) {
-							U[rk][gindex(HYDRO_NX - 1, j, k)][p] = U[rk][gindex(HYDRO_NX - 2, j, k)][p];
+							psi[rk][gindex(HYDRO_NX - 1, j, k)][p] = psi[rk][gindex(HYDRO_NX - 2, j, k)][p];
 						} else if (dir == 2) {
-							U[rk][gindex(j, 0, k)][p] = U[rk][gindex(j, 1, k)][p];
+							psi[rk][gindex(j, 0, k)][p] = psi[rk][gindex(j, 1, k)][p];
 						} else if (dir == 3) {
-							U[rk][gindex(j, HYDRO_NX - 1, k)][p] = U[rk][gindex(j, HYDRO_NX - 2, k)][p];
+							psi[rk][gindex(j, HYDRO_NX - 1, k)][p] = psi[rk][gindex(j, HYDRO_NX - 2, k)][p];
 						} else if (dir == 4) {
-							U[rk][gindex(j, k, 0)][p] = U[rk][gindex(j, k, 1)][p];
+							psi[rk][gindex(j, k, 0)][p] = psi[rk][gindex(j, k, 1)][p];
 						} else if (dir == 5) {
-							U[rk][gindex(j, k, HYDRO_NX - 1)][p] = U[rk][gindex(j, k, HYDRO_NX - 2)][p];
+							psi[rk][gindex(j, k, HYDRO_NX - 1)][p] = psi[rk][gindex(j, k, HYDRO_NX - 2)][p];
 						}
 					}
 				}
@@ -721,6 +832,21 @@ state hydro::get_U_at(real x, real y, real z) const {
 	y = real(2) * y / dx - real(1);
 	z = real(2) * z / dx - real(1);
 	return value_at(U[0][gindex(i, j, k)], x, y, z);
+
+}
+
+gforce_t hydro::get_gforce_at(real x, real y, real z) const {
+	constexpr real dx = real(1) / real(HYDRO_NX - 2);
+	const integer i = integer(x / dx) + 1;
+	const integer j = integer(y / dx) + 1;
+	const integer k = integer(z / dx) + 1;
+	x -= (i - 1) * dx;
+	y -= (j - 1) * dx;
+	z -= (k - 1) * dx;
+	x = real(2) * x / dx - real(1);
+	y = real(2) * y / dx - real(1);
+	z = real(2) * z / dx - real(1);
+	return gforce_at(psi[0][gindex(i, j, k)], U[0][gindex(i, j, k)], x, y, z);
 
 }
 
@@ -818,6 +944,28 @@ std::vector<real> hydro::pack_boundary(integer rk, integer d) const {
 	return a;
 }
 
+std::vector<real> hydro::pack_phi_boundary(integer rk, integer d) const {
+	const integer xlb = dir_x[d] == +1 ? HYDRO_NX - 2 : 1;
+	const integer ylb = dir_y[d] == +1 ? HYDRO_NX - 2 : 1;
+	const integer zlb = dir_z[d] == +1 ? HYDRO_NX - 2 : 1;
+	const integer xub = dir_x[d] == -1 ? 2 : HYDRO_NX - 1;
+	const integer yub = dir_y[d] == -1 ? 2 : HYDRO_NX - 1;
+	const integer zub = dir_z[d] == -1 ? 2 : HYDRO_NX - 1;
+	std::vector<real> a(FMM_PP * (xub - xlb) * (yub - ylb) * (zub - zlb));
+	auto iter = a.begin();
+	for (integer i = xlb; i < xub; ++i) {
+		for (integer j = ylb; j < yub; ++j) {
+			for (integer k = zlb; k < zub; ++k) {
+				const integer ii = gindex(i, j, k);
+				for (integer pp = 0; pp != FMM_PP; ++pp) {
+					*iter++ = psi[rk][ii][pp];
+				}
+			}
+		}
+	}
+	return a;
+}
+
 void hydro::unpack_boundary(integer rk, const std::vector<real>& a, integer d) {
 	integer xlb = 1;
 	integer ylb = 1;
@@ -855,6 +1003,47 @@ void hydro::unpack_boundary(integer rk, const std::vector<real>& a, integer d) {
 					for (integer f = 0; f != HYDRO_NF; ++f) {
 						U[rk][ii][pp][f] = *iter++;
 					}
+				}
+			}
+		}
+	}
+}
+
+void hydro::unpack_phi_boundary(integer rk, const std::vector<real>& a, integer d) {
+	integer xlb = 1;
+	integer ylb = 1;
+	integer zlb = 1;
+	integer xub = HYDRO_NX - 1;
+	integer yub = HYDRO_NX - 1;
+	integer zub = HYDRO_NX - 1;
+	if (dir_x[d] == -1) {
+		xlb = 0;
+		xub = 1;
+	} else if (dir_x[d] == +1) {
+		xlb = HYDRO_NX - 1;
+		xub = HYDRO_NX;
+	}
+	if (dir_y[d] == -1) {
+		ylb = 0;
+		yub = 1;
+	} else if (dir_y[d] == +1) {
+		ylb = HYDRO_NX - 1;
+		yub = HYDRO_NX;
+	}
+	if (dir_z[d] == -1) {
+		zlb = 0;
+		zub = 1;
+	} else if (dir_z[d] == +1) {
+		zlb = HYDRO_NX - 1;
+		zub = HYDRO_NX;
+	}
+	auto iter = a.begin();
+	for (integer i = xlb; i < xub; ++i) {
+		for (integer j = ylb; j < yub; ++j) {
+			for (integer k = zlb; k < zub; ++k) {
+				const integer ii = gindex(i, j, k);
+				for (integer pp = 0; pp != FMM_PP; ++pp) {
+					psi[rk][ii][pp] = *iter++;
 				}
 			}
 		}
@@ -940,6 +1129,44 @@ void hydro::unpack_amr_boundary(integer rk, const std::vector<real>& a, integer 
 	}
 }
 
+std::valarray<real> minmod(real a, real b) {
+	state c(HYDRO_NF);
+	constexpr auto half = real(1) / real(2);
+	c = (std::copysign(half, a) + std::copysign(half, b)) * std::min(std::abs(a), std::abs(b));
+	return c;
+}
+;
+
+std::valarray<real> minmaxmod(real a, real b1, real b2) {
+	real c;
+	for (integer i = 0; i != HYDRO_NF; ++i) {
+		if (a > real(0)) {
+			if (b1 > real(0) && b2 > real(0)) {
+				c = std::max(b1, b2);
+			} else if (b1 > real(0)) {
+				c = b1;
+			} else if (b2 > real(0)) {
+				c = b2;
+			} else {
+				c = real(0);
+			}
+		} else {
+			if (b1 < real(0) && b2 < real(0)) {
+				c = std::min(b1, b2);
+			} else if (b1 < real(0)) {
+				c = b1;
+			} else if (b2 < real(0)) {
+				c = b2;
+			} else {
+				c = real(0);
+			}
+		}
+
+	}
+	return minmod(a, c);
+}
+;
+
 std::valarray<real> minmod(const std::valarray<real>& a, const std::valarray<real>& b) {
 	state c(HYDRO_NF);
 	constexpr auto half = real(1) / real(2);
@@ -950,18 +1177,33 @@ std::valarray<real> minmod(const std::valarray<real>& a, const std::valarray<rea
 }
 ;
 
-std::valarray<real> maxmod(const std::valarray<real>& a, const std::valarray<real>& b) {
+std::valarray<real> minmaxmod(const std::valarray<real>& a, const std::valarray<real>& b1, const std::valarray<real> b2) {
 	state c(HYDRO_NF);
 	for (integer i = 0; i != HYDRO_NF; ++i) {
-		if (std::abs(a[i]) > std::abs(b[i])) {
-			c[i] = a[i];
-		} else if (std::abs(a[i]) < std::abs(b[i])) {
-			c[i] = b[i];
+		if (a[i] > real(0)) {
+			if (b1[i] > real(0) && b2[i] > real(0)) {
+				c[i] = std::max(b1[i], b2[i]);
+			} else if (b1[i] > real(0)) {
+				c[i] = b1[i];
+			} else if (b2[i] > real(0)) {
+				c[i] = b2[i];
+			} else {
+				c[i] = real(0);
+			}
 		} else {
-			c[i] = (a[i] + b[i]) / real(2);
+			if (b1[i] < real(0) && b2[i] < real(0)) {
+				c[i] = std::min(b1[i], b2[i]);
+			} else if (b1[i] < real(0)) {
+				c[i] = b1[i];
+			} else if (b2[i] < real(0)) {
+				c[i] = b2[i];
+			} else {
+				c[i] = real(0);
+			}
 		}
+
 	}
-	return c;
+	return minmod(a, c);
 }
 ;
 
@@ -997,9 +1239,9 @@ void hydro::apply_limiter(integer rk) {
 					dur = con_to_characteristic(u[i][0], dur, 0);
 					dul = con_to_characteristic(u[i][0], dul, 0);
 					du0 = con_to_characteristic(u[i][0], du0, 0);
-					state u1 = characteristic_to_con(u[i][0], minmod(du0, minmod(dup, dum)), 0);
-					state u2 = characteristic_to_con(u[i][0], minmod(du0, minmod(dur, dul)), 0);
-					u_tilde[i][pp1] = maxmod(u1, u2);
+					state u1 = minmod(dup, dum);
+					state u2 = minmod(dur, dul);
+					u_tilde[i][pp1] = characteristic_to_con(u[i][0], minmaxmod(du0, u1, u2), 0);
 				}
 				for (integer f = 0; f != HYDRO_NF; ++f) {
 					for (integer l = HYDRO_P - 2 - n - m; l >= 0; --l) {
@@ -1031,9 +1273,9 @@ void hydro::apply_limiter(integer rk) {
 					dur = con_to_characteristic(u[i][0], dur, 1);
 					dul = con_to_characteristic(u[i][0], dul, 1);
 					du0 = con_to_characteristic(u[i][0], du0, 1);
-					state u1 = characteristic_to_con(u[i][0], minmod(du0, minmod(dup, dum)), 1);
-					state u2 = characteristic_to_con(u[i][0], minmod(du0, minmod(dur, dul)), 1);
-					u_tilde[i][pp1] = maxmod(u1, u2);
+					state u1 = minmod(dup, dum);
+					state u2 = minmod(dur, dul);
+					u_tilde[i][pp1] = characteristic_to_con(u[i][0], minmaxmod(du0, u1, u2), 1);
 				}
 				for (integer f = 0; f != HYDRO_NF; ++f) {
 					for (integer m = HYDRO_P - 2 - l - n; m >= 0; --m) {
@@ -1065,9 +1307,9 @@ void hydro::apply_limiter(integer rk) {
 					dur = con_to_characteristic(u[i][0], dur, 2);
 					dul = con_to_characteristic(u[i][0], dul, 2);
 					du0 = con_to_characteristic(u[i][0], du0, 2);
-					state u1 = characteristic_to_con(u[i][0], minmod(du0, minmod(dup, dum)), 2);
-					state u2 = characteristic_to_con(u[i][0], minmod(du0, minmod(dur, dul)), 2);
-					u_tilde[i][pp1] = maxmod(u1, u2);
+					state u1 = minmod(dup, dum);
+					state u2 = minmod(dur, dul);
+					u_tilde[i][pp1] = characteristic_to_con(u[i][0], minmaxmod(du0, u1, u2), 2);
 				}
 				for (integer f = 0; f != HYDRO_NF; ++f) {
 					for (integer n = HYDRO_P - 2 - m - l; n >= 0; --n) {
@@ -1086,6 +1328,37 @@ void hydro::apply_limiter(integer rk) {
 	for (integer i = 0; i < HYDRO_N3; ++i) {
 		for (integer pp = 1; pp != HYDRO_PPP; ++pp) {
 			u[i][pp] = minmod(ux[i][pp], minmod(uz[i][pp], uy[i][pp]));
+		}
+	}
+
+	for (integer ii = 0; ii != HYDRO_N3; ++ii) {
+		const integer GP = NGC;
+		const auto& gpt = gauss_points[GP - 1];
+		real min_rho = std::numeric_limits<real>::max();
+		for (integer gx = 0; gx != GP; ++gx) {
+			for (integer gy = 0; gy != GP; ++gy) {
+				for (integer gz = 0; gz != GP; ++gz) {
+					auto u = value_at(U[rk][ii], gpt[gx], gpt[gy], gpt[gz]);
+					min_rho = std::min(min_rho, u[d0i]);
+				}
+			}
+		}
+		for (integer gx = 0; gx != GP; ++gx) {
+			for (integer gy = 0; gy != GP; ++gy) {
+				const auto rho1 = value_at(U[rk][ii], gpt[gx], gpt[gy], +real(1))[d0i];
+				const auto rho2 = value_at(U[rk][ii], gpt[gx], gpt[gy], -real(1))[d0i];
+				const auto rho3 = value_at(U[rk][ii], gpt[gx], +real(1), gpt[gy])[d0i];
+				const auto rho4 = value_at(U[rk][ii], gpt[gx], -real(1), gpt[gy])[d0i];
+				const auto rho5 = value_at(U[rk][ii], +real(1), gpt[gx], gpt[gy])[d0i];
+				const auto rho6 = value_at(U[rk][ii], -real(1), gpt[gx], gpt[gy])[d0i];
+				min_rho = std::min(min_rho, std::min(std::min(rho5, rho6), std::min(std::min(rho1, rho2), std::min(rho3, rho4))));
+			}
+		}
+		if (min_rho < rho_floor) {
+			U[rk][ii][0][d0i] = std::max(rho_floor, U[rk][ii][0][d0i]);
+			for (integer ppp = 1; ppp != HYDRO_PPP; ++ppp) {
+				U[rk][ii][ppp] = real(0);
+			}
 		}
 	}
 
@@ -1162,12 +1435,30 @@ void hydro::set_child_amr(integer face, bool val) {
 	}
 }
 
+gforce_t hydro::gforce_at(const std::valarray<real>& psi, const std::valarray<std::valarray<real>>& U, real x, real y, real z) const {
+	std::array<real, NDIM> dist = { x, y, z };
+
+//	dist[0] = dist[1] = dist[2] = real(0);
+
+	gforce_t g;
+	std::vector<real> this_psi(std::begin(psi), std::end(psi));
+	for (integer d = 0; d != NDIM; ++d) {
+		dist[d] *= dx / real(2);
+	}
+	exafmm.L2P(this_psi, dist, g[3], g[0], g[1], g[2]);
+	gforce_t self_g = self_gforce(U, x, y, z);
+	for (integer i = 0; i != NDIM; ++i) {
+		g[i] += self_g[i];
+	}
+	return g;
+}
+
 hydro::hydro(real _dx, real _x0, real _y0, real _z0) {
 	dx = _dx;
 	x0 = _x0;
 	y0 = _y0;
 	z0 = _z0;
-	gphi = valarray_3d_alloc(HYDRO_RK, HYDRO_N3, HYDRO_PPP);
+	psi = valarray_3d_alloc(HYDRO_RK, HYDRO_N3, FMM_PP);
 	U = valarray_4d_alloc(HYDRO_RK + 1, HYDRO_N3, HYDRO_PPP, HYDRO_NF);
 	dU = valarray_4d_alloc(HYDRO_RK, HYDRO_N3, HYDRO_PPP, HYDRO_NF);
 	for (integer i = 0; i < HYDRO_RK + 1; ++i) {
@@ -1196,7 +1487,6 @@ hydro::hydro(real _dx, real _x0, real _y0, real _z0) {
 }
 
 real Ylm2Plmn[FMM_PP][HYDRO_PPP] = { { real(0) } };
-static exafmm_kernel exafmm;
 
 struct Ylm_2_Plmn_t {
 	real c;
@@ -1212,19 +1502,35 @@ std::list<Ylm_2_Plmn_t> Ylm_2_Plmn[HYDRO_PPP];
 std::list<Plmn_2_Ylm_t> Plmn_2_Ylm[FMM_PP];
 
 std::vector<real> hydro::get_gravity_sources(integer rk) const {
+	const auto& gpt = gauss_points[HYDRO_P - 1];
+	const auto& gwt = gauss_weights[HYDRO_P - 1];
 	std::vector<real> src(FMM_PP * NX * NX * NX);
+	const real dv = std::pow(dx, 3) / real(8);
 	for (integer i = 1; i != HYDRO_NX - 1; ++i) {
 		for (integer j = 1; j != HYDRO_NX - 1; ++j) {
 			for (integer k = 1; k != HYDRO_NX - 1; ++k) {
+				std::vector<real> this_M(FMM_PP, real(0));
+				const integer iii = gindex(i, j, k);
+				std::array<real, NDIM> dist;
+				for (integer gx = 0; gx != HYDRO_P; ++gx) {
+					const real x = gpt[gx];
+					dist[0] = x * dx / real(2);
+					for (integer gy = 0; gy != HYDRO_P; ++gy) {
+						const real y = gpt[gy];
+						dist[1] = y * dx / real(2);
+						for (integer gz = 0; gz != HYDRO_P; ++gz) {
+							const real z = gpt[gz];
+							dist[2] = z * dx / real(2);
+							const real mass = value_at(U[rk][iii], x, y, z)[d0i] * gwt[gx] * gwt[gy] * gwt[gz] * dv;
+							exafmm.P2M(this_M, dist, mass);
+						}
+					}
+				}
 				for (integer L = 0; L != FMM_P; ++L) {
 					for (integer M = -L; M <= L; ++M) {
-						const auto yi = (L * L + L + M) * NX * NX * NX + (i * NX + j) * NX + k - NX * NX - NX - 1;
-						auto conv = Plmn_2_Ylm[L * L + L + M];
-						src[yi] = real(0);
-						for (auto iter = std::begin(conv); iter != std::end(conv); ++iter) {
-							src[yi] -= iter->c * (U[rk][gindex(i, j, k)][pindex(iter->l, iter->m, iter->n)][d0i]) * std::pow(dx / real(2), real(L) + NDIM)
-									* (M < 0 ? -real(1) : +real(1));
-						}
+						const integer PP = L * L + L + M;
+						const auto yi = PP * NX * NX * NX + (i * NX + j) * NX + k - NX * NX - NX - 1;
+						src[yi] = this_M[PP];
 					}
 				}
 			}
@@ -1234,24 +1540,15 @@ std::vector<real> hydro::get_gravity_sources(integer rk) const {
 }
 
 void hydro::set_gravity_sources(const std::vector<real>& src, integer rk) {
+
 	for (integer i = 1; i != HYDRO_NX - 1; ++i) {
 		for (integer j = 1; j != HYDRO_NX - 1; ++j) {
 			for (integer k = 1; k != HYDRO_NX - 1; ++k) {
-				for (integer l = 0; l != HYDRO_P; ++l) {
-					for (integer m = 0; m != HYDRO_P - l; ++m) {
-						for (integer n = 0; n != HYDRO_P - l - m; ++n) {
-							const integer ppp = pindex(l, m, n);
-							const integer iii = gindex(i, j, k);
-							auto conv = Ylm_2_Plmn[ppp];
-							gphi[rk][iii][ppp] = real(0);
-							for (auto iter = std::begin(conv); iter != std::end(conv); ++iter) {
-								auto factor = real(2 * l + 1) * real(2 * m + 1) * real(2 * n + 1) / real(8);
-								factor *= (iter->M == 0 ? real(1) : real(2));
-								factor *= (iter->M < 0 ? -real(1) : +real(1));
-								const auto ind = NX * NX * NX * (iter->L * iter->L + iter->L + iter->M) + NX * NX * i + NX * j + k - NX * NX - NX - 1;
-								gphi[rk][iii][ppp] += iter->c * src[ind] * std::pow(dx / real(2), iter->L) * factor;
-							}
-						}
+				const integer iii = gindex(i, j, k);
+				for (integer L = 0; L != FMM_P; ++L) {
+					for (integer M = -L; M <= L; ++M) {
+						const auto ind = NX * NX * NX * (L * L + L + M) + NX * NX * i + NX * j + k - NX * NX - NX - 1;
+						psi[rk][iii][L * L + L + M] = src[ind];
 					}
 				}
 			}
@@ -1266,6 +1563,35 @@ void hydro_initialize() {
 	for (integer i = 0; i != FMM_PP; ++i) {
 		for (integer j = 0; j != HYDRO_PPP; ++j) {
 			Ylm2Plmn[i][j] = real(0);
+		}
+	}
+	for (integer i = -1; i <= +1; ++i) {
+		for (integer j = -1; j <= +1; ++j) {
+			for (integer k = -1; k <= +1; ++k) {
+				for (integer x1 = 0; x1 != HYDRO_P; ++x1) {
+					for (integer y1 = 0; y1 != HYDRO_P; ++y1) {
+						for (integer z1 = 0; z1 != HYDRO_P; ++z1) {
+							for (integer x2 = 0; x2 != HYDRO_P; ++x2) {
+								for (integer y2 = 0; y2 != HYDRO_P; ++y2) {
+									for (integer z2 = 0; z2 != HYDRO_P; ++z2) {
+										const real dx2 = std::pow((gpt[x2] - gpt[x1]) / real(2) + real(i), 2);
+										const real dy2 = std::pow((gpt[y2] - gpt[y1]) / real(2) + real(j), 2);
+										const real dz2 = std::pow((gpt[z2] - gpt[z1]) / real(2) + real(k), 2);
+										const real r = std::sqrt(dx2 + dy2 + dz2);
+										real rinv;
+										if (r > real(0)) {
+											rinv = real(1.0) / r;
+										} else {
+											rinv = real(0);
+										}
+										rad_inv[i + 1][j + 1][k + 1][x2][y2][z2][x1][y1][z1] = rinv;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	for (integer l = 0; l != HYDRO_P; ++l) {

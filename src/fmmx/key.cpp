@@ -18,7 +18,7 @@ void key_to_location(std::size_t key, integer* level, std::array<integer, NDIM>*
 
 hpx::id_type key_to_locality(std::size_t key) {
 	const auto list = hpx::find_all_localities();
-	return list[(key / 32) % list.size()];
+	return list[key % list.size()];
 }
 
 std::size_t location_to_key(integer level, std::array<integer, NDIM> loc) {
